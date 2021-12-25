@@ -33,7 +33,6 @@ const loadView = (view) => {
     view = view.slice(1, view.length)
   }
   return () => import(`@/views/${view}`)
-  //return resolve => require([`@/views/${view}`], resolve)
 }
 
 export{ getFormatMenus, loadView }

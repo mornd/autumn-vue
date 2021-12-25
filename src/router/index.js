@@ -103,9 +103,7 @@ router.beforeEach((to, from, next) => {
       }, err => {
         //获取用户数据异常，系统退出
         store.dispatch('tokenExpirationExit')
-        Notification.error({
-          title: err,
-        });
+        Notification.error({ title: err });
       })
     } else {
       if(!to.matched.length) {

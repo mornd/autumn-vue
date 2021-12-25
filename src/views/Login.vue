@@ -23,7 +23,7 @@
           @keyup.enter.native="submitForm"
           clearable
           placeholder="账号"
-          maxlength="20"
+          :maxlength="maxlength"
           prefix-icon="el-icon-user-solid"
         />
       </el-form-item>
@@ -35,7 +35,7 @@
           @keyup.enter.native="submitForm"
           clearable
           placeholder="密码"
-          maxlength="20"
+          :maxlength="maxlength"
           prefix-icon="el-icon-lock"
         />
       </el-form-item>
@@ -120,11 +120,31 @@
   export default {
     name: "Login",
     data() {
-      const checkInput = (rule, value, callback) => {
+      //账号密码长度约束
+      const inputMixLength = 3
+      const inputMaxLength = 20
+
+      //表单校验
+      const checkUsername = (rule, value, callback) => {
         if(value && value.trim() !== '') {
-          callback()
+          if(value.length >= inputMixLength) {
+            callback()
+          } else {
+            callback(new Error('账号长度须在' + inputMixLength + '-' + inputMaxLength + '之间'))
+          }
         } else {
-          callback(new Error())
+          callback(new Error('请输入账号'))
+        }
+      }
+      const checkPassword = (rule, value, callback) => {
+        if(value && value.trim() !== '') {
+          if(value.length >= inputMixLength) {
+            callback()
+          } else {
+            callback(new Error('长度长度须在' + inputMixLength + '-' + inputMaxLength + '之间'))
+          }
+        } else {
+          callback(new Error('请输入密码'))
         }
       }
       return {
@@ -142,10 +162,11 @@
         },
         //整个页面加载遮罩
         loading: false,
+        maxlength: inputMaxLength,
         //非空验证 与prop属性对应
         rules:{
-          username: [{validator: checkInput, message:"请输入账号", trigger:"change"}],
-          password: [{validator: checkInput, message:"请输入密码", trigger:"change"}],
+          username: [{validator: checkUsername, trigger:"blur"}],
+          password: [{validator: checkPassword, trigger:"blur"}],
           code: [{required:true, message:"请输入验证码", trigger:"change"}]
         },
         /*loginMethods: {
@@ -214,7 +235,7 @@
             })
           } else {
             //表单验证不通过
-            this.$message.warning('请输入必填项');
+            this.$message.warning('请重新校验必填项');
             return false;
           }
         });

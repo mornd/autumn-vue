@@ -2,15 +2,15 @@
   <div class="container">
     <!--步骤条-->
     <el-steps :active="active" finish-status="success" size="small">
-      <el-step title="验证当前密码" icon="el-icon-edit" align-center></el-step>
-      <el-step title="设置新密码" icon="el-icon-upload"></el-step>
-      <el-step title="完成" icon="el-icon-picture"></el-step>
+      <el-step title="验证当前密码" icon="fa fa-motorcycle" align-center></el-step>
+      <el-step title="设置新密码" icon="fa fa-car"></el-step>
+      <el-step title="完成" icon="fa fa-plane"></el-step>
     </el-steps>
 
     <!--表单-->
     <!--@submit.native.prevent用于解决当el表单中输入框仅有一项时，回车自动提交表单，浏览器会刷新页面-->
     <el-form @submit.native.prevent ref="form" :rules="rules" :model="pwd" label-width="80px" label-position="left" size="small" style="margin-top: 20px">
-      <!--key的作用：绑定验证规则是在mounted中执行的，这里是动态展示输入框给总数，在验证规则改变后没有重新绑定，vue复用dom节点，所以会出现下面第一个输入框验证有效，第二个失效-->
+      <!--key的作用：绑定验证规则是在mounted中执行的，这里是动态展示输入框的个数，在验证规则改变后没有重新绑定，vue复用dom节点，所以会出现下面第一个输入框验证有效，第二个失效-->
       <div v-if="active === 0" :key="1">
         <el-form-item label="密码" prop="oldPwd">
           <el-input
@@ -23,7 +23,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item style="margin-top: 20px">
-          <span style="font-size: 13px;color: #409EFF;cursor: pointer">忘记密码</span>
+          <span>🥝&emsp;<span style="font-size: 13px;color: #409EFF;cursor: pointer">忘记密码</span></span>
           <el-button
             type="primary"
             :loading="oldPwdBtnLoading"
@@ -47,7 +47,7 @@
           <el-input
             v-model="pwd.confirmPwd"
             show-password
-            placeholder="请再次确认新密码"
+            placeholder="请再次输入新密码"
             :maxlength="pwdMaxLength"
             :minLength="pwdMinLength"
           ></el-input>
@@ -65,20 +65,30 @@
   export default {
     name: "ChangePassword",
     data() {
+      const pwdMinLength = 3
+      const pwdMaxLength = 20
       //密码校验函数
-      const checkOldPwd = (rules, value, callback) => {
+      const checkPwd = (rules, value, callback) => {
         if(value && value.trim() !== '') {
-          callback()
+          if(value.length >= pwdMinLength) {
+            callback()
+          } else {
+            callback(new Error('密码长度过低'))
+          }
         } else {
-          callback(new Error())
+          callback(new Error('密码不能为空'))
         }
       }
       const checkConfirmPwd = (rules, value, callback) => {
         if(value && value.trim() !== '') {
-          if(value === this.pwd.newPwd) {
-            callback()
+          if(value.length >= pwdMinLength) {
+            if(value === this.pwd.newPwd) {
+              callback()
+            } else {
+              callback(new Error('两次密码不一致'))
+            }
           } else {
-            callback(new Error('两次密码不一致'))
+            callback(new Error('密码长度过低'))
           }
         } else {
           callback(new Error('确认密码不能为空'))
@@ -88,8 +98,8 @@
         //当前步骤下标
         active: 0,
         //密码长度约束
-        pwdMinLength: 3,
-        pwdMaxLength: 20,
+        pwdMinLength: pwdMinLength,
+        pwdMaxLength: pwdMaxLength,
         pwd: {
           oldPwd: '',
           newPwd: '',
@@ -99,8 +109,8 @@
         oldPwdBtnLoading: false,
         changePwdBtnLoading: false,
         rules: {
-          oldPwd: {validator: checkOldPwd, message: '当前密码不能为空', trigger:"blur"},
-          newPwd: {validator: checkOldPwd, message: '新密码不能为空', trigger:"blur"},
+          oldPwd: {validator: checkPwd, trigger:"blur"},
+          newPwd: {validator: checkPwd, trigger:"blur"},
           confirmPwd: {validator: checkConfirmPwd, trigger:"blur"},
         }
       }
@@ -135,10 +145,17 @@
           //此时的valid值为验证失败的错误信息
           if(valid) {
             this.changePwdBtnLoading = true
-            this.$api.getRequest(`/sysUser/changePwd/${this.pwd.oldPwd}/${this.pwd.newPwd}`).then(res => {
+            this.$api.postRequest(`/sysUser/changePwd`, this.pwd).then(res => {
               if(res.success) {
-                this.active = 2
-                alert('修改成功')
+                this.active = 3
+                //this.$store.dispatch('logout')
+                this.$alert('你的密码已修改，请重新登录。', '系统提示', {//下线通知
+                  confirmButtonText: '确定',
+                  type: 'success',
+                  callback: action => {
+                    //this.$store.dispatch('logout')
+                  }
+                });
               }
               this.changePwdBtnLoading = false
             })

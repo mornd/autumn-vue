@@ -22,8 +22,8 @@
         <i class="el-icon-bell"/>
       </li>
       <li class="user-info-li">
-        <el-dropdown @command="handleCommand" class="user-info">
-          <div class="el-dropdown-link">
+        <el-dropdown @command="handleCommand">
+          <div class="user-info">
             <!--用户头像 src默认未加载图片路径-->
             <el-avatar :size="30" src="" @error="avatarLoadingFailure" class="user_Face">
               <!--图片加载失败显示的默认图片-->
@@ -191,8 +191,8 @@
     //用户头像及名称
     .user-info-li {
       padding: 0 10px;
-      cursor: pointer;
       .user-info {
+        cursor: pointer;
         margin-top: 15px;
         //用户头像
         .user_Face {
