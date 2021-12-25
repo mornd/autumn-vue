@@ -1,0 +1,10 @@
+/*elementUI样式*/
+.el-table {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/*页面加载进度条*/
+#nprogress .bar {
+  background: #409EFF !important;
+}

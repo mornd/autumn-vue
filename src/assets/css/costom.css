@@ -1,0 +1,17 @@
+/*自定义样式*/
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.c-flex {
+  display: flex;
+}
+.c-center-around {
+  display: flex;
+  justify-content: space-around;
+}
+.c-center-between {
+  display: flex;
+  justify-content: space-between;
+}

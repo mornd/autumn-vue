@@ -1,0 +1,39 @@
+<template>
+  <div>
+    <weather></weather>
+  </div>
+</template>
+
+<template id="weather">
+  <div id="he-plugin-standard"></div>
+  <script>
+    WIDGET = {
+      "CONFIG": {
+        "layout": "1",
+        "width": 450,
+        "height": 150,
+        "background": "1",
+        "dataColor": "FFFFFF",
+        "key": "90be40a5e3ba4574aa54d92b571768f8"
+      }
+    }
+  </script>
+  <script src="https://widget.qweather.net/standard/static/js/he-standard-common.js?v=2.0"></script>
+</template>
+
+<script>
+  import Vue from 'vue'
+  const weather = Vue.extend({
+    template: '#weather'
+  })
+  export default {
+    name: "Weather",
+    components: {
+      weather
+    }
+  }
+</script>
+
+<style scoped>
+
+</style>
