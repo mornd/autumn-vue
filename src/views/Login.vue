@@ -52,9 +52,9 @@
           />
           <div class="captcha-content">
             <div v-if="captchaLoad">
-              <i class="el-icon-loading" style="margin-right: 5px"/><span>loading...</span>
+              <i class="el-icon-loading" style="margin-right: 5px"></i><span>loading...</span>
             </div>
-            <img v-else :src="captchaUrl" @click="getCaptcha()" title="点击更换">
+            <img v-else :src="captchaUrl" @click="getCaptcha()" title="点击更换" />
           </div>
         </div>
       </el-form-item>
@@ -82,8 +82,8 @@
           <li title="使用GitHub账号登录" style="background-color: #252A2F"><i class="fa fa-github"/></li>
           <li title="使用QQ账号登录" style="background-color: #00B0FB"><i class="fa fa-qq"/></li>
           <li title="使用微信账号登录" style="background-color: #46D800"><i class="fa fa-wechat"/></li>
-          <li title="使用FaceBook账号登录" style="background-color: #1278F3"><i class="fa fa-facebook-official"/></li>
-          <!--<li title="使用Windows账号登录" style="background-color: #0078D7"><i class="fa fa-windows"/></li>-->
+          <!--<li title="使用FaceBook账号登录" style="background-color: #1278F3"><i class="fa fa-facebook-official"/></li>-->
+          <li title="使用Windows账号登录" style="background-color: #0078D7"><i class="fa fa-windows"/></li>
           <li title="其他登录方式" :style="{backgroundColor: theme}">
             <i class="el-icon-more" slot="reference"/>
           </li>
@@ -99,7 +99,7 @@
         </li>
         <li>
           <i class="fa fa-github"></i>
-          <a href="https://gitee.com/mornd/yeb_view" target="_blank" :style="cTheme">GitHub</a>
+          <a href="https://gitee.com/mornd/autumn-vue" target="_blank" :style="cTheme">GitHub</a>
         </li>
         <li>
           <i class="fa fa-qq"></i>
@@ -116,21 +116,19 @@
 
 <script>
   import { mapState } from 'vuex'
+  import { encrypt } from '@/utils/secret'
+  import systemConst from '@/constants/systemConstants'
 
   export default {
     name: "Login",
     data() {
-      //账号密码长度约束
-      const inputMixLength = 3
-      const inputMaxLength = 20
-
       //表单校验
       const checkUsername = (rule, value, callback) => {
         if(value && value.trim() !== '') {
-          if(value.length >= inputMixLength) {
+          if(value.length >= this.minLength) {
             callback()
           } else {
-            callback(new Error('账号长度须在' + inputMixLength + '-' + inputMaxLength + '之间'))
+            callback(new Error('账号长度须在' + this.minLength + '-' + this.maxLength + '之间'))
           }
         } else {
           callback(new Error('请输入账号'))
@@ -138,16 +136,17 @@
       }
       const checkPassword = (rule, value, callback) => {
         if(value && value.trim() !== '') {
-          if(value.length >= inputMixLength) {
+          if(value.length >= this.minLength) {
             callback()
           } else {
-            callback(new Error('长度长度须在' + inputMixLength + '-' + inputMaxLength + '之间'))
+            callback(new Error('长度长度须在' + this.minLength + '-' + this.maxLength + '之间'))
           }
         } else {
           callback(new Error('请输入密码'))
         }
       }
       return {
+        title: systemConst.title,
         //验证码加载遮罩
         captchaLoad: true,
         //验证码url
@@ -162,7 +161,9 @@
         },
         //整个页面加载遮罩
         loading: false,
-        maxlength: inputMaxLength,
+        //账号密码长度约束
+        minLength: 3,
+        maxlength: 20,
         //非空验证 与prop属性对应
         rules:{
           username: [{validator: checkUsername, trigger:"blur"}],
@@ -218,9 +219,13 @@
         this.$refs['loginForm'].validate(valid => {
           if (valid) {
             //加载动画
-            this.loading = true;
+            this.loading = true
+            //加密密码😂
+            const tempForm = Object.assign({},
+                this.loginForm,
+                {password: encrypt(this.loginForm.password)})
             //封装的post请求
-            this.$api.postRequest('/userLogin', this.loginForm).then(res => {
+            this.$api.postRequest('/userLogin', tempForm).then(res => {
               if(res.success){
                 //存储用户token
                 const tokenStr = res.data.tokenHead + res.data.token;
@@ -245,7 +250,7 @@
     },
     computed: {
       //vuex获取数据
-      ...mapState(['title', 'theme', 'homePath']),
+      ...mapState(['theme', 'homePath']),
       cTheme() {
         return {color: this.theme}
       }

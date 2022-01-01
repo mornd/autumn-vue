@@ -153,7 +153,7 @@
             this.$router.push('/systemSettings');
             break;
           case 'exit':
-            this.$confirm('此操作将注销登录, 是否继续?', '提示', {
+            this.$confirm('此操作将注销登录, 是否继续?', '系统提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'

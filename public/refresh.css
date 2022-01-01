@@ -1,8 +1,3 @@
-#wrap-loading {
-  height: 100%;
-  background-color: #F7F7F7;
-}
-
 #Loading {
   top:50%;
   left:50%;
@@ -35,7 +30,7 @@
     transform: scale(1); } }
 
 .ball-beat > div {
-  background-color: #409EFF;
+  /*background-color: #409EFF;*/
   width: 15px;
   height: 15px;
   border-radius: 100% !important;
@@ -45,6 +40,22 @@
   display: inline-block;
   -webkit-animation: ball-beat 0.7s 0s infinite linear;
   animation: ball-beat 0.7s 0s infinite linear; }
+
+.ball-beat div:nth-child(1) {
+  background-color: #EE675C;
+}
+.ball-beat div:nth-child(2) {
+  background-color: #409EFF;
+}
+.ball-beat div:nth-child(3) {
+  background-color: #FDD663;
+}
+
 .ball-beat > div:nth-child(2n-1) {
   -webkit-animation-delay: 0.35s !important;
   animation-delay: 0.35s !important; }
+
+#wrap-loading {
+  height: 100%;
+  background-color: #F7F7F7;
+}

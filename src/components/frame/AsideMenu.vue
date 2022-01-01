@@ -2,6 +2,9 @@
   <!--左侧菜单组件-->
   <div class="container">
 
+    <!--左侧logo-->
+    <aside-logo />
+
     <!--获取菜单请求之前的加载动画-->
     <div v-if="!menu.loadingComplete"
      class="Before-loading"
@@ -17,7 +20,7 @@
       active-text-color：当前激活菜单的文字颜色（仅支持 hex 格式）
       collapse-transition：是否开启折叠动画
     -->
-    <transition name="slide-fade"><!--Vue过渡动画-->
+    <transition name="slide-fade"><!--过渡动画-->
       <el-menu
         router
         unique-opened
@@ -27,37 +30,37 @@
         :active-text-color="theme"
         :collapse="isCollapse"
         v-if="menuRoutes.length"
-        :collapse-transition="false"
+        :collapse-transition="true"
         style="border-right: none"
       >
         <template v-for="item in menuRoutes">
-        <template v-if="item.menuType == menu.menuType.catalogue">
-          <el-submenu :index="item.id" :disabled="item.enabled == state.disabled">
-            <template #title>
-              <i :class="item.icon" class="icon-right"></i>
-              <span>{{ item.title }}</span>
-            </template>
-            <!--子菜单-->
-            <el-menu-item
-                    v-for="lower in item.children"
-                    :key="lower.id"
-                    :index="lower.path"
-                    :disabled="lower.enabled === state.disabled">
+          <template v-if="item.menuType == menuType.catalogue">
+            <el-submenu :index="item.id" :disabled="item.enabled == enabledState.disabled">
               <template #title>
-                <i :class="lower.icon" class="icon-right"></i>
-                <span>{{ lower.title }}</span>
+                <i :class="item.icon" class="icon-right"></i>
+                <span>{{ item.title }}</span>
               </template>
+              <!--子菜单-->
+              <el-menu-item
+                      v-for="lower in item.children"
+                      :key="lower.id"
+                      :index="lower.path"
+                      :disabled="lower.enabled === enabledState.disabled">
+                <template #title>
+                  <i :class="lower.icon" class="icon-right"></i>
+                  <span>{{ lower.title }}</span>
+                </template>
+              </el-menu-item>
+            </el-submenu>
+          </template>
+          <template v-else-if="item.menuType == menuType.menu">
+            <el-menu-item :index="item.path" :disabled="item.enabled === enabledState.disabled">
+              <i :class="item.icon" class="icon-right"></i>
+              <template #title>{{ item.title }}</template>
             </el-menu-item>
-          </el-submenu>
+          </template>
         </template>
-        <template v-else-if="item.menuType == menu.menuType.menu">
-          <el-menu-item :index="item.path" :disabled="item.enabled === state.disabled">
-            <i :class="item.icon" class="icon-right"></i>
-            <template #title>{{ item.title }}</template>
-          </el-menu-item>
-        </template>
-      </template>
-    </el-menu>
+      </el-menu>
     </transition>
 
     <!--菜单数据为空时展示-->
@@ -72,12 +75,14 @@
 
 <script>
   import { mapState, mapGetters } from 'vuex'
+  import AsideLogo from '@/components/frame/AsideLogo'
 
   export default {
     name: "AsideMenu",
+    components: {AsideLogo},
     computed: {
       //获取vuex中菜单数据 用于菜单遍历
-      ...mapState(['isCollapse', 'theme', 'menu', 'state']),
+      ...mapState(['isCollapse', 'theme', 'menu', 'menuType', 'enabledState']),
       ...mapGetters(['menuRoutes'])
     }
   }

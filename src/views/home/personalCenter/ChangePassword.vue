@@ -58,10 +58,18 @@
         </el-form-item>
       </div>
     </el-form>
+
+    <el-result v-if="active === 3" icon="success" title="操作成功" subTitle="你的密码已修改，请重新登录。">
+      <template slot="extra">
+        <el-button type="primary" size="medium">确定</el-button>
+      </template>
+    </el-result>
   </div>
 </template>
 
 <script>
+  import { encrypt } from '@/utils/secret'
+
   export default {
     name: "ChangePassword",
     data() {
@@ -124,7 +132,8 @@
           //此时的valid值为验证失败的错误信息
           if(valid) {
             this.oldPwdBtnLoading = true
-            this.$api.getRequest(`/sysUser/verifyCurrentPassword/${this.pwd.oldPwd}`).then(res => {
+            let encryptPwd = encrypt(this.pwd.oldPwd)
+            this.$api.getRequest(`/sysUser/verifyCurrentPassword/${encryptPwd}`).then(res => {
               if(res.success) {
                 if(res.data) {
                   this.active = 1;
@@ -145,10 +154,15 @@
           //此时的valid值为验证失败的错误信息
           if(valid) {
             this.changePwdBtnLoading = true
-            this.$api.postRequest(`/sysUser/changePwd`, this.pwd).then(res => {
+            //加密密码
+            const encryptPwd = {
+              oldPwd: encrypt(this.pwd.oldPwd),
+              newPwd: encrypt(this.pwd.newPwd)
+            }
+            this.$api.postRequest(`/sysUser/changePwd`, encryptPwd).then(res => {
               if(res.success) {
                 this.active = 3
-                //this.$store.dispatch('logout')
+                this.$store.dispatch('logout')
                 this.$alert('你的密码已修改，请重新登录。', '系统提示', {//下线通知
                   confirmButtonText: '确定',
                   type: 'success',

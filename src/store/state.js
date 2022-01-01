@@ -2,8 +2,6 @@ import tokenUtil from '@/utils/tokenUtil'
 import themeUtil from '@/utils/themeUtil'
 
 export default {
-  //标题
-  title: 'Autumn Office',
   //主题
   theme: themeUtil.getTheme(),
   //token
@@ -20,15 +18,15 @@ export default {
   homeName: 'Frame',
   menu: {
     loadingComplete: false,
-    //菜单按钮类型
-    menuType: {
-      catalogue: 0,
-      menu: 1,
-      button: 2
-    },
+  },
+  //菜单按钮类型
+  menuType: {
+    catalogue: 0,//目录 菜单的父集合
+    menu: 1, //菜单 点击可跳转
+    button: 2 //权限按钮 //菜单的权限
   },
 
-  state: {
+  enabledState: {
     //启用
     enabled: 1,
     //禁用

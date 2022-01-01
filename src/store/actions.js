@@ -23,7 +23,7 @@ export default {
   },
 
   //初始化菜单，并将数据添加至vue-router中
-  setMenuRoutes({ commit, state }, router) {
+  setMenuRoutes({ commit, state }) {
     return new Promise(resolve => {
       api.getRequest('/permission/leftTree').then(res => {
         if(res.success){
@@ -32,12 +32,13 @@ export default {
           //得到后台返回的菜单数据
           const menus = res.data;
           if(menus && menus.length){
-            //主页菜单
+            //新增主页菜单
             menus.unshift({
               path: state.homePath,
               icon: 'fa fa-home',
               title: '首页',
-              menuType: state.menu.menuType.menu
+              menuType: state.menuType.menu,
+              isRoute: 1
             })
             let formatMenus = getFormatMenus(router, menus, state.homeName);
             commit('SET_MENU_ROUTES', formatMenus)

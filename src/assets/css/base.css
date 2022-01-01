@@ -14,12 +14,15 @@ html,body,#app{
 
 /*滚动条的宽度*/
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
   height: 10px;
 }
 
 /*滚动条的滑块*/
 ::-webkit-scrollbar-thumb {
-  background-color: #DEDFE1;
+  display: block;
+  cursor: pointer;
   border-radius: 3px;
+  background-color: rgba(144,147,153,.3);
+  transition: .3s background-color;
 }

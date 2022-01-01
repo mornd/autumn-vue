@@ -64,7 +64,6 @@ const routes = [
         meta: {title: '500'},
         component: () => import('@/views/errorPage/Exception.vue'),
       }
-
     ]
   },
 ]
@@ -91,7 +90,7 @@ router.beforeEach((to, from, next) => {
       store.dispatch('setUser').then(res => {
         if(!store.getters.menuRoutes.length) {
           //获取左侧菜单及路由菜单信息
-          store.dispatch('setMenuRoutes', router).then(res => {
+          store.dispatch('setMenuRoutes').then(res => {
             if (to.path === '/login') {
               //如果已登录，不可再跳至登录页
               next(store.state.homePath)

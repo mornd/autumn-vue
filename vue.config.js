@@ -11,7 +11,7 @@ module.exports = {
       '/dataView': {
         //代理的后台路径
         target: 'http://localhost:1001',
-        //pathRewrite: { '^/dataView': '' },
+        pathRewrite: { '^/dataView': 'dataView' },
         //是否跨域
         changeOrigin: true, //true 代理服务器的地址和后台服务器（1001）一致， false// 代理服务器的地址和前台服务器（1000）一致 默认：true
       }
@@ -24,8 +24,7 @@ module.exports = {
           '^/': '/'
         }
       }*/
-    },
-    before: app => {}
+    }
   }
 }
 

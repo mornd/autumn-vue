@@ -21,35 +21,14 @@
 
 <script>
   import { defaultTheme } from '@/utils/themeUtil'
+  import  themeConst from '@/constants/themeConst'
 
   export default {
     name: "ColorPicker",
     data() {
       return {
         //预定义主题
-        predefineColors: [
-          '#00ced1',
-          '#009f95',
-          '#f56c6c',
-          '#36B368',
-          '#ff4500',
-          '#ff8c00',
-          '#ffd700',
-          'hsl(181, 100%, 37%)',
-          '#1e90ff',
-          '#c71585',
-          'rgb(255, 120, 0)',
-          '#3963BC',
-          '#FF5C93',
-
-          //备用
-          //'#5FB878',
-          //'hsv(51, 100, 98)',
-          //'rgba(255, 69, 0, 0.68)',
-          //'hsva(120, 40, 94, 0.5)',
-          //'hsla(209, 100%, 56%, 0.73)',
-          //'#c7158577',
-        ],
+        predefineColors: themeConst.defaultList,
         //记住选择的颜色
         checkColorList: []
       }

@@ -8,16 +8,18 @@
 
 <script>
   import { mapState } from 'vuex'
+  import systemConst from '@/constants/systemConstants'
 
   export default {
     name: "AsideLogo",
     data() {
       return {
-        logo: 'fa fa-coffee',
+        logo: systemConst.logo,
+        title: systemConst.title
       }
     },
     computed: {
-      ...mapState(['isCollapse', 'theme', 'title']),
+      ...mapState(['isCollapse', 'theme']),
     }
   }
 </script>
