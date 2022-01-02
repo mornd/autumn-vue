@@ -28,7 +28,7 @@
           </template>
         </el-popover>
       </template>
-      <el-form ref="form" :rules="rules" :model="form" label-width="80px" :disabled="currOper == 'see'" status-icon
+      <el-form ref="form" :rules="rules" :model="form" label-width="80px" :disabled="currOper == operation.see" status-icon
                size="small">
         <!--隐藏id项-->
         <el-form-item v-if="false">
@@ -38,17 +38,17 @@
           <el-button-group>
             <el-button @click="menuTypeClick(menuType.catalogue)"
                        :type="form.menuType === menuType.catalogue ? 'primary' : ''"
-                       :disabled="currOper != 'add'">
+                       :disabled="currOper != operation.add">
               <i class="fa fa-folder-open-o" style="margin-right: 6px"></i>目录
             </el-button>
             <el-button @click="menuTypeClick(menuType.menu)"
                        :type="form.menuType === menuType.menu ? 'primary' : ''"
-                       :disabled="currOper != 'add'">
+                       :disabled="currOper != operation.add">
               <i class="fa fa-list-ul" style="margin-right: 6px"></i>菜单
             </el-button>
             <el-button @click="menuTypeClick(menuType.button)"
                        :type="form.menuType === menuType.button ? 'primary' : ''"
-                       :disabled="currOper != 'add'">
+                       :disabled="currOper != operation.add">
               <i class="fa fa-shield" style="margin-right: 6px"></i>权限
             </el-button>
           </el-button-group>
@@ -60,7 +60,7 @@
               @visible-change="parentMenuSelectVisible"
               ref="parentMenuSelect"
               placeholder="请选择父级菜单"
-              :disabled="form.enabled === enabledState.disabled && currOper !== 'add'"
+              :disabled="form.enabled === enabledState.disabled && currOper !== operation.add"
               v-if="!menuSelectLoading"
               style="width: 100%"
               clearable>
@@ -141,17 +141,19 @@
             <!--第三方图标选择器组件-->
             <e-icon-picker
               v-model="form.icon"
-              :disabled="currOper == 'see'"
-              :clearable="false"
+              :disabled="currOper == operation.see"
               :zIndex="5000"
-              :options="eIconOptions" size="small"
+              placement="top"
+              :defaultIcon="defaultIcon"
+              :options="eIconOptions"
+              size="small"
             />
           </el-form-item>
           <el-row :gutter="20">
             <el-col :span="10">
               <el-form-item label="排序" prop="sort">
                 <el-tooltip
-                  :content="currOper === 'see' ? ('当前：' + form.sort.toFixed(2)) : '值越小,排序越靠前'"
+                  :content="currOper === operation.see ? ('当前：' + form.sort.toFixed(2)) : '值越小,排序越靠前'"
                   placement="top-end"
                 >
                   <el-input-number
@@ -172,7 +174,7 @@
           </el-row>
           <el-row :gutter="20" justify="space-between">
             <el-col :span="8">
-              <el-form-item v-if="currOper === 'add' || currOper == 'see'" label="是否启用" prop="enabled">
+              <el-form-item v-if="currOper === operation.add || currOper == operation.see" label="是否启用" prop="enabled">
                 <el-tooltip
                   :content="'当前：' + (form.enabled == enabledState.enabled ? '启用' : '禁用')"
                   placement="top-start"
@@ -219,7 +221,7 @@
         </div>
       </el-form>
       <template slot="footer">
-          <span class="dialog-footer" v-if="currOper !== 'see'">
+          <span class="dialog-footer" v-if="currOper !== operation.see">
             <el-button @click="transData.dialogVisible = false" size="small">取消</el-button>
             <el-button type="primary" @click="formSubmit('form')" :loading="submitLoading" size="small"
             >{{submitLoading ? '提交中' : '提交'}}</el-button
@@ -310,13 +312,13 @@
         parentMenuFilterText: '',
         //选择父节点选择器的数据
         parentSelectList: [],
-        //是否找到父级对应的title
-        findParentTitleFlag: false,
         //选择父节点树的数据
         parentTreeList: [],
+        //目录集合
         parentCatalogues: [],
+        //目录和菜单集合
         parentCatalogueAndMenu: [],
-        //tree组件所需数据
+        //tree组件所需的配置
         defaultProps: {
           children: 'children',
           label: 'title',
@@ -327,6 +329,7 @@
         //父级菜单选择器加载flag
         menuSelectLoading: true,
         //eIcon配置
+        defaultIcon: systemConst.logo,
         eIconOptions: {
           FontAwesome: true,
           ElementUI: true,
@@ -334,9 +337,10 @@
           eIconSymbol: false,//是否开启彩色图标
         },
         tipContent: [
+          '添加规则：目录/菜单的父级必须是目录，权限的父级可以是目录/菜单，但不能是权限',
           '目录：代表直接插入根节点的父节点(与主页菜单平级)',
           '菜单：可以点击跳转页面的节点',
-          '权限：访问的权限标识',
+          '权限(按钮)：访问的权限标识',
           '菜单编码：唯一值，用户根据编码获取对应的菜单信息',
           "菜单路由：前端路由对象的path属性(前缀可不加' / ')",
           "菜单组件：前端路由对象的component属性(前缀可不加' / ')",
@@ -359,119 +363,103 @@
       this.form.hidden = this.hiddenFlag.display;
     },
     mounted() {
-      if (this.transData.operation == this.operation.add) {
-        this.currOper = 'add';
-      } else if (this.transData.operation == this.operation.edit) {
-        this.currOper = 'edit';
-        this.form = this.transData.data;
-      } else if (this.transData.operation == this.operation.see) {
-        this.currOper = 'see';
-        this.form = this.transData.data;
+      if (this.transData.operation === this.operation.add) {
+        this.currOper = this.operation.add
+      } else if (this.transData.operation === this.operation.edit) {
+        this.currOper = this.operation.edit
+        this.form = this.transData.data
+      } else if (this.transData.operation === this.operation.see) {
+        this.currOper = this.operation.see
+        this.form = this.transData.data
       }
-      //查询父级菜单
-      if(this.form.menuType === this.menuType.button) {
-        this.getParentCatalogueAndMenu()
-      } else {
-        this.getParentCatalogues()
-      }
+      this.getParentTreeData()
     },
     methods: {
-      //获取所有目录
-      getParentCatalogues() {
+      //查询父级菜单信息
+      getParentTreeData() {
+        let url = ''
+        if(this.form.menuType === this.menuType.button) {
+          if(this.parentCatalogueAndMenu.length) {
+            this.parentTreeList = this.parentCatalogueAndMenu
+            return
+          }
+          url = '/permission/findCatalogueAndMenu'
+        } else {
+          if(this.parentCatalogues.length) {
+            this.parentTreeList = this.parentCatalogues
+            return
+          }
+          //获取所有目录
+          url = '/permission/findCatalogues'
+        }
         this.menuSelectLoading = true
-        this.$api.getRequest('/permission/findCatalogues').then(res => {
+        this.$api.getRequest(url).then(res => {
           if (res.success) {
-            this.parentCatalogues = this.generateRoot(res.data)
-            this.handleParentList(this.parentCatalogues)
-            this.menuSelectLoading = false;
+            this.handleParentList(res.data)
+            this.menuSelectLoading = false
           }
         })
       },
-      getParentCatalogueAndMenu() {
-        this.menuSelectLoading = true
-        this.$api.getRequest('/permission/findCatalogueAndMenu').then(res => {
-          if (res.success) {
-            this.parentCatalogueAndMenu = this.generateRoot(res.data)
-            this.handleParentList(this.parentCatalogueAndMenu)
-            this.menuSelectLoading = false;
-          }
-        })
-      },
-
-      //添加一个根目录
-      generateRoot(arr) {
-        return [{
+      //处理父级查询的结果
+      handleParentList(arr) {
+        this.parentTreeList = [{
           id: systemConst.topMenuId,
           title: systemConst.title,
           enabled: this.enabledState.enabled,
           children: arr
         }]
-      },
-
-      //处理父级查询的结果
-      handleParentList(arr) {
-        this.parentTreeList = arr
-        if (this.currOper !== 'add') {
-          //获取父级节点的名称
+        if (this.currOper !== this.operation.add) {
+          //回显父级的title
           this.findTitleByParentId(this.form.parentId, this.parentTreeList);
-          if(!this.findParentTitleFlag) {
-            //未找到父级对应的title（父级可能被删除）
-            this.form.parentId = ''
-          }
+        }
+        if(this.form.menuType === this.menuType.button) {
+          this.parentCatalogueAndMenu = this.parentTreeList
+        } else {
+          this.parentCatalogues = this.parentTreeList
         }
       },
 
       //在编辑状态下，根据parentId遍历所有数据找到其对应的title信息
       findTitleByParentId(parentId, list) {
-        let findFlag = false;
         for (let i = 0; i < list.length; i++) {
           const item = list[i]
           if (parentId === item.id) {
-            this.parentSelectList = [{id: parentId, title: item.title}];
-            this.findParentTitleFlag = true
-            findFlag = true;
-            break;
+            this.parentSelectList = [{id: parentId, title: item.title}]
+            break
           }
-          if (Array.isArray(item.children) && item.children.length && !findFlag) {
-            this.findTitleByParentId(parentId, item.children);
+          if (Array.isArray(item.children) && item.children.length && !this.parentSelectList.length) {
+            this.findTitleByParentId(parentId, item.children)
           }
         }
       },
       //菜单类型按钮点击
       menuTypeClick(type) {
         this.form.menuType = type
-        if(type === this.menuType.button) {
-          if(!this.parentCatalogueAndMenu.length) {
-            this.getParentCatalogueAndMenu()
-          } else {
-            this.parentTreeList = this.parentCatalogueAndMenu
-          }
-        } else {
-          if(!this.parentCatalogues.length) {
-            this.getParentCatalogues()
-          } else {
-            this.parentTreeList = this.parentCatalogues
-          }
+        if(this.currOper === this.operation.add) {
+          //重置父级
+          this.form.parentId = ''
+          this.parentSelectList = []
         }
+        this.getParentTreeData()
       },
 
       //父菜单选择器操作
       filterParentMenuNode(value, data) {
-        if (!value) return true;
-        return data.title.indexOf(value) !== -1;
+        if (!value) return true
+        return data.title.indexOf(value) !== -1
       },
       //选择tree的某一项节点
       parentNodeClick(data) {
-        this.$refs.parentMenuSelect.blur();
-        this.parentSelectList = [{id: data.id, title: data.title}];
-        this.form.parentId = data.id;
+        this.$refs.parentMenuSelect.blur()
+        this.parentSelectList = [{id: data.id, title: data.title}]
+        this.form.parentId = data.id
       },
       //选择父级的选择器获取焦点时触发
       parentMenuSelectVisible(flag) {
         //true：打开 false：关闭
         if (flag) {
           //清空真正的值，展示虚拟菜单树
-          this.parentSelectList = [];
+          this.parentSelectList = []
         }
       },
       /*表单操作*/
@@ -520,7 +508,7 @@
                 };
                 break;
             }
-            if (this.currOper == 'add') {
+            if (this.currOper == this.operation.add) {
               this.$api.postRequest('/permission/', {...tempForm}).then(res => {
                 if (res.success) {
                   this.$emit('refreshTable');
@@ -528,7 +516,7 @@
                 }
                 this.submitLoading = false;
               })
-            } else if (this.currOper == 'edit') {
+            } else if (this.currOper == this.operation.edit) {
               this.$api.putRequest('/permission/', {...tempForm}).then(res => {
                 if (res.success) {
                   this.$emit('refreshTable')
@@ -549,7 +537,7 @@
 
       /*其他操作*/
       hiddenChange(val) {
-        if (this.currOper == 'edit' && this.form.menuType != this.menuType.button) {
+        if (this.currOper == this.operation.edit && this.form.menuType != this.menuType.button) {
           if (this.hiddenFlag.display == val) {
             this.$confirm(`是否显示该节点？`, '系统提示', {
               confirmButtonText: '确定',
@@ -588,7 +576,7 @@
     watch: {
       //监听父级菜单选择时搜索区域的内容
       parentMenuFilterText(val) {
-        this.$refs.parentMenuTree.filter(val);
+        this.$refs.parentMenuTree.filter(val)
       }
     }
   }

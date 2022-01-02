@@ -30,7 +30,7 @@
         :active-text-color="theme"
         :collapse="isCollapse"
         v-if="menuRoutes.length"
-        :collapse-transition="true"
+        :collapse-transition="false"
         style="border-right: none"
       >
         <template v-for="item in menuRoutes">
