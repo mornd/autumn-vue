@@ -18,6 +18,8 @@
           <el-tab-pane label="修改密码" name="pwd">
             <change-password v-if="rightInfo === 'pwd'"/>
           </el-tab-pane>
+          <el-tab-pane label="登录记录" name="log">
+          </el-tab-pane>
         </el-tabs>
       </el-card>
     </div>

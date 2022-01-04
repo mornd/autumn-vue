@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import { Message, Notification, MessageBox } from 'element-ui'
-import tokenUtil from "@/utils/tokenUtil";
+import { getToken } from "@/utils/tokenUtil";
 
 let readyToExit = false //是否是准备退出状态，防止多次弹出token过期的提示
 
@@ -17,9 +17,8 @@ service.interceptors.request.use(
     config => {
       //config.headers['Content-Type'] = 'application/json;charset=utf-8';
       //如果存在token，则请求头携带token
-      const tokenStr = tokenUtil.getToken();
-      if(tokenStr){
-        config.headers['Authorization'] = tokenStr;
+      if(getToken()){
+        config.headers['Authorization'] = getToken();
       }
       return config
     },

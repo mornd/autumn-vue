@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div class="crud-search">
       <el-form ref="form" inline :model="searchObj" label-width="50px" label-position="left" size="small">
         <el-form-item label="名称">
           <el-input
@@ -16,14 +16,15 @@
           <el-button @click="formReset" icon="el-icon-refresh-right" type="primary">重置</el-button>
         </el-form-item>
       </el-form>
-      <el-button @click="handleAdd" type="primary" size="small"><i class="fa fa-plus" style="margin-right: 6px"/>添加
-      </el-button>
+    </div>
+
+    <div class="crud-content">
+      <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 10px">添加</el-button>
       <el-table
-        max-height="500"
+        max-height="520"
         size="small"
         :data="tableData"
         row-key="id"
-        border
         fit
         :indent="15"
         :default-expand-all="defaultExpandFlag"
@@ -44,11 +45,42 @@
           label="名称">
         </el-table-column>
         <el-table-column
+          prop="menuType"
+          align="center"
+          width="100"
+          label="类型">
+          <template #default="scope">
+            <el-tag
+              effect="plain"
+              v-if="scope.row.menuType === menuType.catalogue"
+              size="small"
+              title="目录">
+              <i class="fa fa-folder-open-o" style="margin-right: 5px"/>目录
+            </el-tag>
+            <el-tag
+              effect="plain"
+              v-else-if="scope.row.menuType === menuType.menu"
+              type="success"
+              size="small"
+              title="菜单">
+              <i class="fa fa-list-ul" style="margin-right: 5px"/>菜单
+            </el-tag>
+            <el-tag
+              effect="plain"
+              v-else-if="scope.row.menuType === menuType.button"
+              type="warning"
+              size="small"
+              title="按钮">
+              <i class="fa fa-shield" style="margin-right: 5px"/>按钮
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="icon"
           label="图标"
           width="80"
           align="center">
-          <template slot-scope="scope">
+          <template #default="scope">
             <i :class="scope.row.icon"></i>
           </template>
         </el-table-column>
@@ -68,48 +100,38 @@
           show-overflow-tooltip
           label="组件">
         </el-table-column>
-        <el-table-column
-          prop="menuType"
-          align="center"
-          label="类型">
-          <template #default="scope">
-            <el-tag
-              effect="dark"
-              v-if="scope.row.menuType === menuType.catalogue"
-              size="small"
-              title="目录">
-              <i class="fa fa-folder-open-o" style="margin-right: 5px"/>目录
-            </el-tag>
-            <el-tag
-              effect="dark"
-              v-else-if="scope.row.menuType === menuType.menu"
-              type="success"
-              size="small"
-              title="菜单">
-              <i class="fa fa-list-ul" style="margin-right: 5px"/>菜单
-            </el-tag>
-            <el-tag
-              effect="dark"
-              v-else-if="scope.row.menuType === menuType.button"
-              type="warning"
-              size="small"
-              title="按钮">
-              <i class="fa fa-shield" style="margin-right: 5px"/>按钮
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column
+        <!--<el-table-column
           prop="enabled"
           label="状态"
           width="100"
           align="center">
           <template #default="scope">
-            <!--fa fa fa-cog fa-spin-->
-            <i :style="{'color': scope.row.enabled === enabledState.enabled ? 'green' : 'red', 'fontSize': '17px'}"
+            &lt;!&ndash;fa fa fa-cog fa-spin&ndash;&gt;
+            <i :style="{'color': scope.row.enabled === enabledState.enabled ? successColor : failureColor, 'fontSize': '17px'}"
                :class="scope.row.enabled === enabledState.enabled ? 'fa fa-check' : 'fa fa-ban'"
                :title="scope.row.enabled === enabledState.enabled ? '启用' : '禁用'"/>
           </template>
+        </el-table-column>-->
+
+        <el-table-column
+          prop="enabled"
+          label="状态"
+          width="80"
+          align="center">
+          <template #default="scope">
+            <el-tooltip :content="'当前：' + (scope.row.enabled == enabledState.enabled ? '启用' : '禁用')" placement="left">
+              <el-switch
+                v-model="scope.row.enabled"
+                @change="enabledChange(scope.row)"
+                :active-color="enabledColor"
+                :inactive-color="disabledColor"
+                :active-value="enabledState.enabled"
+                :inactive-value="enabledState.disabled">
+              </el-switch>
+            </el-tooltip>
+          </template>
         </el-table-column>
+
         <el-table-column
           prop="gmtCreate"
           label="创建时间"
@@ -127,7 +149,7 @@
         <el-table-column
           prop="name"
           label="操作"
-          width="200"
+          width="160"
           align="center">
           <template #default="scope">
             <div>
@@ -146,32 +168,27 @@
               <el-button
                 size="mini"
                 type="text"
-                @click="handleStatus(scope.row)">{{ scope.row.enabled !== enabledState.enabled ? '启用' : '禁用' }}
-              </el-button>
-              <el-divider direction="vertical"></el-divider>
-              <el-button
-                size="mini"
-                type="text"
                 @click="handleDelete(scope.$index, scope.row)">删除
               </el-button>
             </div>
           </template>
         </el-table-column>
       </el-table>
-
-      <!--添加或修改dialog-->
-      <add_or_edit
-        ref="addOrEdit"
-        v-if="addOrEditTransData.dialogVisible"
-        :transData="addOrEditTransData"
-        @refreshTable="getTable"
-      ></add_or_edit>
     </div>
+
+    <!--添加或修改dialog-->
+    <add_or_edit
+      ref="addOrEdit"
+      v-if="addOrEditTransData.dialogVisible"
+      :transData="addOrEditTransData"
+      @refreshTable="getTable"
+    ></add_or_edit>
   </div>
 </template>
 
 <script>
   import {mapState} from 'vuex'
+  import { success, failure } from '@/constants/colorConst'
   //添加编辑窗口组件
   import add_or_edit from '@/views/system/permission/components/AddOrEdit'
 
@@ -188,6 +205,11 @@
         tableData: [],
         //表头搜索对象
         searchObj: {},
+        //统一颜色
+        successColor: success,
+        failureColor: failure,
+        enabledColor: '#13ce66',
+        disabledColor: '#ff4949',
         //传递给子组件的数据
         addOrEditTransData: {
           dialogVisible: false,
@@ -241,32 +263,6 @@
         Object.assign(this.addOrEditTransData.data = {}, row);
         this.addOrEditTransData.dialogVisible = true;
       },
-      //更改（启用/禁用）状态点击事件处理
-      handleStatus(row) {
-        let msg, url;
-        if (this.enabledState.enabled === row.enabled) {
-          msg = '是否禁用该节点及该节点的所有子节点？若再启用该节点时，其所有子节点需手动启用，是否继续？'
-          url = `/permission/changeState?id=${row.id}&state=${this.enabledState.disabled}`
-        } else if (this.enabledState.disabled === row.enabled) {
-          msg = '是否启用该节点？启用后该节点的所有子节点需手动启用。'
-          url = `/permission/changeState?id=${row.id}&state=${this.enabledState.enabled}`
-        }
-        this.$confirm(msg, '系统提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$api.getRequest(url).then(res => {
-            if (res.success) {
-              this.getTable()
-              this.$store.dispatch('setUser').then(res => {
-                this.$store.dispatch('setMenuRoutes')
-              })
-            }
-          })
-        }).catch(() => {
-        })
-      },
       //delete
       handleDelete(index, row) {
         let rowId = row.id;
@@ -289,6 +285,49 @@
           }
         }
       },
+      //更改（启用/禁用）状态开关改变
+      enabledChange(row) {
+        let msg, url, enabled = this.enabledState.enabled, disabled = this.enabledState.disabled
+        if (enabled == row.enabled) {
+          msg = '是否启用该节点？'
+          url = `/permission/changeState?id=${row.id}&state=${enabled}`
+        } else if (disabled == row.enabled) {
+          msg = '是否禁用该节点及该节点的所有子节点？'
+          if(row.children && row.children.length) {
+            msg += '若再启用该节点时，另需手动启用该节点的所有子节点，是否继续？'
+          }
+          url = `/permission/changeState?id=${row.id}&state=${disabled}`
+        }
+        if(msg) {
+          this.$confirm(msg, '系统提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$api.getRequest(url).then(res => {
+              if (res.success) {
+                this.$store.dispatch('setUser').then(res => {
+                  this.$store.dispatch('setMenuRoutes')
+                })
+              } else {
+                //取消操作
+                if (enabled === row.enabled) {
+                  row.enabled = disabled
+                } else if (disabled === row.enabled) {
+                  row.enabled = enabled
+                }
+              }
+            })
+          }).catch(() => {
+            //取消操作
+            if (enabled === row.enabled) {
+              row.enabled = disabled
+            } else if (disabled === row.enabled) {
+              row.enabled = enabled
+            }
+          })
+        }
+      },
       /*格式化操作*/
       formatMenuType(row, column, cellValue, index) {
       }
@@ -297,18 +336,22 @@
 </script>
 
 <style scoped>
+  /*所属区域*/
+  .crud-search {
+    border-radius: 3px;
+    background: #FFF;
+    padding: 18px 0 0 0;
+  }
+
+  /*添加按钮和表格区域*/
+  .crud-content {
+    background: #FFF;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-radius: 3px;
+  }
+
   /deep/ .el-form-item {
     margin-left: 20px;
-  }
-
-  /*设置滚动条的宽度*/
-  /deep/ .el-table__body-wrapper::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  /*设置滚动条的背景色和圆角*/
-  /deep/ .el-table__body-wrapper::-webkit-scrollbar-thumb {
-    background-color: #DEDFE1;
-    border-radius: 8px;
   }
 </style>

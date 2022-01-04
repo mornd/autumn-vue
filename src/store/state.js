@@ -1,11 +1,15 @@
-import tokenUtil from '@/utils/tokenUtil'
-import themeUtil from '@/utils/themeUtil'
+import { getToken } from '@/utils/tokenUtil'
+import { getTheme } from '@/utils/themeUtil'
+import { title, logo } from '@/constants/systemConstants'
 
 export default {
+  //系统名
+  title,
+  logo,
   //主题
-  theme: themeUtil.getTheme(),
+  theme: getTheme(),
   //token
-  tokenStr: tokenUtil.getToken(),
+  tokenStr: getToken(),
   //是否收起左侧菜单
   isCollapse: false,
   //当前登录用户信息
@@ -46,4 +50,6 @@ export default {
     //隐藏
     hidden: 0
   },
+
+  badgeFlag: true //新增或编辑窗口小徽章显示flag
 }

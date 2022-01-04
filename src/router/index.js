@@ -8,7 +8,7 @@ import 'nprogress/nprogress.css'
 //取消页面刷新时的圈
 NProgress.configure({ showSpinner: false });
 
-import tokenUtil from "@/utils/tokenUtil";
+import {getToken} from "@/utils/tokenUtil";
 import {Notification} from "element-ui";
 
 
@@ -75,6 +75,13 @@ const router = new VueRouter({
   routes
 })
 
+// 在路由完成初始导航时调用，如果有异步操作放置到这里
+router.onReady(() => {
+  console.group('%c%s', 'color:#409EFF', `${new Date().getTime()}  ----------路由完成初始导航----------`)
+  console.log('路由记录列表长度：', router.getRoutes().length)
+  console.groupEnd()
+})
+
 /**
  * 路由前置导航
  * to：将要去哪个页面
@@ -84,7 +91,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   NProgress.start();
   //验证浏览器缓存中是否存在Token
-  if(tokenUtil.getToken()) {
+  if(getToken()) {
     if(store.getters.user == null) {
       //当前store中没有user信息，则发送请求获取
       store.dispatch('setUser').then(res => {

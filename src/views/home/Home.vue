@@ -1,7 +1,8 @@
 <template>
   <div class="home">
     <h3>home</h3>
-    <router-link to="/system/permission">test</router-link>
+    <router-link to="/system/permission">菜单测试</router-link>
+    <el-button @click="consoleRouter">查看router</el-button>
   </div>
 </template>
 
@@ -10,6 +11,11 @@
 
 export default {
   name: 'Home',
+  methods: {
+    consoleRouter() {
+      console.log(this.$router);
+    }
+  }
 }
 </script>
 

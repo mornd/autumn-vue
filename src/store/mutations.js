@@ -1,16 +1,16 @@
-import tokenUtil from '@/utils/tokenUtil'
-import themeUtil from '@/utils/themeUtil'
+import { setToken } from '@/utils/tokenUtil'
+import { setTheme } from '@/utils/themeUtil'
 
 export default {
   //设置主题
   SET_THEME: (state, theme) => {
     state.theme = theme
-    themeUtil.setTheme(theme)
+    setTheme(theme)
   },
   //设置token
   SET_TOKEN: (state, token) => {
     state.tokenStr = token
-    tokenUtil.setToken(token)
+    setToken(token)
   },
   //保存用户信息
   SET_USER: (state, user) => state.user = user,
@@ -27,5 +27,9 @@ export default {
     state.user = null
     state.roles = []
     state.permissions = []
+  },
+  //设置页面只加载一次的徽章
+  SET_BADGEFLAG(state, flag) {
+    state.badgeFlag = flag
   }
 }

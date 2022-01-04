@@ -7,6 +7,7 @@ const getFormatMenus = (router, menus, parentName) => {
     }
     //将菜单转换为路由对象
     const route = generateRoute(menu)
+    //path相同可覆盖 重复路由的component指向第一个路由的
     router.addRoute(parentName, route)
     return menu
   })
@@ -31,7 +32,7 @@ const generateRoute = (menu) => {
   //设置元数据
   menu.meta = {
     'title': menu.title,
-    'requireAuth': menu.requireAuth,
+    'auth': menu.requireAuth,
     'keepAlive': menu.keepAlive
   }
   return menu

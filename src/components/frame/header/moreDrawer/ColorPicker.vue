@@ -21,14 +21,14 @@
 
 <script>
   import { defaultTheme } from '@/utils/themeUtil'
-  import  themeConst from '@/constants/themeConst'
+  import  { defaultList } from '@/constants/themeConst'
 
   export default {
     name: "ColorPicker",
     data() {
       return {
         //预定义主题
-        predefineColors: themeConst.defaultList,
+        predefineColors: defaultList,
         //记住选择的颜色
         checkColorList: []
       }

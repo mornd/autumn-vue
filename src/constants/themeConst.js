@@ -1,6 +1,5 @@
 //默认主题
-export default {
-  defaultList: [
+export const defaultList = [
     '#00ced1',
     '#009f95',
     '#f56c6c',
@@ -15,6 +14,8 @@ export default {
     'rgb(255, 120, 0)',
     '#3963BC',
     '#FF5C93',
+    '#13ce66',
+    '#ff4949',
 
     //备用
     //'#5FB878',
@@ -23,5 +24,4 @@ export default {
     //'hsva(120, 40, 94, 0.5)',
     //'hsla(209, 100%, 56%, 0.73)',
     //'#c7158577',
-  ],
-}
+    ]

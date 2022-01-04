@@ -6,14 +6,15 @@ const expires = 3; // day
 /**
  * 设置token的保存方式
  */
-export default {
-  getToken: () => {
-    return jsCookie.get(tokenKey)
-  },
-  setToken: (token) => {
-    return jsCookie.set(tokenKey, token, {expires})
-  },
-  removeToken: () => {
-    jsCookie.remove(tokenKey)
-  }
+
+export const getToken = () => {
+  return jsCookie.get(tokenKey)
+}
+
+export const setToken = (token) => {
+  return jsCookie.set(tokenKey, token, {expires})
+}
+
+export const removeToken = () => {
+  jsCookie.remove(tokenKey)
 }

@@ -24,5 +24,6 @@ html,body,#app{
   cursor: pointer;
   border-radius: 3px;
   background-color: rgba(144,147,153,.3);
+  /*background-color: #DEDFE1;*/
   transition: .3s background-color;
 }

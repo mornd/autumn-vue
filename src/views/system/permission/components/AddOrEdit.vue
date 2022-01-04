@@ -91,22 +91,22 @@
                           <!--左边显示文字-->
                           <span v-if="data.enabled === enabledState.enabled">
                                 <!--已选和可用样式-->
-                                <span :style="{color: (data.id === form.parentId ? '#409EFF' : 'green')}">{{ data.title }}</span>
+                                <span :style="{color: (data.id === form.parentId ? primaryColor : successColor)}">{{ data.title }}</span>
                               </span>
                           <!--禁用-->
-                          <span v-else style="color: red">{{ data.title }}</span>
+                          <span v-else :style="{color: failureColor}">{{ data.title }}</span>
 
                           <!--右边选择按钮-->
                           <span class="parent-picker-item-icon">
                             <span v-if="data.enabled === enabledState.enabled && data.id !== form.parentId"
                                   @click.stop="parentNodeClick(data)" title="选择">
-                              <i class="fa fa-hand-pointer-o" style="color: green"></i>
+                              <i class="fa fa-hand-pointer-o" :style="{color: successColor}"></i>
                             </span>
                             <span v-else-if="data.id !== form.parentId" @click.stop>
-                              <i class="fa fa-ban" style="color: red"></i>
+                              <i class="fa fa-ban" :style="{color: failureColor}"></i>
                             </span>
                             <span v-else-if="data.id === form.parentId" @click.stop>
-                              <i class="fa fa-hand-peace-o" style="color: #409EFF"></i>
+                              <i class="fa fa-hand-peace-o" :style="{color: primaryColor}"></i>
                             </span>
                           </span>
                         </div>
@@ -180,7 +180,7 @@
                   placement="top-start"
                 >
                   <el-radio-group v-model="form.enabled"
-                                  :fill="form.enabled == enabledState.disabled ? 'red' : ''">
+                                  :fill="form.enabled == enabledState.disabled ? failureColor : ''">
                     <el-radio-button :label="enabledState.enabled">是</el-radio-button>
                     <el-radio-button :label="enabledState.disabled">否</el-radio-button>
                   </el-radio-group>
@@ -188,16 +188,16 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="显示状态" prop="hidden">
+              <el-form-item label="菜单可见" prop="hidden">
                 <el-tooltip
-                  :content="'当前：' + (form.hidden == hiddenFlag.display ? '显示' : '隐藏')"
+                  :content="'当前：' + (form.hidden == hiddenFlag.display ? '是' : '否')"
                   placement="top-start"
                 >
                   <el-radio-group v-model="form.hidden"
                                   @change="hiddenChange"
-                                  :fill="form.hidden != hiddenFlag.display ? 'red' : ''">
-                    <el-radio-button :label="hiddenFlag.display">显示</el-radio-button>
-                    <el-radio-button :label="hiddenFlag.hidden">隐藏</el-radio-button>
+                                  :fill="form.hidden != hiddenFlag.display ? failureColor : ''">
+                    <el-radio-button :label="hiddenFlag.display">是</el-radio-button>
+                    <el-radio-button :label="hiddenFlag.hidden">否</el-radio-button>
                   </el-radio-group>
                 </el-tooltip>
               </el-form-item>
@@ -209,7 +209,7 @@
                     :content="'当前：' + (form.keepAlive == 1 ? '是' : '否')"
                     placement="top-start"
                   >
-                    <el-radio-group v-model="form.keepAlive" :fill="form.keepAlive != 1 ? 'red' : ''">
+                    <el-radio-group v-model="form.keepAlive" :fill="form.keepAlive != 1 ? failureColor : ''">
                       <el-radio-button :label="1">是</el-radio-button>
                       <el-radio-button :label="0">否</el-radio-button>
                     </el-radio-group>
@@ -235,7 +235,8 @@
 <script>
   import {mapState} from 'vuex'
   import {EIconPicker} from 'e-icon-picker';
-  import systemConst from '@/constants/systemConstants'
+  import { rootMenuId } from '@/constants/systemConstants'
+  import { primary, success, failure } from '@/constants/colorConst'
 
   export default {
     name: "AddOrEdit",
@@ -243,7 +244,7 @@
     data() {
       //自定义校验规则
       const validateParent = (rule, value, rollback) => {
-        if (this.form.parentId || this.form.parentId == systemConst.topMenuId) {
+        if (this.form.parentId || this.form.parentId == rootMenuId) {
           rollback();
         } else {
           rollback('父级菜单不能为空');
@@ -290,7 +291,7 @@
         form: {
           parentId: '',
           menuType: undefined,
-          icon: systemConst.logo,
+          icon: this.logo,
           sort: 5,
           enabled: undefined,
           keepAlive: 1,
@@ -323,19 +324,22 @@
           children: 'children',
           label: 'title',
         },
-        badgeFlag: systemConst.badgeFlag,
         //加载按钮
         submitLoading: false,
         //父级菜单选择器加载flag
         menuSelectLoading: true,
         //eIcon配置
-        defaultIcon: systemConst.logo,
+        defaultIcon: this.logo,
         eIconOptions: {
           FontAwesome: true,
           ElementUI: true,
           eIcon: false,//自带的图标，来自阿里妈妈
           eIconSymbol: false,//是否开启彩色图标
         },
+        //统一颜色
+        successColor: success,
+        failureColor: failure,
+        primaryColor: primary,
         tipContent: [
           '添加规则：目录/菜单的父级必须是目录，权限的父级可以是目录/菜单，但不能是权限',
           '目录：代表直接插入根节点的父节点(与主页菜单平级)',
@@ -346,7 +350,7 @@
           "菜单组件：前端路由对象的component属性(前缀可不加' / ')",
           '排序：值越小，菜单显示越靠前(最小值为1)',
           '是否启用：默认只能启用(禁用)没有子集的目录，菜单、权限则不受限制',
-          '显示状态：如果状态为隐藏，则所有页面隐藏该节点，且不参与权限相关的操作',
+          '菜单可见：如果状态为否，则所有页面隐藏该节点，且不参与权限相关的操作',
           '路由菜单：点击是否可跳转页面',
           '菜单缓存：keep_alive值',
           '目前主页左侧只能显示的菜单层级为两级',
@@ -354,7 +358,7 @@
       }
     },
     computed: {
-      ...mapState(['menuType', 'enabledState', 'operation', 'hiddenFlag'])
+      ...mapState(['title', 'logo', 'menuType', 'enabledState', 'operation', 'hiddenFlag', 'badgeFlag'])
     },
     created() {
       //表单赋默认值
@@ -403,8 +407,8 @@
       //处理父级查询的结果
       handleParentList(arr) {
         this.parentTreeList = [{
-          id: systemConst.topMenuId,
-          title: systemConst.title,
+          id: rootMenuId,
+          title: this.title,
           enabled: this.enabledState.enabled,
           children: arr
         }]
@@ -486,14 +490,6 @@
                 break;
               case this.menuType.menu:
                 Object.assign(tempForm, this.form)
-                //补全菜单的path和component属性
-                if (!tempForm.path.startsWith('/')) {
-                  tempForm.path = '/' + tempForm.path
-                }
-                let comp = tempForm.component
-                if (comp.startsWith('/')) {
-                  tempForm.component = comp.slice(1, comp.length)
-                }
                 break;
               case this.menuType.button:
                 tempForm = {
@@ -561,8 +557,7 @@
       },
       //徽章操作
       popoverShow() {
-        this.badgeFlag = false;
-        systemConst.badgeFlag = false;
+        this.$store.commit('SET_BADGEFLAG', false)
       },
     },
     props: {

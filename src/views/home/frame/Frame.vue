@@ -37,7 +37,7 @@
       </el-main>
 
       <!--底部-->
-      <el-footer height="10px"/>
+      <el-footer height="0"/>
 
     </el-container>
 
@@ -82,25 +82,29 @@
       height: 100%;
       overflow: hidden;
       background-color: #28333E;
-      box-shadow:5px 5px 5px rgba(0, 0, 0, .2);
+      //box-shadow:5px 5px 5px rgba(0, 0, 0, .2);
+      box-shadow: 2px 0 6px rgb(0 21 41 / 35%);
+      z-index: 9999;
       .aside-menu {
         overflow: auto;
       }
     }
 
+    //头部
+    .el-header {
+      border-bottom: 1px #F5F5F5 solid;
+    }
+
     //中间主体
     .el-main {
-      box-sizing: border-box;
-      padding: 0 10px 0 10px;
-
+      padding: 10px 10px 8px 10px;
+      background: #F5F5F5;
       /*路由占位符*/
       .router-view {
-        padding: 10px 0;
-        height: 100%;
-        border-radius: 5px;
         overflow: hidden;
+        height: 100%;
+        border-radius: 3px;
         box-sizing: border-box;
-        background-color: #F5F5F5;
       }
     }
   }

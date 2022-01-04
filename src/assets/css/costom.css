@@ -4,6 +4,8 @@ ul {
   padding: 0;
   list-style: none;
 }
+
+/*居中布局*/
 .c-flex {
   display: flex;
 }

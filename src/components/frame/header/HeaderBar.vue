@@ -159,7 +159,7 @@
               type: 'warning'
             }).then(() => {
               this.$store.dispatch('logout')
-            });
+            }).catch(() => {});
             break;
         }
       },
@@ -185,7 +185,6 @@
     /*align-items: center;*/
     /*去除头部内边距多余的空格*/
     justify-content: space-between;
-    border-bottom: 1px #F5F5F5 solid;
     box-sizing: border-box;
     overflow: hidden;
     //用户头像及名称

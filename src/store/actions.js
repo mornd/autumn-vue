@@ -1,7 +1,8 @@
 import router from '@/router'
 import api from "@/utils/api"
 import {getFormatMenus} from "@/utils/menuUtil"
-import tokenUtil from '@/utils/tokenUtil'
+import { removeToken } from '@/utils/tokenUtil'
+import { removeTheme } from '@/utils/themeUtil'
 
 export default {
   //设置用户的角色、权限
@@ -38,7 +39,6 @@ export default {
               icon: 'fa fa-home',
               title: '首页',
               menuType: state.menuType.menu,
-              isRoute: 1
             })
             let formatMenus = getFormatMenus(router, menus, state.homeName);
             commit('SET_MENU_ROUTES', formatMenus)
@@ -67,11 +67,14 @@ export default {
   tokenExpirationExit({ commit, getters }) {
     //清空sessionStorage中的数据
     window.sessionStorage.clear();
-    tokenUtil.removeToken()
+    //删除cookie数据
+    removeToken()
+    //removeTheme()
     //清空vuex中的菜单信息
     commit('LOGOUT')
     //跳转到登录页
     router.replace('/login');
+    //location.reload()
     console.log('退出成功。');
   }
 }

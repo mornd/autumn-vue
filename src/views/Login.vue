@@ -117,7 +117,6 @@
 <script>
   import { mapState } from 'vuex'
   import { encrypt } from '@/utils/secret'
-  import systemConst from '@/constants/systemConstants'
 
   export default {
     name: "Login",
@@ -146,7 +145,6 @@
         }
       }
       return {
-        title: systemConst.title,
         //验证码加载遮罩
         captchaLoad: true,
         //验证码url
@@ -250,7 +248,7 @@
     },
     computed: {
       //vuex获取数据
-      ...mapState(['theme', 'homePath']),
+      ...mapState(['title', 'theme', 'homePath']),
       cTheme() {
         return {color: this.theme}
       }
@@ -339,7 +337,7 @@
 
   .footer-content {
     position: absolute;
-    bottom: 10px;
+    bottom: 5px;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 14px;
