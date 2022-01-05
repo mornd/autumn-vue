@@ -19,7 +19,7 @@
         >
           <ul class="dialog_popover_ul">
             <!--展示tip的内容-->
-            <li v-for="i in tipContent">{{i}}</li>
+            <li v-for="c in tipContent">{{c}}</li>
           </ul>
           <template slot="reference">
             <el-badge :value="badgeFlag ? 'new' : ''" type="danger">
@@ -28,8 +28,15 @@
           </template>
         </el-popover>
       </template>
-      <el-form ref="form" :rules="rules" :model="form" label-width="80px" :disabled="currOper == operation.see" status-icon
-               size="small">
+      <el-form
+        ref="form"
+        :rules="rules"
+        :model="form"
+        label-width="80px"
+        :disabled="currOper == operation.see"
+        status-icon
+        size="small"
+      >
         <!--隐藏id项-->
         <el-form-item v-if="false">
           <el-input v-model="form.id"></el-input>
@@ -153,8 +160,8 @@
             <el-col :span="10">
               <el-form-item label="排序" prop="sort">
                 <el-tooltip
-                  :content="currOper === operation.see ? ('当前：' + form.sort.toFixed(2)) : '值越小,排序越靠前'"
-                  placement="top-end"
+                  :content="currOper === operation.see ? ('当前：' + form.sort.toFixed(2)) : '升序展示'"
+                  placement="top"
                 >
                   <el-input-number
                     v-model="form.sort"
@@ -367,13 +374,8 @@
       this.form.hidden = this.hiddenFlag.display;
     },
     mounted() {
-      if (this.transData.operation === this.operation.add) {
-        this.currOper = this.operation.add
-      } else if (this.transData.operation === this.operation.edit) {
-        this.currOper = this.operation.edit
-        this.form = this.transData.data
-      } else if (this.transData.operation === this.operation.see) {
-        this.currOper = this.operation.see
+      this.currOper = this.transData.operation
+      if (this.transData.operation != this.operation.add) {
         this.form = this.transData.data
       }
       this.getParentTreeData()
@@ -505,7 +507,7 @@
                 break;
             }
             if (this.currOper == this.operation.add) {
-              this.$api.postRequest('/permission/', {...tempForm}).then(res => {
+              this.$api.postRequest('/permission', {...tempForm}).then(res => {
                 if (res.success) {
                   this.$emit('refreshTable');
                   this.transData.dialogVisible = false;
@@ -513,7 +515,7 @@
                 this.submitLoading = false;
               })
             } else if (this.currOper == this.operation.edit) {
-              this.$api.putRequest('/permission/', {...tempForm}).then(res => {
+              this.$api.putRequest('/permission', {...tempForm}).then(res => {
                 if (res.success) {
                   this.$emit('refreshTable')
                   this.transData.dialogVisible = false
@@ -583,6 +585,8 @@
   @import '~font-awesome/css/font-awesome.min.css';
   @import '~element-ui/lib/theme-chalk/icon.css';
 
+  //树节点每一项的高度
+  @tree-item-height: 35px;
   /*tip图标*/
   .badge-icon {
     color: #CCC;
@@ -619,6 +623,7 @@
 
   /*父级菜单树形选择器的每一项样式*/
   .parent-picker-item {
+    line-height: @tree-item-height;
     font-size: 12px;
     width: 100%;
     display: flex;
@@ -635,14 +640,14 @@
   /*
     修改插件的样式
   */
-  /*详情窗口dialog样式*/
+  /*dialog最外层样式*/
   /deep/ .el-dialog {
     /*dialog高度*/
     /*height: 100%;*/
     border-radius: 5px;
   }
 
-  /*dialog距离顶部高度*/
+  /*dialog主体*/
   /deep/ .el-dialog__body {
     padding: 10px 5px 5px 0;
   }
@@ -659,7 +664,7 @@
 
   /*树节点样式*/
   /deep/ .el-tree-node__content {
-    height: 35px;
+    height: @tree-item-height;
   }
 
   /*菜单提示的popover*/

@@ -72,6 +72,11 @@
     display:none;
   }*/
 
+  //侧边栏背景
+  @aside-background: #28333E;
+  //中间主体背景
+  @main-background: #F5F5F5;
+
   //主容器
   .container {
     height: 100%;
@@ -81,10 +86,11 @@
     .el-aside {
       height: 100%;
       overflow: hidden;
-      background-color: #28333E;
+      background-color: @aside-background;
       //box-shadow:5px 5px 5px rgba(0, 0, 0, .2);
       box-shadow: 2px 0 6px rgb(0 21 41 / 35%);
-      z-index: 9999;
+      //将侧边栏的阴影展示在中间主体的上方
+      z-index: 100;
       .aside-menu {
         overflow: auto;
       }
@@ -98,7 +104,7 @@
     //中间主体
     .el-main {
       padding: 10px 10px 8px 10px;
-      background: #F5F5F5;
+      background: @main-background;
       /*路由占位符*/
       .router-view {
         overflow: hidden;
@@ -115,7 +121,7 @@
     transition: all .3s ease;
   }
   .slide-fade-leave-active {
-    transition: all .5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
   }
   .slide-fade-enter, .slide-fade-leave-to
     /* .slide-fade-leave-active for below version 2.1.8 */ {

@@ -1,7 +1,18 @@
+/*
+  修改第三方插件样式
+*/
+
 /*elementUI样式*/
 .el-table {
   width: 100%;
   margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/*dialog弹出框样式*/
+.el-dialog {
+  background-color: red;
+  border-radius: 5px;
 }
 
 /*页面加载进度条*/

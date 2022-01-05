@@ -6,6 +6,7 @@
     </div>
     <div>
       <el-divider>关于</el-divider>
+      <el-divider>其它</el-divider>
     </div>
   </div>
 </template>

@@ -37,7 +37,7 @@ export default {
     disabled: 0,
   },
 
-  //操作类型
+  //操作类型常量字符串
   operation: {
     add: 'add',
     edit: 'edit',

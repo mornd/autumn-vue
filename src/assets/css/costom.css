@@ -17,3 +17,24 @@ ul {
   display: flex;
   justify-content: space-between;
 }
+
+/*crud组件样式*/
+/*所属区域*/
+.crud-search {
+  border-radius: 3px;
+  background: #FFF;
+  padding: 18px 0 0 0;
+}
+
+/*添加按钮和表格区域*/
+.crud-content {
+  background: #FFF;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-radius: 3px;
+}
+
+/*表单项*/
+.el-form-item {
+  margin-left: 20px;
+}

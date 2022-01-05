@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="crud-search">
-      <el-form ref="form" inline :model="searchObj" label-width="50px" label-position="left" size="small">
+      <el-form ref="form" inline :model="searchObj" label-width="50px" label-position="left" @submit.native.prevent size="small">
         <el-form-item label="名称">
           <el-input
             v-model="searchObj.title"
@@ -51,14 +51,14 @@
           label="类型">
           <template #default="scope">
             <el-tag
-              effect="plain"
+              effect="dark"
               v-if="scope.row.menuType === menuType.catalogue"
               size="small"
               title="目录">
               <i class="fa fa-folder-open-o" style="margin-right: 5px"/>目录
             </el-tag>
             <el-tag
-              effect="plain"
+              effect="dark"
               v-else-if="scope.row.menuType === menuType.menu"
               type="success"
               size="small"
@@ -66,7 +66,7 @@
               <i class="fa fa-list-ul" style="margin-right: 5px"/>菜单
             </el-tag>
             <el-tag
-              effect="plain"
+              effect="dark"
               v-else-if="scope.row.menuType === menuType.button"
               type="warning"
               size="small"
@@ -78,7 +78,7 @@
         <el-table-column
           prop="icon"
           label="图标"
-          width="80"
+          width="100"
           align="center">
           <template #default="scope">
             <i :class="scope.row.icon"></i>
@@ -86,7 +86,6 @@
         </el-table-column>
         <el-table-column
           prop="code"
-          align="center"
           show-overflow-tooltip
           label="编码">
         </el-table-column>
@@ -100,19 +99,6 @@
           show-overflow-tooltip
           label="组件">
         </el-table-column>
-        <!--<el-table-column
-          prop="enabled"
-          label="状态"
-          width="100"
-          align="center">
-          <template #default="scope">
-            &lt;!&ndash;fa fa fa-cog fa-spin&ndash;&gt;
-            <i :style="{'color': scope.row.enabled === enabledState.enabled ? successColor : failureColor, 'fontSize': '17px'}"
-               :class="scope.row.enabled === enabledState.enabled ? 'fa fa-check' : 'fa fa-ban'"
-               :title="scope.row.enabled === enabledState.enabled ? '启用' : '禁用'"/>
-          </template>
-        </el-table-column>-->
-
         <el-table-column
           prop="enabled"
           label="状态"
@@ -179,10 +165,11 @@
     <!--添加或修改dialog-->
     <add_or_edit
       ref="addOrEdit"
-      v-if="addOrEditTransData.dialogVisible"
-      :transData="addOrEditTransData"
+      v-if="transData.dialogVisible"
+      :transData="transData"
       @refreshTable="getTable"
-    ></add_or_edit>
+    >
+    </add_or_edit>
   </div>
 </template>
 
@@ -211,7 +198,7 @@
         enabledColor: '#13ce66',
         disabledColor: '#ff4949',
         //传递给子组件的数据
-        addOrEditTransData: {
+        transData: {
           dialogVisible: false,
         }
       }
@@ -247,21 +234,21 @@
       },
       /*crud操作*/
       handleAdd() {
-        this.addOrEditTransData.operation = this.operation.add;
-        this.addOrEditTransData.title = '添加';
-        this.addOrEditTransData.dialogVisible = true;
+        this.transData.operation = this.operation.add;
+        this.transData.title = '添加';
+        this.transData.dialogVisible = true;
       },
       handleEdit(index, row) {
-        this.addOrEditTransData.operation = this.operation.edit;
-        this.addOrEditTransData.title = '编辑';
-        Object.assign(this.addOrEditTransData.data = {}, row);
-        this.addOrEditTransData.dialogVisible = true;
+        this.transData.operation = this.operation.edit;
+        this.transData.title = '编辑';
+        Object.assign(this.transData.data = {}, row);
+        this.transData.dialogVisible = true;
       },
       handleSee(index, row) {
-        this.addOrEditTransData.operation = this.operation.see;
-        this.addOrEditTransData.title = '查看';
-        Object.assign(this.addOrEditTransData.data = {}, row);
-        this.addOrEditTransData.dialogVisible = true;
+        this.transData.operation = this.operation.see;
+        this.transData.title = '查看';
+        Object.assign(this.transData.data = {}, row);
+        this.transData.dialogVisible = true;
       },
       //delete
       handleDelete(index, row) {
@@ -336,22 +323,4 @@
 </script>
 
 <style scoped>
-  /*所属区域*/
-  .crud-search {
-    border-radius: 3px;
-    background: #FFF;
-    padding: 18px 0 0 0;
-  }
-
-  /*添加按钮和表格区域*/
-  .crud-content {
-    background: #FFF;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-radius: 3px;
-  }
-
-  /deep/ .el-form-item {
-    margin-left: 20px;
-  }
 </style>
