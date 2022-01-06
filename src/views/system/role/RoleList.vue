@@ -20,6 +20,10 @@
             type="text"
           />
         </el-form-item>
+        <el-form-item label="状态">
+          <el-radio v-model="crudObj.enabled" :label="enabledState.enabled">启用</el-radio>
+          <el-radio v-model="crudObj.enabled" :label="enabledState.disabled">禁用</el-radio>
+        </el-form-item>
         <el-form-item>
           <el-button @click="getTable" icon="el-icon-search" type="primary">查询</el-button>
           <el-button @click="formReset" icon="el-icon-refresh-right" type="primary">重置</el-button>
@@ -58,6 +62,16 @@
           prop="enabled"
           align="center"
           label="状态">
+          <template #default="scope">
+            <el-switch
+              v-model="scope.row.enabled"
+              @change="enabledChange(scope.row)"
+              :active-color="enabledColor"
+              :inactive-color="disabledColor"
+              :active-value="enabledState.enabled"
+              :inactive-value="enabledState.disabled">
+            </el-switch>
+          </template>
         </el-table-column>
         <el-table-column
           prop="gmtCreate"
@@ -69,14 +83,19 @@
           label="排序"
           align="center">
         </el-table-column>
-
         <el-table-column
           prop="name"
           label="操作"
-          width="160"
+          width="200"
           align="center">
           <template #default="scope">
             <div>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleEdit(scope.row)">授权
+              </el-button>
+              <el-divider direction="vertical"></el-divider>
               <el-button
                 size="mini"
                 type="text"
@@ -135,6 +154,8 @@
           pageSize: 10,
           total: 0
         },
+        enabledColor: '#13ce66',
+        disabledColor: '#ff4949',
         transData: {
           dialogVisible: false,
         }
@@ -161,9 +182,13 @@
       formReset() {
         this.crudObj.name = ''
         this.crudObj.code = ''
+        this.crudObj.enabled = ''
         this.crudObj.pageNo = 1
         this.crudObj.pageSize = 10
         this.getTable()
+      },
+      enabledChange(row) {
+
       },
       //添加
       handleAdd() {
@@ -175,12 +200,14 @@
       handleSee(row) {
         this.transData.operation = this.operation.see;
         this.transData.title = '查看';
+        Object.assign(this.transData.data = {}, row);
         this.transData.dialogVisible = true;
       },
       //编辑
       handleEdit(row) {
         this.transData.operation = this.operation.edit;
         this.transData.title = '编辑';
+        Object.assign(this.transData.data = {}, row);
         this.transData.dialogVisible = true;
       },
       //删除
@@ -208,7 +235,7 @@
       }
     },
     computed: {
-      ...mapState(['operation'])
+      ...mapState(['operation', 'enabledState'])
     }
   }
 </script>

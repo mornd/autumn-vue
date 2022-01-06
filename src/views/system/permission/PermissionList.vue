@@ -105,16 +105,14 @@
           width="80"
           align="center">
           <template #default="scope">
-            <el-tooltip :content="'当前：' + (scope.row.enabled == enabledState.enabled ? '启用' : '禁用')" placement="left">
-              <el-switch
-                v-model="scope.row.enabled"
-                @change="enabledChange(scope.row)"
-                :active-color="enabledColor"
-                :inactive-color="disabledColor"
-                :active-value="enabledState.enabled"
-                :inactive-value="enabledState.disabled">
-              </el-switch>
-            </el-tooltip>
+            <el-switch
+              v-model="scope.row.enabled"
+              @change="enabledChange(scope.row)"
+              :active-color="enabledColor"
+              :inactive-color="disabledColor"
+              :active-value="enabledState.enabled"
+              :inactive-value="enabledState.disabled">
+            </el-switch>
           </template>
         </el-table-column>
 

@@ -23,7 +23,7 @@
           @keyup.enter.native="submitForm"
           clearable
           placeholder="账号"
-          :maxlength="maxlength"
+          :maxlength="maxLength"
           prefix-icon="el-icon-user-solid"
         />
       </el-form-item>
@@ -35,7 +35,7 @@
           @keyup.enter.native="submitForm"
           clearable
           placeholder="密码"
-          :maxlength="maxlength"
+          :maxlength="maxLength"
           prefix-icon="el-icon-lock"
         />
       </el-form-item>
@@ -117,13 +117,14 @@
 <script>
   import { mapState } from 'vuex'
   import { encrypt } from '@/utils/secret'
+  import { isNotBlank } from '@/utils/validate'
 
   export default {
     name: "Login",
     data() {
       //表单校验
       const checkUsername = (rule, value, callback) => {
-        if(value && value.trim() !== '') {
+        if(isNotBlank(value)) {
           if(value.length >= this.minLength) {
             callback()
           } else {
@@ -134,11 +135,11 @@
         }
       }
       const checkPassword = (rule, value, callback) => {
-        if(value && value.trim() !== '') {
+        if(isNotBlank(value)) {
           if(value.length >= this.minLength) {
             callback()
           } else {
-            callback(new Error('长度长度须在' + this.minLength + '-' + this.maxLength + '之间'))
+            callback(new Error('密码长度须在' + this.minLength + '-' + this.maxLength + '之间'))
           }
         } else {
           callback(new Error('请输入密码'))
@@ -161,7 +162,7 @@
         loading: false,
         //账号密码长度约束
         minLength: 3,
-        maxlength: 20,
+        maxLength: 20,
         //非空验证 与prop属性对应
         rules:{
           username: [{validator: checkUsername, trigger:"blur"}],
@@ -221,7 +222,10 @@
             //加密密码😂
             const tempForm = Object.assign({},
                 this.loginForm,
-                {password: encrypt(this.loginForm.password)})
+                {
+                  desEncrypt: true,
+                  password: encrypt(this.loginForm.password)
+                })
             //封装的post请求
             this.$api.postRequest('/userLogin', tempForm).then(res => {
               if(res.success){

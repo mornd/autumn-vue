@@ -89,6 +89,7 @@
                       :filter-node-method="filterParentMenuNode"
                       node-key="id"
                       default-expand-all
+                      empty-text="暂无数据"
                       :props="defaultProps">
                       <!--tree的每一项-->
                       <template #default="{ node, data }">
@@ -126,11 +127,11 @@
             <i v-else class="el-icon-loading"></i>
           </el-form-item>
           <el-form-item label="菜单标题" prop="title">
-            <el-input v-model.trim="form.title" maxlength="20" clearable placeholder="请输入菜单标题"></el-input>
+            <el-input v-model="form.title" maxlength="20" clearable placeholder="请输入菜单标题"></el-input>
           </el-form-item>
           <transition name="fade">
             <el-form-item label="菜单编码" prop="code">
-              <el-input v-model.trim="form.code" maxlength="20" clearable placeholder="请输入菜单编码"></el-input>
+              <el-input v-model="form.code" maxlength="20" clearable placeholder="请输入菜单编码"></el-input>
             </el-form-item>
           </transition>
           <transition name="fade">
@@ -151,7 +152,7 @@
               :disabled="currOper == operation.see"
               :zIndex="5000"
               placement="top"
-              :defaultIcon="defaultIcon"
+              :defaultIcon="logo"
               :options="eIconOptions"
               size="small"
             />
@@ -244,6 +245,7 @@
   import {EIconPicker} from 'e-icon-picker';
   import { rootMenuId } from '@/constants/systemConstants'
   import { primary, success, failure } from '@/constants/colorConst'
+  import { isNotBlank } from '@/utils/validate'
 
   export default {
     name: "AddOrEdit",
@@ -258,8 +260,8 @@
         }
       };
       const validateTitle = (rule, value, callback) => {
-        if (value) {
-          this.$api.getRequest(`/permission/queryTitleRepeated?title=${value}&id=${this.form.id ? this.form.id : ''}`).then(res => {
+        if (isNotBlank(value)) {
+          this.$api.getRequest(`/permission/queryTitleRepeated?title=${value}&id=${this.form.id}`).then(res => {
             if (res.success) {
               if (res.data) {
                 callback(new Error("标题已重复"));
@@ -275,8 +277,8 @@
         }
       };
       const validateCode = (rule, value, callback) => {
-        if (value) {
-          this.$api.getRequest(`/permission/queryCodeRepeated?code=${value}&id=${this.form.id ? this.form.id : ''}`).then(res => {
+        if (isNotBlank(value)) {
+          this.$api.getRequest(`/permission/queryCodeRepeated?code=${value}&id=${this.form.id}`).then(res => {
             if (res.success) {
               if (res.data) {
                 callback(new Error("编码已重复"));
@@ -296,6 +298,8 @@
         currOper: undefined,
         //表单对象
         form: {
+          //需指定为空字符串，否则表单验证时会出问题
+          id: '',
           parentId: '',
           menuType: undefined,
           icon: this.logo,
@@ -336,7 +340,6 @@
         //父级菜单选择器加载flag
         menuSelectLoading: true,
         //eIcon配置
-        defaultIcon: this.logo,
         eIconOptions: {
           FontAwesome: true,
           ElementUI: true,
@@ -649,7 +652,7 @@
 
   /*dialog主体*/
   /deep/ .el-dialog__body {
-    padding: 10px 5px 5px 0;
+    padding: 10px 8px 5px 20px;
   }
 
   /*表单样式*/

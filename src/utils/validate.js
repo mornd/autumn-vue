@@ -3,6 +3,15 @@
  */
 
 /**
+ * 是否为空
+ * @param val
+ * @returns {*|boolean}
+ */
+export function isNotBlank(val) {
+  return val && val.trim() != ''
+}
+
+/**
  * @param {string} path
  * @returns {Boolean}
  */
@@ -165,3 +174,4 @@ export function validateIdNo(rule, value, callback) {
     }
   }
 }
+

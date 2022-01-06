@@ -1,4 +1,5 @@
 import store from '@/store'
+
 const getFormatMenus = (router, menus, parentName) => {
   return menus.map(menu => {
     //递归处理子集

@@ -35,6 +35,6 @@ ul {
 }
 
 /*表单项*/
-.el-form-item {
+.crud-search .el-form-item {
   margin-left: 20px;
 }
