@@ -2,14 +2,15 @@
   <div>
     <!--对话框-->
     <el-dialog
+      top="10vh"
       :visible.sync="transData.dialogVisible"
       :title="transData.title"
       :close-on-click-modal="false"
-      width="35%"
+      width="50%"
     >
-      <template slot="title">
+      <!--<template slot="title">
         <span style="font-size: 18px;">{{transData.title}}</span>
-      </template>
+      </template>-->
       <el-form
         ref="form"
         :rules="rules"
@@ -33,32 +34,39 @@
           </el-input>-->
           <el-input v-model="form.code" maxlength="10" clearable placeholder='请输入角色编码，无需添加"ROLE_"作为前缀'></el-input>
         </el-form-item>
-        <el-form-item v-if="currOper != operation.edit" label="是否启用" prop="enabled">
-          <el-tooltip
-            :content="'当前：' + (form.enabled == enabledState.enabled ? '启用' : '禁用')"
-            placement="top-start"
-          >
-            <el-radio-group v-model="form.enabled"
-                            :fill="form.enabled == enabledState.disabled ? failureColor : ''">
-              <el-radio-button :label="enabledState.enabled">是</el-radio-button>
-              <el-radio-button :label="enabledState.disabled">否</el-radio-button>
-            </el-radio-group>
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item label="角色排序" prop="sort">
-          <el-tooltip
-            :content="currOper === operation.see ? ('当前：' + form.sort) : '升序展示'"
-            placement="top"
-          >
-            <el-input-number
-              v-model="form.sort"
-              :min="1"
-              :step="1"
-              :max="500"
-              style="width: 100%"
-            />
-          </el-tooltip>
-        </el-form-item>
+        <el-row :gutter="10" justify="space-between">
+          <el-col :span="10">
+            <el-form-item label="角色排序" prop="sort">
+              <el-tooltip
+                :content="currOper === operation.see ? ('当前：' + form.sort) : '升序展示'"
+                placement="top"
+              >
+                <el-input-number
+                  v-model="form.sort"
+                  :min="1"
+                  :step="1"
+                  :max="500"
+                  style="width: 100%"
+                />
+              </el-tooltip>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" :offset="4">
+            <el-form-item v-if="currOper != operation.edit" label="是否启用" prop="enabled">
+              <el-tooltip
+                :content="'当前：' + (form.enabled == enabledState.enabled ? '启用' : '禁用')"
+                placement="top-start"
+              >
+                <el-radio-group v-model="form.enabled"
+                                :fill="form.enabled == enabledState.disabled ? failureColor : ''">
+                  <el-radio-button :label="enabledState.enabled">是</el-radio-button>
+                  <el-radio-button :label="enabledState.disabled">否</el-radio-button>
+                </el-radio-group>
+              </el-tooltip>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-form-item label="角色备注">
           <el-input
             type="textarea"
@@ -94,7 +102,7 @@
     data() {
       const validateName = (rule, value, callback) => {
         if (isNotBlank(value)) {
-          this.$api.getRequest(`/role/queryNameRepeated?id=${this.form.id}&name=${value}`).then(res => {
+          this.$api.getRequest(`/role/queryNameExists?id=${this.form.id}&name=${value}`).then(res => {
             if (res.success) {
               if (res.data) {
                 callback(new Error("角色名称已重复"));
@@ -111,7 +119,7 @@
       };
       const validateCode = (rule, value, callback) => {
         if (isNotBlank(value)) {
-          this.$api.getRequest(`/role/queryCodeRepeated?id=${this.form.id}&code=${value}`).then(res => {
+          this.$api.getRequest(`/role/queryCodeExists?id=${this.form.id}&code=${value}`).then(res => {
             if (res.success) {
               if (res.data) {
                 callback(new Error("角色编码已重复"));
@@ -137,6 +145,7 @@
         rules: {
           name: [{required: true, validator: validateName, trigger: 'blur'}],
           code: [{required: true, validator: validateCode, trigger: 'blur'}],
+          enabled: [{required: true, trigger: 'blur'}],
           sort: [{required: true, trigger: 'blur'}],
         },
         failureColor: failure,
@@ -209,7 +218,7 @@
 
   /*dialog主体*/
   /deep/ .el-dialog__body {
-    padding: 20px 30px 10px 30px;
+    padding: 20px 20px 5px 20px;
   }
 
   /*表单样式*/

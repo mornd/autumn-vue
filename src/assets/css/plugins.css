@@ -9,6 +9,10 @@
   margin-bottom: 10px;
 }
 
+/*分页*/
+.crud-content .el-pagination {
+}
+
 /*dialog弹出框样式*/
 .el-dialog {
   background-color: red;

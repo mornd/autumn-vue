@@ -25,8 +25,8 @@
           <el-radio v-model="crudObj.enabled" :label="enabledState.disabled">禁用</el-radio>
         </el-form-item>
         <el-form-item>
-          <el-button @click="getTable" icon="el-icon-search" type="primary">查询</el-button>
-          <el-button @click="formReset" icon="el-icon-refresh-right" type="primary">重置</el-button>
+          <el-button @click="search" icon="el-icon-search" type="primary">查询</el-button>
+          <el-button @click="reset" icon="el-icon-refresh-right" type="primary">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -93,7 +93,7 @@
               <el-button
                 size="mini"
                 type="text"
-                @click="handleEdit(scope.row)">授权
+                @click="handleGrantPers(scope.row)">授权
               </el-button>
               <el-divider direction="vertical"></el-divider>
               <el-button
@@ -120,7 +120,7 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :page-sizes="[10, 20, 30, 50]"
+        :page-sizes="[10, 20, 50]"
         :page-size="crudObj.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="crudObj.total">
@@ -135,16 +135,24 @@
       @refreshTable="getTable"
     >
     </add_or_edit>
+    <!--授权窗口-->
+    <grant
+      v-if="grantData.dialogVisible"
+      :grantData="grantData"
+    >
+
+    </grant>
   </div>
 </template>
 
 <script>
   import { mapState } from 'vuex'
   import add_or_edit from './components/AddOrEdit'
+  import grant from './components/Grant'
 
   export default {
     name: "RoleList",
-    components: { add_or_edit },
+    components: { add_or_edit, grant },
     data() {
       return {
         loading: false,
@@ -157,6 +165,10 @@
         enabledColor: '#13ce66',
         disabledColor: '#ff4949',
         transData: {
+          dialogVisible: false,
+        },
+        //授权窗口数据
+        grantData: {
           dialogVisible: false,
         }
       }
@@ -171,15 +183,27 @@
         this.$api.getRequest('/role', {...this.crudObj}).then(res => {
           if(res.success) {
             const data = res.data
-            this.tableData = data.records
-            this.crudObj.total = data.total
-            console.log(data);
-            this.loading = false
+
+            //如果一开始显示有两页，但是第二页的数据被删掉了，若此时点击第二页，那么第二页会显示空白，并且当前页也固定显示在了第一页
+            if(!data.records.length && data.total !== 0) {
+              //当前页数自减一页，再查一次
+              this.crudObj.pageNo--
+              this.getTable()
+            } else {
+              this.tableData = data.records
+              this.crudObj.total = data.total
+              this.loading = false
+            }
           }
         })
       },
+      //表头搜索
+      search() {
+        this.crudObj.pageNo = 1
+        this.getTable()
+      },
       //搜索表单重置
-      formReset() {
+      reset() {
         this.crudObj.name = ''
         this.crudObj.code = ''
         this.crudObj.enabled = ''
@@ -187,14 +211,55 @@
         this.crudObj.pageSize = 10
         this.getTable()
       },
+      //更改状态
       enabledChange(row) {
-
+        let msg, url, enabled = this.enabledState.enabled, disabled = this.enabledState.disabled
+        if (enabled == row.enabled) {
+          msg = '是否启用该节点？'
+          url = `/role/changeState?id=${row.id}&state=${enabled}`
+        } else if (disabled == row.enabled) {
+          msg = '是否禁用该节点？'
+          url = `/role/changeState?id=${row.id}&state=${disabled}`
+        }
+        this.$confirm(msg, '系统提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$api.getRequest(url).then(res => {
+            if (res.success) {
+              this.$store.dispatch('setUser').then(res => {
+                this.$store.dispatch('setMenuRoutes')
+              })
+            } else {
+              //取消操作
+              if (enabled === row.enabled) {
+                row.enabled = disabled
+              } else if (disabled === row.enabled) {
+                row.enabled = enabled
+              }
+            }
+          })
+        }).catch(() => {
+          //取消操作
+          if (enabled === row.enabled) {
+            row.enabled = disabled
+          } else if (disabled === row.enabled) {
+            row.enabled = enabled
+          }
+        })
       },
       //添加
       handleAdd() {
         this.transData.operation = this.operation.add;
         this.transData.title = '添加';
         this.transData.dialogVisible = true;
+      },
+      //授权菜单
+      handleGrantPers(row) {
+        this.grantData.title = '授权';
+        Object.assign(this.grantData.data = {}, row);
+        this.grantData.dialogVisible = true;
       },
       //查看
       handleSee(row) {
@@ -213,7 +278,7 @@
       //删除
       handleDelete(row) {
         if(row.id) {
-          this.$confirm(`是否永久删除ID为[${row.id}],名称为[${row.name}]的角色信息?`, '提示', {
+          this.$confirm(`是否永久删除ID为[${row.id}],名称为[${row.name}]的角色信息(包括解绑其与用户权限之间的关系)?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -224,14 +289,17 @@
                 this.$store.dispatch('setMenuRoutes')
               })
             })
-          })
+          }).catch(() => {})
         }
       },
-      handleSizeChange() {
-
+      //分页操作
+      handleSizeChange(size) {
+        this.crudObj.pageSize = size
+        this.getTable()
       },
-      handleCurrentChange() {
-
+      handleCurrentChange(curr) {
+        this.crudObj.pageNo = curr
+        this.getTable()
       }
     },
     computed: {

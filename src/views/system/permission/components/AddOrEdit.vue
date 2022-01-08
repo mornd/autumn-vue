@@ -136,13 +136,13 @@
           </transition>
           <transition name="fade">
             <el-form-item label="菜单路径" v-if="form.menuType == menuType.menu" prop="path">
-              <el-input v-model.trim="form.path" maxlength="30" clearable placeholder="请输入菜单路径(前缀可不加'/')"></el-input>
+              <el-input v-model.trim="form.path" maxlength="30" clearable placeholder="请输入菜单路径"></el-input>
             </el-form-item>
           </transition>
           <transition name="fade">
             <el-form-item label="菜单组件" v-if="form.menuType == menuType.menu" prop="component">
               <el-input v-model.trim="form.component" maxlength="30" clearable
-                        placeholder="请输入菜单组件(前缀可不加'/')"></el-input>
+                        placeholder="请输入菜单组件"></el-input>
             </el-form-item>
           </transition>
           <el-form-item label="图标" v-if="form.menuType != menuType.button" prop="icon">
@@ -261,7 +261,7 @@
       };
       const validateTitle = (rule, value, callback) => {
         if (isNotBlank(value)) {
-          this.$api.getRequest(`/permission/queryTitleRepeated?title=${value}&id=${this.form.id}`).then(res => {
+          this.$api.getRequest(`/permission/queryTitleExists?title=${value}&id=${this.form.id}`).then(res => {
             if (res.success) {
               if (res.data) {
                 callback(new Error("标题已重复"));
@@ -278,7 +278,7 @@
       };
       const validateCode = (rule, value, callback) => {
         if (isNotBlank(value)) {
-          this.$api.getRequest(`/permission/queryCodeRepeated?code=${value}&id=${this.form.id}`).then(res => {
+          this.$api.getRequest(`/permission/queryCodeExists?code=${value}&id=${this.form.id}`).then(res => {
             if (res.success) {
               if (res.data) {
                 callback(new Error("编码已重复"));
@@ -361,7 +361,6 @@
           '排序：值越小，菜单显示越靠前(最小值为1)',
           '是否启用：默认只能启用(禁用)没有子集的目录，菜单、权限则不受限制',
           '菜单可见：如果状态为否，则所有页面隐藏该节点，且不参与权限相关的操作',
-          '路由菜单：点击是否可跳转页面',
           '菜单缓存：keep_alive值',
           '目前主页左侧只能显示的菜单层级为两级',
         ]

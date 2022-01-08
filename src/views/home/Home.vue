@@ -1,8 +1,11 @@
 <template>
   <div class="home">
-    <h3>home</h3>
     <router-link to="/system/permission">菜单测试</router-link>
-    <el-button @click="consoleRouter">查看router</el-button>
+    <br>
+    <br>
+    <div>
+      <button @click="btn()" ref="btn">{{msg}}</button>
+    </div>
   </div>
 </template>
 
@@ -11,9 +14,17 @@
 
 export default {
   name: 'Home',
+  data() {
+    return {
+      msg:"原始值",
+    }
+  },
   methods: {
-    consoleRouter() {
-      console.log(this.$router);
+    btn(){
+      this.msg="修改后的值";
+      this.$nextTick(() => {
+        console.log(this.$refs.btn.innerText);
+      })
     }
   }
 }
