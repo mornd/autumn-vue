@@ -1,11 +1,11 @@
 <template>
   <div>
     <el-dialog
-      top="10vh"
+      top="14vh"
       :visible.sync="grantData.dialogVisible"
       :title="grantData.title"
       :close-on-click-modal="false"
-      width="50%"
+      width="45%"
     >
       <div>
         <el-input
@@ -14,7 +14,7 @@
           v-model="filterText">
         </el-input>
 
-        <div style="height: 300px; margin-top: 10px; overflow: auto">
+        <div style="height: 300px; margin-top: 20px; overflow: auto">
           <p style="text-align: center; font-size: 20px" v-if="treeLoading">
             <i class="el-icon-loading"></i>
           </p>
@@ -113,6 +113,7 @@
          this.submitLoading = true
         //选中节点的keys
         const check = this.$refs.tree.getCheckedKeys()
+        console.log(check);
         this.$api.putRequest('/role/bindPersById', {id: this.grantData.data.id, perIds: check}).then(res => {
           if(res.success) {
             this.grantData.dialogVisible = false
@@ -145,6 +146,6 @@
 
   /*dialog主体*/
   /deep/ .el-dialog__body {
-    padding: 20px 20px 5px 20px;
+    padding: 10px 20px 5px 20px;
   }
 </style>

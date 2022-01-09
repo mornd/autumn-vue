@@ -391,14 +391,14 @@
             this.parentTreeList = this.parentCatalogueAndMenu
             return
           }
-          url = '/permission/findCatalogueAndMenu'
+          url = '/permission/getCatalogueAndMenu'
         } else {
           if(this.parentCatalogues.length) {
             this.parentTreeList = this.parentCatalogues
             return
           }
           //获取所有目录
-          url = '/permission/findCatalogues'
+          url = '/permission/getCatalogues'
         }
         this.menuSelectLoading = true
         this.$api.getRequest(url).then(res => {

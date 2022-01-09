@@ -21,7 +21,7 @@
     <div class="crud-content">
       <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 10px">添加</el-button>
       <el-table
-        max-height="520"
+        max-height="480"
         size="small"
         :data="tableData"
         row-key="id"
@@ -215,12 +215,16 @@
         let obj = {};
         if (this.searchObj.title) {
           //进入这里说明需要按条件来搜索了，所以更换请求url
-          url = 'filterTree';
+          url = 'filterTableTree';
           obj = {...this.searchObj};
         }
         this.$api.getRequest(`/permission/${url}`, obj).then(res => {
           if (res.success) {
-            this.tableData = res.data;
+            if(Array.isArray(res.data)) {
+              this.tableData = res.data;
+            } else {
+              this.tableData = [];
+            }
             this.loading = false;
           }
         })
@@ -291,6 +295,7 @@
           }).then(() => {
             this.$api.getRequest(url).then(res => {
               if (res.success) {
+                this.getTable();
                 this.$store.dispatch('setUser').then(res => {
                   this.$store.dispatch('setMenuRoutes')
                 })

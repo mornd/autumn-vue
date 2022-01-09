@@ -2,11 +2,11 @@
   <div>
     <!--对话框-->
     <el-dialog
-      top="10vh"
+      top="14vh"
       :visible.sync="transData.dialogVisible"
       :title="transData.title"
       :close-on-click-modal="false"
-      width="50%"
+      width="45%"
     >
       <!--<template slot="title">
         <span style="font-size: 18px;">{{transData.title}}</span>
@@ -203,7 +203,7 @@
 
 <style lang="less" scoped>
   //form表单高度
-  @form-height: 400px;
+  @form-height: 320px;
 
   .from {
     height: @form-height;
