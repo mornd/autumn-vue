@@ -73,6 +73,7 @@
             v-model="form.remark"
             :rows="2"
             :autosize="{ minRows: 4, maxRows: 4}"
+            resize="none"
             maxlength="50"
             show-word-limit
           >
@@ -140,7 +141,7 @@
           //需指定为空字符串，否则表单验证时会出问题
           id: '',
           enabled: undefined,
-          sort: 100
+          sort: 5
         },
         rules: {
           name: [{required: true, validator: validateName, trigger: 'blur'}],

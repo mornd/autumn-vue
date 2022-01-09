@@ -14,7 +14,7 @@
           v-model="filterText">
         </el-input>
 
-        <div style="height: 300px; margin-top: 20px; overflow: auto">
+        <div style="height: 310px; margin-top: 20px; overflow: auto">
           <p style="text-align: center; font-size: 20px" v-if="treeLoading">
             <i class="el-icon-loading"></i>
           </p>
@@ -146,6 +146,6 @@
 
   /*dialog主体*/
   /deep/ .el-dialog__body {
-    padding: 10px 20px 5px 20px;
+    padding: 10px 20px 10px 20px;
   }
 </style>

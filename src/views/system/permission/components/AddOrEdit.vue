@@ -68,7 +68,7 @@
               ref="parentMenuSelect"
               placeholder="请选择父级菜单"
               :disabled="form.enabled === enabledState.disabled && currOper !== operation.add"
-              v-if="!menuSelectLoading"
+
               style="width: 100%"
               clearable>
               <el-option
@@ -78,7 +78,12 @@
                 :value="item.id">
               </el-option>
               <template slot="empty">
-                <div class="tree-wrap">
+                <!--加载块-->
+                <div v-if="menuSelectLoading" style="text-align: center;padding: 10px">
+                  <i class="el-icon-loading"></i>
+                </div>
+
+                <div v-else class="tree-wrap">
                   <el-input v-model="parentMenuFilterText" placeholder="输入名称进行搜索" v-if="parentTreeList.length"
                             style="padding-bottom: 5px" clearable></el-input>
                   <!--树形菜单-->
@@ -124,7 +129,6 @@
                 </div>
               </template>
             </el-select>
-            <i v-else class="el-icon-loading"></i>
           </el-form-item>
           <el-form-item label="菜单标题" prop="title">
             <el-input v-model="form.title" maxlength="20" clearable placeholder="请输入菜单标题"></el-input>
