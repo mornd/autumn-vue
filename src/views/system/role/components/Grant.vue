@@ -14,10 +14,10 @@
           v-model="filterText">
         </el-input>
 
-          <!--<el-button-group style="margin-top: 10px">
+          <el-button-group style="margin-top: 10px">
             <el-button type="primary" size="mini">全选</el-button>
-            <el-button type="primary" size="mini">清空</el-button>
-          </el-button-group>-->
+            <el-button type="primary" size="mini" @click="clearTree">清空</el-button>
+          </el-button-group>
 
         <div style="height: 310px; margin-top: 10px; overflow: auto">
           <p style="text-align: center; font-size: 20px" v-if="treeLoading">
@@ -25,16 +25,16 @@
           </p>
           <el-tree
             v-show="!treeLoading"
+            class="filter-tree"
+            default-expand-all
             check-strictly
             highlight-current
             show-checkbox
-            :default-checked-keys="defaultCheckedKeys"
             node-key="id"
-            class="filter-tree"
             :data="treeData"
-            :props="defaultProps"
             @check="treeCheck"
-            default-expand-all
+            :props="defaultProps"
+            :default-checked-keys="checkKeys"
             :filter-node-method="filterNode"
             ref="tree">
           </el-tree>
@@ -55,6 +55,7 @@
 <script>
   import { mapState } from 'vuex'
   import objUtil from '@/utils/objUtil'
+  import { rootMenuId } from '@/constants/systemConstants'
 
   export default {
     name: "Grant",
@@ -65,7 +66,9 @@
         filterText: '',
         treeData: [],
         //默认勾选的节点的 key 的数组
-        defaultCheckedKeys: [],
+        checkKeys: [],
+        //所有未排序节点
+        allTreeNode: [],
         defaultProps: {
           children: 'children',
           label: 'title'
@@ -81,18 +84,33 @@
         this.treeLoading = true
         this.$api.getRequest('/role/getAllPers').then(res => {
           if(res.success) {
-            if(objUtil.arrNotNull(res.data)) {
-              this.formatData(res.data)
-              this.treeData = res.data
+            const tree = res.data
+            if(objUtil.arrNotEmpty(tree)) {
+              this.formatData(tree)
+              //生成菜单树
+              this.treeData = tree
+              let arr = []
+              this.treeToArr(tree, arr)
+              //用于下文方便比较
+              this.allTreeNode = arr
               this.getDefaultCheckKeys().then(res => {
                 //回显默认选中的值
                 //this.$refs.tree.setCheckedKeys(res) //方式1
-                this.defaultCheckedKeys = res //方式2
+                this.checkKeys = res //方式2
                 this.treeLoading = false
               })
             }
           }
         })
+      },
+      //将tree结构转换为Array类型
+      treeToArr(list, arr) {
+        for (const i of list) {
+          arr.push(i)
+          if(objUtil.arrNotEmpty(i.children)) {
+            this.treeToArr(i.children, arr)
+          }
+        }
       },
       //获取默认选中的keys
       getDefaultCheckKeys() {
@@ -110,7 +128,7 @@
           if(arr[i].enabled != this.enabledState.enabled) {
             arr[i].disabled = true
           }
-          if(objUtil.arrNotNull(arr[i].children)) {
+          if(objUtil.arrNotEmpty(arr[i].children)) {
             this.formatData(arr[i].children)
           }
         }
@@ -119,26 +137,53 @@
         if (!value) return true;
         return data.title.indexOf(value) !== -1;
       },
-      //节点选中事件，参数1：当前选中节点对象，参数2：树目前的选中状态对象，包含 checkedNodes、checkedKeys、halfCheckedNodes、halfCheckedKeys 四个属性
+      //节点选中事件，参数1：当前选中节点对象，
+      //参数2：树目前的选中状态对象，包含 checkedNodes、checkedKeys、halfCheckedNodes、halfCheckedKeys 四个属性
       treeCheck(checkNode, checkState) {
-        this.checkChildren(checkNode, this.defaultCheckedKeys.includes(checkNode.id))
-        this.$refs.tree.setCheckedKeys(this.defaultCheckedKeys)
+        const check = this.checkKeys.includes(checkNode.id)
+        //勾选父级
+        this.checkParent(checkNode, check)
+        //勾选子集
+        this.checkChildren(checkNode, check)
+        this.$refs.tree.setCheckedKeys(this.checkKeys)
       },
 
-      //更新哪些需要勾选的数组 check(boolean) = 是否是选中操作
+      //同步选中/清除子节点 check(boolean) = 是否是选中操作
       checkChildren(node, check) {
-        if(check) {
-          //如果默认勾选数组中包含该节点，则此时操作为取消选中，移除数组中对应的元素
-          this.removeArrItem(node.id)
-        } else {
-          //如果默认勾选数组中不包含该节点，则此时操作为选中，数组中新增对应的元素
-          if(!this.defaultCheckedKeys.includes(node.id)) {
-            this.defaultCheckedKeys.push(node.id)
+        if(node.enabled == this.enabledState.enabled) { //状态为启用
+          if(check) {
+            //取消选中操作，移除数组中对应的元素
+            this.removeArrItem(node.id)
+          } else {
+            //选中操作，数组中新增对应的元素
+            if(!this.checkKeys.includes(node.id)) {
+              this.checkKeys.push(node.id)
+            }
           }
         }
-        if(objUtil.arrNotNull(node.children)) {
-          for (const item of node.children) {
-            this.checkChildren(item, check)
+        if(objUtil.arrNotEmpty(node.children)) {
+          node.children.forEach(i => {this.checkChildren(i, check)})
+        }
+      },
+      //选中父节点
+      checkParent(node, check) {
+        let parentArr = []
+        this.findParent(node, parentArr)
+        if(!check) {
+          parentArr.forEach(i => {
+            if(!this.checkKeys.includes(i)) {
+              this.checkKeys.push(i)
+            }
+          })
+        }
+      },
+      //获取节点的所有父级id
+      findParent(node, arr) {
+        for (let i = 0; i < this.allTreeNode.length; i++) {
+          if(node.parentId != rootMenuId
+              && node.parentId == this.allTreeNode[i].id) {
+            arr.push(node.parentId)
+            this.findParent(this.allTreeNode[i], arr)
           }
         }
       },
@@ -148,14 +193,17 @@
        * @param id
        */
       removeArrItem(id) {
-        for (let i = 0; i < this.defaultCheckedKeys.length; i++) {
-          if(this.defaultCheckedKeys[i] == id) {
-            this.defaultCheckedKeys.splice(i, 1);
+        for (let i = 0; i < this.checkKeys.length; i++) {
+          if(this.checkKeys[i] == id) {
+            this.checkKeys.splice(i, 1);
             break;
           }
         }
       },
+      //清空所有启用项
+      clearTree() {
 
+      },
       //提交数据
       submit() {
          this.submitLoading = true
