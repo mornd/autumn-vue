@@ -14,18 +14,26 @@
           v-model="filterText">
         </el-input>
 
-        <div style="height: 310px; margin-top: 20px; overflow: auto">
+          <!--<el-button-group style="margin-top: 10px">
+            <el-button type="primary" size="mini">全选</el-button>
+            <el-button type="primary" size="mini">清空</el-button>
+          </el-button-group>-->
+
+        <div style="height: 310px; margin-top: 10px; overflow: auto">
           <p style="text-align: center; font-size: 20px" v-if="treeLoading">
             <i class="el-icon-loading"></i>
           </p>
           <el-tree
             v-show="!treeLoading"
+            check-strictly
             highlight-current
             show-checkbox
+            :default-checked-keys="defaultCheckedKeys"
             node-key="id"
             class="filter-tree"
             :data="treeData"
             :props="defaultProps"
+            @check="treeCheck"
             default-expand-all
             :filter-node-method="filterNode"
             ref="tree">
@@ -56,6 +64,8 @@
         submitLoading: false,
         filterText: '',
         treeData: [],
+        //默认勾选的节点的 key 的数组
+        defaultCheckedKeys: [],
         defaultProps: {
           children: 'children',
           label: 'title'
@@ -76,7 +86,8 @@
               this.treeData = res.data
               this.getDefaultCheckKeys().then(res => {
                 //回显默认选中的值
-                this.$refs.tree.setCheckedKeys(res)
+                //this.$refs.tree.setCheckedKeys(res) //方式1
+                this.defaultCheckedKeys = res //方式2
                 this.treeLoading = false
               })
             }
@@ -108,6 +119,43 @@
         if (!value) return true;
         return data.title.indexOf(value) !== -1;
       },
+      //节点选中事件，参数1：当前选中节点对象，参数2：树目前的选中状态对象，包含 checkedNodes、checkedKeys、halfCheckedNodes、halfCheckedKeys 四个属性
+      treeCheck(checkNode, checkState) {
+        this.checkChildren(checkNode, this.defaultCheckedKeys.includes(checkNode.id))
+        this.$refs.tree.setCheckedKeys(this.defaultCheckedKeys)
+      },
+
+      //更新哪些需要勾选的数组 check(boolean) = 是否是选中操作
+      checkChildren(node, check) {
+        if(check) {
+          //如果默认勾选数组中包含该节点，则此时操作为取消选中，移除数组中对应的元素
+          this.removeArrItem(node.id)
+        } else {
+          //如果默认勾选数组中不包含该节点，则此时操作为选中，数组中新增对应的元素
+          if(!this.defaultCheckedKeys.includes(node.id)) {
+            this.defaultCheckedKeys.push(node.id)
+          }
+        }
+        if(objUtil.arrNotNull(node.children)) {
+          for (const item of node.children) {
+            this.checkChildren(item, check)
+          }
+        }
+      },
+
+      /**
+       * 删除数组中对应id的元素
+       * @param id
+       */
+      removeArrItem(id) {
+        for (let i = 0; i < this.defaultCheckedKeys.length; i++) {
+          if(this.defaultCheckedKeys[i] == id) {
+            this.defaultCheckedKeys.splice(i, 1);
+            break;
+          }
+        }
+      },
+
       //提交数据
       submit() {
          this.submitLoading = true

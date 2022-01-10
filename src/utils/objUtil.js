@@ -1,5 +1,5 @@
 export default {
   arrNotNull(arr) {
-    return (Array.isArray(arr) && arr.length);
+    return (Array.isArray(arr) && arr.length !== 0);
   }
 }

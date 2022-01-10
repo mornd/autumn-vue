@@ -140,13 +140,13 @@
           </transition>
           <transition name="fade">
             <el-form-item label="菜单路径" v-if="form.menuType == menuType.menu" prop="path">
-              <el-input v-model.trim="form.path" maxlength="30" clearable placeholder="请输入菜单路径"></el-input>
+              <el-input v-model.trim="form.path" maxlength="30" clearable placeholder="请输入菜单路径，例：system/user"></el-input>
             </el-form-item>
           </transition>
           <transition name="fade">
             <el-form-item label="菜单组件" v-if="form.menuType == menuType.menu" prop="component">
               <el-input v-model.trim="form.component" maxlength="30" clearable
-                        placeholder="请输入菜单组件"></el-input>
+                        placeholder="请输入菜单组件，例：system/userList"></el-input>
             </el-form-item>
           </transition>
           <el-form-item label="图标" v-if="form.menuType != menuType.button" prop="icon">
@@ -363,7 +363,7 @@
           "菜单路由：前端路由对象的path属性(前缀可不加' / ')",
           "菜单组件：前端路由对象的component属性(前缀可不加' / ')",
           '排序：值越小，菜单显示越靠前(最小值为1)',
-          '是否启用：默认只能启用(禁用)没有子集的目录，菜单、权限则不受限制',
+          '是否启用：禁用目录或菜单时，会连同其所有子节点都一起禁用，启用则只启用当前选中的节点，子节点不会跟着一起启用，需手动启用',
           '菜单可见：如果状态为否，则所有页面隐藏该节点，且不参与权限相关的操作',
           '菜单缓存：keep_alive值',
           '目前主页左侧只能显示的菜单层级为两级',

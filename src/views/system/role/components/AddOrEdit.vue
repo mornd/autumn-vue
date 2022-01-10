@@ -32,7 +32,7 @@
           <!--<el-input v-model="form.code" maxlength="10" clearable placeholder="请输入角色编码">
             <template slot="prepend">{{ rolePrefix }}</template>
           </el-input>-->
-          <el-input v-model="form.code" maxlength="10" clearable placeholder='请输入角色编码，无需添加"ROLE_"作为前缀'></el-input>
+          <el-input v-model="form.code" maxlength="10" clearable placeholder='请输入角色编码，系统默认补充"ROLE_"作为前缀'></el-input>
         </el-form-item>
         <el-row :gutter="10" justify="space-between">
           <el-col :span="10">
