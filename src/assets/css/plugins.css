@@ -2,6 +2,11 @@
   修改第三方插件样式
 */
 
+/*页面加载进度条*/
+#nprogress .bar {
+  background: #409EFF !important;
+}
+
 /*elementUI样式*/
 .crud-content .el-table {
   width: 100%;
@@ -17,9 +22,4 @@
 .el-dialog {
   background-color: red;
   border-radius: 5px;
-}
-
-/*页面加载进度条*/
-#nprogress .bar {
-  background: #409EFF !important;
 }

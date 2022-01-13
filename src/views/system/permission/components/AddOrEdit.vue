@@ -523,11 +523,12 @@
             } else if (this.currOper == this.operation.edit) {
               this.$api.putRequest('/permission', {...tempForm}).then(res => {
                 if (res.success) {
-                  this.$emit('refreshTable')
+                  //this.$emit('refreshTable')
                   this.transData.dialogVisible = false
-                  this.$store.dispatch('setUser').then(res => {
+                  /*this.$store.dispatch('setUser').then(res => {
                     this.$store.dispatch('setMenuRoutes')
-                  })
+                  })*/
+                  this.$router.go()
                 }
                 this.submitLoading = false;
               })

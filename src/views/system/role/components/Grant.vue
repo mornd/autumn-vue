@@ -14,10 +14,10 @@
           v-model="filterText">
         </el-input>
 
-          <el-button-group style="margin-top: 10px">
+          <!--<el-button-group style="margin-top: 10px">
             <el-button type="primary" size="mini">全选</el-button>
             <el-button type="primary" size="mini" @click="clearTree">清空</el-button>
-          </el-button-group>
+          </el-button-group>-->
 
         <div style="height: 310px; margin-top: 10px; overflow: auto">
           <p style="text-align: center; font-size: 20px" v-if="treeLoading">
@@ -200,22 +200,18 @@
           }
         }
       },
-      //清空所有启用项
-      clearTree() {
-
-      },
       //提交数据
       submit() {
          this.submitLoading = true
         //选中节点的keys
         const check = this.$refs.tree.getCheckedKeys()
-        console.log(check);
         this.$api.putRequest('/role/bindPersById', {id: this.grantData.data.id, perIds: check}).then(res => {
           if(res.success) {
             this.grantData.dialogVisible = false
-            this.$store.dispatch('setUser').then(res => {
+            /*this.$store.dispatch('setUser').then(res => {
               this.$store.dispatch('setMenuRoutes')
-            })
+            })*/
+            this.$router.go()
           }
         })
       }

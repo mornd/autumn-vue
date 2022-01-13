@@ -1,12 +1,11 @@
 <template>
   <div>
-    System settings
   </div>
 </template>
 
 <script>
   export default {
-    name: "SystemSettings"
+    name: "SystemSettings",
   }
 </script>
 

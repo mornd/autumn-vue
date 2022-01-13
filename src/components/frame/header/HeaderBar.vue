@@ -1,43 +1,55 @@
 <template>
   <!--头部工具组件-->
   <div class="header">
-    <!--头部左侧图标li-->
+    <!--头部左侧图标列表-->
     <ul>
       <li :title="isCollapse ? '展开菜单' : '收起菜单'" @click="toggleCollapse">
-        <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"/>
+        <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
       </li>
       <li @click="$router.go()" title="刷新">
-        <i class="el-icon-refresh"/>
+        <i class="el-icon-refresh"></i>
       </li>
     </ul>
-    <!--头部右侧图标li-->
+    <!--头部右侧图标列表-->
     <ul>
       <li @click="handleFullScreen" :title="fullscreen ? '退出全屏' : '全屏'">
-        <i :class="fullscreen ? 'el-icon-close' : 'el-icon-full-screen'"/>
+        <i :class="fullscreen ? 'el-icon-close' : 'el-icon-full-screen'"></i>
       </li>
-      <li title="天气：小雨">
-        <i class="el-icon-heavy-rain"/>
+      <!--天气-->
+      <li>
+        <el-popover
+          placement="bottom-end"
+          title=""
+          width="450"
+          popper-class="weather-popover"
+          trigger="hover"
+        >
+          <weather_plugin :width="450" :height="150"></weather_plugin>
+          <div slot="reference">
+            <i class="el-icon-heavy-rain"></i>
+          </div>
+        </el-popover>
       </li>
       <li title="通知">
-        <i class="el-icon-bell"/>
+        <i class="el-icon-bell"></i>
       </li>
       <li class="user-info-li">
         <el-dropdown @command="handleCommand">
           <div class="user-info">
             <!--用户头像 src默认未加载图片路径-->
-            <el-avatar :size="30" src="" @error="avatarLoadingFailure" class="user_Face">
+            <el-avatar :size="30" src="" @error="avatarLoadingFailure" class="user_face">
               <!--图片加载失败显示的默认图片-->
-              <img src="../../../assets/images/avatar/user1.png">
+              <img src="../../../assets/images/avatar/user1.png" />
             </el-avatar>
-            <!--<el-avatar :size="30" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" @error="() => true" class="user_Face">
+            <!--<el-avatar :size="30" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" @error="() => true" class="user_face">
               &lt;!&ndash;图片加载失败显示的默认图片&ndash;&gt;
-              <img src="../../assets/images/avatar/default.png">
+              <img src="../../../assets/images/avatar/default.png">
             </el-avatar>-->
 
             <!--用户名-->
-            <span v-text="$store.getters.loginName"></span>
+            <span v-text="loginName"></span>
           </div>
-          <template #dropdown>
+          <template slot="dropdown">
             <el-dropdown-menu>
               <el-dropdown-item command="userInfo" icon="el-icon-s-custom">个人中心</el-dropdown-item>
               <el-dropdown-item command="setting" icon="el-icon-setting">系统设置</el-dropdown-item>
@@ -46,8 +58,8 @@
           </template>
         </el-dropdown>
       </li>
-      <li title="更多" @click="more()">
-        <i class="el-icon-s-operation"/>
+      <li title="更多" @click="drawerVisible = true">
+        <i class="el-icon-s-operation"></i>
       </li>
     </ul>
 
@@ -70,13 +82,14 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapGetters } from 'vuex';
   import MoreDrawer from './moreDrawer/MoreDrawer'
   import NowDate from '@/components/gadgets/NowDate'
+  import weather_plugin from './WeatherPlugin'
 
   export default {
     name: "HeaderBar",
-    components: {MoreDrawer, NowDate},
+    components: {MoreDrawer, NowDate, weather_plugin},
     data() {
       return {
         //浏览器是否全屏展示
@@ -84,7 +97,7 @@
         drawerVisible: false
       }
     },
-    created() {
+    mounted() {
       let that = this
       window.onresize = function(){
         if(!that.checkFull()){
@@ -95,6 +108,7 @@
     computed: {
       //获取当前登录用户信息
       ...mapState(['user', 'isCollapse', 'theme']),
+      ...mapGetters(['loginName'])
     },
     methods: {
       //展开收起菜单
@@ -103,7 +117,6 @@
       },
       checkFull() {
         //判断浏览器是否处于全屏状态 （需要考虑兼容问题）
-        //火狐浏览器
         let isFull = document.mozFullScreen ||
             document.fullScreen ||
             //谷歌浏览器及Webkit内核浏览器
@@ -165,18 +178,17 @@
       },
       //用户头像加载失败回调
       avatarLoadingFailure(){
-        this.$message.error('用户头像加载失败！');
+        this.$message.error('用户头像加载失败');
         return true;
       },
-      more() {
-        this.drawerVisible = true
-      }
     }
   }
 </script>
 
 <style lang="less" scoped>
+  //按钮列表宽度
   @li-width: 50px;
+  //头部整体高度
   @li-height: 60px;
 
   /*头部*/
@@ -186,7 +198,7 @@
     /*去除头部内边距多余的空格*/
     justify-content: space-between;
     box-sizing: border-box;
-    overflow: hidden;
+    height: @li-height;
     //用户头像及名称
     .user-info-li {
       padding: 0 10px;
@@ -194,7 +206,7 @@
         cursor: pointer;
         margin-top: 15px;
         //用户头像
-        .user_Face {
+        .user_face {
           margin-right: 10px;
           width: 30px;
           height: 32px;
@@ -223,6 +235,11 @@
           /*border-bottom: 3px solid #46D800;*/
         }
       }
+    }
+
+    .el-popover .weather-popover {
+      background: red;
+      padding: 2px;
     }
   }
 </style>

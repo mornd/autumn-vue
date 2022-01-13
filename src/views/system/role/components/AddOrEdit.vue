@@ -26,13 +26,13 @@
           <el-input v-model="form.id"></el-input>
         </el-form-item>
         <el-form-item label="角色名称" prop="name">
-          <el-input v-model="form.name" maxlength="10" clearable placeholder="请输入角色名称"></el-input>
+          <el-input v-model="form.name" maxlength="20" clearable placeholder="请输入角色名称"></el-input>
         </el-form-item>
         <el-form-item label="角色编码" prop="code">
           <!--<el-input v-model="form.code" maxlength="10" clearable placeholder="请输入角色编码">
             <template slot="prepend">{{ rolePrefix }}</template>
           </el-input>-->
-          <el-input v-model="form.code" maxlength="10" clearable placeholder='请输入角色编码，系统默认补充"ROLE_"作为前缀'></el-input>
+          <el-input v-model="form.code" maxlength="30" clearable placeholder='请输入角色编码，系统默认补充"ROLE_"作为前缀'></el-input>
         </el-form-item>
         <el-row :gutter="10" justify="space-between">
           <el-col :span="10">
