@@ -1,6 +1,6 @@
 import { getToken } from '@/utils/tokenUtil'
 import { getTheme } from '@/utils/themeUtil'
-import { title, logo } from '@/constants/systemConstants'
+import { title, logo, homePath, homeName } from '@/constants/systemConsts'
 
 export default {
   //系统名
@@ -17,9 +17,9 @@ export default {
   //路由菜单
   menuRoutes: [],
   //主页路由path值
-  homePath: '/home',
+  homePath: homePath,
   //主页路由name值
-  homeName: 'Frame',
+  homeName: homeName,
   menu: {
     loadingComplete: false,
   },
@@ -43,13 +43,5 @@ export default {
     edit: 'edit',
     see: 'see'
   },
-
-  hiddenFlag: {
-    //显示
-    display: 1,
-    //隐藏
-    hidden: 0
-  },
-
   badgeFlag: true //新增或编辑窗口小徽章显示flag
 }

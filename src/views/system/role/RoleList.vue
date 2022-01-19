@@ -66,6 +66,7 @@
             <el-switch
               v-model="scope.row.enabled"
               @change="enabledChange(scope.row)"
+              :disabled="scope.row.id == superAdminId"
               :active-color="enabledColor"
               :inactive-color="disabledColor"
               :active-value="enabledState.enabled"
@@ -105,12 +106,14 @@
               <el-button
                 size="mini"
                 type="text"
+                :disabled="scope.row.id == superAdminId"
                 @click="handleEdit(scope.row)">编辑
               </el-button>
               <el-divider direction="vertical"></el-divider>
               <el-button
                 size="mini"
                 type="text"
+                :disabled="scope.row.id == superAdminId"
                 @click="handleDelete(scope.row)">删除
               </el-button>
             </div>
@@ -128,13 +131,13 @@
     </div>
 
     <!--添加或修改dialog-->
-    <add_or_edit
+    <add-or-edit
       ref="addOrEdit"
       v-if="transData.dialogVisible"
       :transData="transData"
       @refreshTable="getTable"
     >
-    </add_or_edit>
+    </add-or-edit>
     <!--授权窗口-->
     <grant
       v-if="grantData.dialogVisible"
@@ -147,12 +150,13 @@
 
 <script>
   import { mapState } from 'vuex'
-  import add_or_edit from './components/AddOrEdit'
+  import AddOrEdit from './components/AddOrEdit'
   import grant from './components/Grant'
+  import { super_admin_id } from '@/constants/systemConsts'
 
   export default {
     name: "RoleList",
-    components: { add_or_edit, grant },
+    components: { AddOrEdit, grant },
     data() {
       return {
         loading: false,
@@ -162,6 +166,7 @@
           pageSize: 10,
           total: 0
         },
+        superAdminId: super_admin_id,
         enabledColor: '#13ce66',
         disabledColor: '#ff4949',
         transData: {

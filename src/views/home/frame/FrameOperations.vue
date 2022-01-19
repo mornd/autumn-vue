@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import {leavePageRefreshInterval} from '@/constants/securityConstants'
+  import {leavePageRefreshInterval} from '@/constants/securityConsts'
 
   export default {
     name: "FrameOperation",

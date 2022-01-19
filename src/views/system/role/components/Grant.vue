@@ -54,8 +54,8 @@
 
 <script>
   import { mapState } from 'vuex'
-  import objUtil from '@/utils/objUtil'
-  import { rootMenuId } from '@/constants/systemConstants'
+  import { arrNotEmpty } from '@/utils/objUtil'
+  import { rootMenuId } from '@/constants/systemConsts'
 
   export default {
     name: "Grant",
@@ -85,7 +85,7 @@
         this.$api.getRequest('/role/getAllPers').then(res => {
           if(res.success) {
             const tree = res.data
-            if(objUtil.arrNotEmpty(tree)) {
+            if(arrNotEmpty(tree)) {
               this.formatData(tree)
               //生成菜单树
               this.treeData = tree
@@ -107,7 +107,7 @@
       treeToArr(list, arr) {
         for (const i of list) {
           arr.push(i)
-          if(objUtil.arrNotEmpty(i.children)) {
+          if(arrNotEmpty(i.children)) {
             this.treeToArr(i.children, arr)
           }
         }
@@ -128,7 +128,7 @@
           if(arr[i].enabled != this.enabledState.enabled) {
             arr[i].disabled = true
           }
-          if(objUtil.arrNotEmpty(arr[i].children)) {
+          if(arrNotEmpty(arr[i].children)) {
             this.formatData(arr[i].children)
           }
         }
@@ -161,7 +161,7 @@
             }
           }
         }
-        if(objUtil.arrNotEmpty(node.children)) {
+        if(arrNotEmpty(node.children)) {
           node.children.forEach(i => {this.checkChildren(i, check)})
         }
       },

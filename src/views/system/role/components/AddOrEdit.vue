@@ -52,13 +52,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="8" :offset="4">
-            <el-form-item v-if="currOper != operation.edit" label="是否启用" prop="enabled">
+            <el-form-item
+              v-if="currOper != operation.edit"
+              label="是否启用"
+              prop="enabled"
+            >
               <el-tooltip
                 :content="'当前：' + (form.enabled == enabledState.enabled ? '启用' : '禁用')"
                 placement="top-start"
               >
-                <el-radio-group v-model="form.enabled"
-                                :fill="form.enabled == enabledState.disabled ? failureColor : ''">
+                <el-radio-group
+                  v-model="form.enabled"
+                  :fill="form.enabled == enabledState.disabled ? failureColor : ''"
+                >
                   <el-radio-button :label="enabledState.enabled">是</el-radio-button>
                   <el-radio-button :label="enabledState.disabled">否</el-radio-button>
                 </el-radio-group>
@@ -94,7 +100,7 @@
 
 <script>
   import {mapState } from 'vuex'
-  import { role_prefix } from '@/constants/systemConstants'
+  import { role_prefix } from '@/constants/systemConsts'
   import { failure } from '@/constants/colorConst'
   import { isNotBlank } from '@/utils/validate'
 

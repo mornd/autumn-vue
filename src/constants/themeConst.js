@@ -1,4 +1,5 @@
 //默认主题
+export const defaultTheme = '#409EFF' //String类型
 export const defaultList = [
     '#00ced1',
     '#009f95',

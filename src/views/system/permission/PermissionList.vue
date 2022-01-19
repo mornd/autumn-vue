@@ -161,13 +161,13 @@
     </div>
 
     <!--添加或修改dialog-->
-    <add_or_edit
+    <add-or-edit
       ref="addOrEdit"
       v-if="transData.dialogVisible"
       :transData="transData"
       @refreshTable="getTable"
     >
-    </add_or_edit>
+    </add-or-edit>
   </div>
 </template>
 
@@ -175,11 +175,11 @@
   import {mapState} from 'vuex'
   import { success, failure } from '@/constants/colorConst'
   //添加编辑窗口组件
-  import add_or_edit from '@/views/system/permission/components/AddOrEdit'
+  import AddOrEdit from '@/views/system/permission/components/AddOrEdit'
 
   export default {
     name: "PermissionList",
-    components: {add_or_edit},
+    components: {AddOrEdit},
     data() {
       return {
         //表格加载flag

@@ -4,7 +4,7 @@
 </template>
 
 <script>
-  import { weather_key } from '@/constants/systemConstants'
+  import { weather_key } from '@/constants/systemConsts'
 
   export default {
     name: "WeatherPlugin",

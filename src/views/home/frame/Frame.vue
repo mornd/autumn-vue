@@ -104,7 +104,7 @@
 
     //中间主体
     .el-main {
-      padding: 10px 10px 8px 10px;
+      padding: 10px 10px 10px 10px;
       background: @main-background;
       /*路由占位符*/
       .router-view {

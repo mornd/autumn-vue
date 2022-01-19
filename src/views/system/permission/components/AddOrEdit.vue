@@ -246,8 +246,8 @@
 
 <script>
   import {mapState} from 'vuex'
-  import {EIconPicker} from 'e-icon-picker';
-  import { rootMenuId } from '@/constants/systemConstants'
+  import { EIconPicker } from 'e-icon-picker';
+  import { rootMenuId, hiddenFlag } from '@/constants/systemConsts'
   import { primary, success, failure } from '@/constants/colorConst'
   import { isNotBlank } from '@/utils/validate'
 
@@ -354,6 +354,7 @@
         successColor: success,
         failureColor: failure,
         primaryColor: primary,
+        hiddenFlag: hiddenFlag,
         tipContent: [
           '添加规则：目录/菜单的父级必须是目录，权限的父级可以是目录/菜单，但不能是权限',
           '目录：代表直接插入根节点的父节点(与主页菜单平级)',
@@ -371,7 +372,7 @@
       }
     },
     computed: {
-      ...mapState(['title', 'logo', 'menuType', 'enabledState', 'operation', 'hiddenFlag', 'badgeFlag'])
+      ...mapState(['title', 'logo', 'menuType', 'enabledState', 'operation', 'badgeFlag'])
     },
     created() {
       //表单赋默认值

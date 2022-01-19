@@ -16,7 +16,7 @@
 </template>
 
 <script>
-  import { weather_key } from '@/constants/systemConstants'
+  import { weather_key } from '@/constants/systemConsts'
   // @ is an alias to /src
 
   export default {
@@ -35,17 +35,16 @@
       }
     },
     mounted() {
-      this.searchWeather()
+      this.getWeatherData()
     },
     methods: {
-      searchWeather:async function(){//注意：这里有 async 用来完成异步操作
-        //由于调用api是异步操作
+      getWeatherData() {
+        this.searchWeather()
+      },
+      searchWeather:async function(){
         //在请求的时候需要用async+await让它同步，否则数据不好取出
-        //如果没有await返回的是一个Promise 对象，我学术短浅，暂时没学到，不会取
+        let key = 'f92adeb022734c6e89dd464078b63ff4'//引号中放入前面保存的key
 
-        let key = "xxx"//引号中放入前面保存的key
-
-        //方法二：新的API
         //获取城市的ID
         let httpUrl = `https://geoapi.qweather.com/v2/city/lookup?location=${this.city}&key=${key}`
         let res = await fetch(httpUrl)
