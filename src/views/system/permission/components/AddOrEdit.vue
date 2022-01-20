@@ -68,9 +68,9 @@
               ref="parentMenuSelect"
               placeholder="请选择父级菜单"
               :disabled="form.enabled === enabledState.disabled && currOper !== operation.add"
-
               style="width: 100%"
-              clearable>
+              clearable
+            >
               <el-option
                 v-for="item in parentSelectList"
                 :key="1"

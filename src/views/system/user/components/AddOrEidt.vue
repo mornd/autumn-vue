@@ -32,10 +32,11 @@
         <el-row :gutter="40" justify="space-between">
           <el-col :span="12">
             <el-form-item label="性别" prop="gender">
-              <el-select v-model="form.gender" style="width: 100%">
+              <!--$forceUpdate() 强制刷新select组件-->
+              <el-select v-model="form.gender"  @change="$forceUpdate()" style="width: 100%">
                 <!--key单纯的作为区分使用-->
-                <el-option :key="0" label="男" :value="gender.male"></el-option>
-                <el-option :key="1" label="女" :value="gender.female"></el-option>
+                <el-option :key="1" label="男" :value="gender.male"></el-option>
+                <el-option :key="0" label="女" :value="gender.female"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -75,6 +76,30 @@
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="form.email" clearable></el-input>
         </el-form-item>
+
+        <!--角色选择-->
+        <el-form-item label="角色">
+          <i v-if="roleLoading" class="el-icon-loading"></i>
+          <el-select
+            v-else
+            v-model="form.roles"
+            filterable
+            multiple
+            clearable
+            style="width: 100%"
+          >
+            <el-option
+              v-for="r in allRoles"
+              :label="r.name"
+              :value="r.id"
+              :disabled="r.enabled == enabledState.disabled"
+              :key="r.id"
+            >
+              <span style="float: left">{{ r.name }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ r.code }}</span>
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <template slot="footer">
         <span class="dialog-footer" v-if="currOper !== operation.see">
@@ -93,6 +118,7 @@
   import { isNotBlank,isvalidPhone } from '@/utils/validate'
   import { gender } from '@/constants/systemConsts'
   import { failure } from '@/constants/colorConst'
+  import { arrNotEmpty } from '@/utils/objUtil'
 
   export default {
     name: "AddOrEidt",
@@ -129,6 +155,8 @@
       return {
         currOper: undefined,
         submitLoading: false,
+        allRoles: [],
+        roleLoading: true,
         form: {
           id: '',//需指定为空字符串，否则表单验证时会出问题,会将undefined作为字符串传入后台
           status: undefined,
@@ -138,7 +166,7 @@
           realName: [{ required: true, message: '请输入姓名', trigger: 'blur' },
             { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }],
           status: [{required: true, trigger: 'blur'}],
-          gender: [{required: true, trigger: 'blur'}],
+          gender: [{required: true, message: '请选择性别', trigger: 'blur'}],
           phone: [{required: false, validator: validatePhone, trigger: 'blur'}],
           email: [{required: false, type: 'email', message: '邮箱格式不正确', trigger: 'blur'}]
         },
@@ -159,8 +187,31 @@
       if (this.transData.operation != this.operation.add) {
         this.form = this.transData.data
       }
+      this.getAllRoles()
     },
     methods: {
+      //获取所有角色列表
+      getAllRoles() {
+        this.roleLoading = true
+        this.$api.getRequest('/sysUser/ageAllRoles').then(res => {
+          if(res.success) {
+            this.allRoles = []
+            if(arrNotEmpty(res.data)) {
+              this.allRoles = res.data
+              if(this.currOper !== 'add') {
+                this.$api.getRequest(`/sysUser/getRoleById/${this.form.id}`).then(res => {
+                  if(res.success) {
+                    this.form.roles = res.data
+                  }
+                  this.roleLoading = false
+                })
+              } else {
+                this.roleLoading = false
+              }
+            }
+          }
+        })
+      },
       //表单提交
       formSubmit(formName) {
         this.submitLoading = true;
@@ -204,6 +255,12 @@
 </script>
 
 <style lang="less" scoped>
+  .from {
+    height: 380px;
+    overflow: auto;
+    padding-right: 25px
+  }
+
   /*dialog最外层样式*/
   /deep/ .el-dialog {
     border-radius: 5px;
@@ -211,7 +268,7 @@
 
   /*dialog主体*/
   /deep/ .el-dialog__body {
-    padding: 12px 12px 5px 12px;
+    padding: 15px 0 5px 10px;
   }
 
   /*表单样式*/

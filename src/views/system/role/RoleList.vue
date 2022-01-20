@@ -34,7 +34,7 @@
     <div class="crud-content">
       <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 10px">添加</el-button>
       <el-table
-        max-height="520"
+        max-height="430"
         size="small"
         :data="tableData"
         v-loading="loading">
@@ -220,10 +220,10 @@
       enabledChange(row) {
         let msg, url, enabled = this.enabledState.enabled, disabled = this.enabledState.disabled
         if (enabled == row.enabled) {
-          msg = '是否启用该节点？'
+          msg = '是否启用该角色？'
           url = `/role/changeState?id=${row.id}&state=${enabled}`
         } else if (disabled == row.enabled) {
-          msg = '是否禁用该节点？'
+          msg = '是否禁用该角色？'
           url = `/role/changeState?id=${row.id}&state=${disabled}`
         }
         this.$confirm(msg, '系统提示', {
@@ -233,6 +233,7 @@
         }).then(() => {
           this.$api.getRequest(url).then(res => {
             if (res.success) {
+              this.getTable();
               this.$store.dispatch('setUser').then(res => {
                 this.$store.dispatch('setMenuRoutes')
               })

@@ -55,10 +55,12 @@
         </el-table-column>
         <el-table-column
           prop="realName"
+          align="center"
           label="姓名">
         </el-table-column>
         <el-table-column
           prop="gender"
+          align="center"
           label="性别">
           <template #default="scope">
             <i
@@ -70,6 +72,7 @@
         </el-table-column>
         <el-table-column
           prop="age"
+          align="center"
           label="年龄">
           <template #default="scope">
             <span>{{ scope.row.birthday | showAge }}</span>
@@ -119,12 +122,6 @@
           align="center">
           <template #default="scope">
             <div>
-              <el-button
-                size="mini"
-                type="text"
-                @click="handleSee(scope.row)">授权
-              </el-button>
-              <el-divider direction="vertical"></el-divider>
               <el-button
                 size="mini"
                 type="text"
@@ -234,10 +231,10 @@
       enabledChange(row) {
         let msg, url, enabled = this.enabledState.enabled, disabled = this.enabledState.disabled
         if (enabled == row.status) {
-          msg = '是否启用该节点？'
+          msg = '是否启用该用户？'
           url = `/sysUser/changeState?id=${row.id}&state=${enabled}`
         } else if (disabled == row.status) {
-          msg = '是否禁用该节点？'
+          msg = '是否禁用该用户？'
           url = `/sysUser/changeState?id=${row.id}&state=${disabled}`
         }
         this.$confirm(msg, '系统提示', {
@@ -247,6 +244,7 @@
         }).then(() => {
           this.$api.getRequest(url).then(res => {
             if (res.success) {
+              this.getTable()
               this.$store.dispatch('setUser').then(res => {
                 this.$store.dispatch('setMenuRoutes')
               })
@@ -273,12 +271,6 @@
         this.transData.operation = this.operation.add;
         this.transData.title = '添加';
         this.transData.dialogVisible = true;
-      },
-      //授权菜单
-      handleGrantPers(row) {
-        this.grantData.title = '授权';
-        Object.assign(this.grantData.data = {}, row);
-        this.grantData.dialogVisible = true;
       },
       //查看
       handleSee(row) {
@@ -322,7 +314,7 @@
       }
     },
     computed: {
-      ...mapState(['operation', 'enabledState'])
+      ...mapState(['operation', 'enabledState']),
     },
     filters: {
       //将生日格式为年龄
@@ -333,6 +325,5 @@
   }
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
 </style>

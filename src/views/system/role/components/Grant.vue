@@ -13,11 +13,10 @@
           size="small"
           v-model="filterText">
         </el-input>
-
-          <!--<el-button-group style="margin-top: 10px">
-            <el-button type="primary" size="mini">全选</el-button>
-            <el-button type="primary" size="mini" @click="clearTree">清空</el-button>
-          </el-button-group>-->
+          <el-button-group style="margin-top: 10px">
+            <el-button type="primary" size="mini" @click="selectAllTree" icon="el-icon-check">全选</el-button>
+            <el-button type="primary" size="mini" @click="clearTree" icon="el-icon-delete">清空</el-button>
+          </el-button-group>
 
         <div style="height: 310px; margin-top: 10px; overflow: auto">
           <p style="text-align: center; font-size: 20px" v-if="treeLoading">
@@ -86,13 +85,11 @@
           if(res.success) {
             const tree = res.data
             if(arrNotEmpty(tree)) {
-              this.formatData(tree)
+              this.setEnabledState(tree)
               //生成菜单树
               this.treeData = tree
-              let arr = []
-              this.treeToArr(tree, arr)
-              //用于下文方便比较
-              this.allTreeNode = arr
+              //将tree结构格式为arr结构 用于下文方便比较
+              this.treeToArr(tree)
               this.getDefaultCheckKeys().then(res => {
                 //回显默认选中的值
                 //this.$refs.tree.setCheckedKeys(res) //方式1
@@ -103,12 +100,23 @@
           }
         })
       },
+      //设置禁用值
+      setEnabledState(arr) {
+        for (let i = 0; i < arr.length; i++) {
+          if(arr[i].enabled != this.enabledState.enabled) {
+            arr[i].disabled = true
+          }
+          if(arrNotEmpty(arr[i].children)) {
+            this.setEnabledState(arr[i].children)
+          }
+        }
+      },
       //将tree结构转换为Array类型
-      treeToArr(list, arr) {
+      treeToArr(list) {
         for (const i of list) {
-          arr.push(i)
+          this.allTreeNode.push(i)
           if(arrNotEmpty(i.children)) {
-            this.treeToArr(i.children, arr)
+            this.treeToArr(i.children)
           }
         }
       },
@@ -122,17 +130,7 @@
           })
         })
       },
-      //设置禁用值
-      formatData(arr) {
-        for (let i = 0; i < arr.length; i++) {
-          if(arr[i].enabled != this.enabledState.enabled) {
-            arr[i].disabled = true
-          }
-          if(arrNotEmpty(arr[i].children)) {
-            this.formatData(arr[i].children)
-          }
-        }
-      },
+      //树节点搜索过滤功能
       filterNode(value, data) {
         if (!value) return true;
         return data.title.indexOf(value) !== -1;
@@ -141,19 +139,19 @@
       //参数2：树目前的选中状态对象，包含 checkedNodes、checkedKeys、halfCheckedNodes、halfCheckedKeys 四个属性
       treeCheck(checkNode, checkState) {
         const check = this.checkKeys.includes(checkNode.id)
-        //勾选父级
+        //自动勾选父级
         this.checkParent(checkNode, check)
-        //勾选子集
+        //自动勾选子集
         this.checkChildren(checkNode, check)
         this.$refs.tree.setCheckedKeys(this.checkKeys)
       },
 
       //同步选中/清除子节点 check(boolean) = 是否是选中操作
       checkChildren(node, check) {
-        if(node.enabled == this.enabledState.enabled) { //状态为启用
+        if(node.enabled == this.enabledState.enabled) { //状态为启用才进行操作
           if(check) {
             //取消选中操作，移除数组中对应的元素
-            this.removeArrItem(node.id)
+            this.removeArrById(node.id)
           } else {
             //选中操作，数组中新增对应的元素
             if(!this.checkKeys.includes(node.id)) {
@@ -189,10 +187,10 @@
       },
 
       /**
-       * 删除数组中对应id的元素
+       * 删除数组中对应id的元素（根据id删除数据元素）
        * @param id
        */
-      removeArrItem(id) {
+      removeArrById(id) {
         for (let i = 0; i < this.checkKeys.length; i++) {
           if(this.checkKeys[i] == id) {
             this.checkKeys.splice(i, 1);
@@ -214,6 +212,54 @@
             this.$router.go()
           }
         })
+      },
+
+      //全选
+      selectAllTree() {
+        let disArr = []
+        //获取选中并禁用的数据id
+        for (const i of this.allTreeNode) {
+          for (const j of this.checkKeys) {
+            if(i.id == j && i.enabled == this.enabledState.disabled) {
+              disArr.push(j)
+              break
+            }
+          }
+        }
+        this.checkKeys = []
+        //获取所有启用的数据
+        this.allTreeNode.forEach(i => {
+          if(i.enabled == this.enabledState.enabled) { //只勾选所有启用状态的节点
+            this.checkKeys.push(i.id)
+          }
+        })
+        //合并启用状态的数组及既是选中状态又是禁用的数组
+        disArr.forEach(id => {
+          if(!this.checkKeys.includes(id)) {
+            this.checkKeys.push(id)
+          }
+        })
+        this.$refs.tree.setCheckedKeys(this.checkKeys)
+      },
+
+      //清空所选数据
+      clearTree() {
+        let disArr = []
+        //获取所有禁用数据
+        this.allTreeNode.forEach(i => {
+          if(i.enabled == this.enabledState.disabled) {
+            disArr.push(i.id)
+          }
+        })
+        let retainArr = []
+        //获取即使选中状态有是禁用状态的数据
+        this.checkKeys.forEach(i => {
+          if(disArr.includes(i)) {
+              retainArr.push(i)
+            }
+        })
+        this.checkKeys = retainArr
+        this.$refs.tree.setCheckedKeys(this.checkKeys)
       }
     },
     computed: {
