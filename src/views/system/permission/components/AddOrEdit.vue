@@ -2,7 +2,7 @@
   <div>
     <!--对话框-->
     <el-dialog
-      top="7vh"
+      top="10vh"
       :visible.sync="transData.dialogVisible"
       :title="transData.title"
       :close-on-click-modal="false"

@@ -68,7 +68,7 @@
       v-if="menu.loadingComplete && !menuRoutes.length"
       class="empty-text"
     >
-      /(ㄒoㄒ)/~~&emsp;无数据！
+      /(ㄒoㄒ)/~~&emsp;空空如也！
     </p>
   </div>
 </template>

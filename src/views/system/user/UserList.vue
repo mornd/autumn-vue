@@ -59,6 +59,25 @@
           label="姓名">
         </el-table-column>
         <el-table-column
+          prop="avatar"
+          label="头像"
+          align="center">
+          <template #default="scope">
+            <div style="height: 38px">
+              <el-image
+                class="avatar"
+                :src="scope.row.avatar ? scope.row.avatar : defaultAvatar"
+                :title="scope.row.avatar ? '点击预览' : ''"
+                :preview-src-list="avatarList(scope.row.avatar)"
+              >
+                <div slot="error" style="font-size: 40px" title="图片加载失败">
+                  <i class="el-icon-picture-outline"></i>
+                </div>
+              </el-image>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="gender"
           align="center"
           label="性别">
@@ -168,6 +187,8 @@
   import { gender } from '@/constants/systemConsts'
   import AddOrEdit from './components/AddOrEidt'
   import { birthdayToAge } from '@/utils/objUtil'
+  import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png'
+  import errorAvatar from '@/assets/images/avatar/errorAvatar.png'
 
   export default {
     name: "UserList",
@@ -186,7 +207,9 @@
         transData: {
           dialogVisible: false,
         },
-        gender: gender
+        gender: gender,
+        errorAvatar,
+        defaultAvatar
       }
     },
     mounted() {
@@ -226,6 +249,14 @@
         this.crudObj.pageNo = 1
         this.crudObj.pageSize = 10
         this.getTable()
+      },
+      //用户列表头像大图预览
+      avatarList(src) {
+        if(src) {
+          let arr = []
+          arr.push(src)
+          return arr
+        }
       },
       //更改状态
       enabledChange(row) {
@@ -326,4 +357,11 @@
 </script>
 
 <style lang="less" scoped>
+  @imgHeight: 38px;
+  //头像
+  .avatar {
+    width: @imgHeight;
+    height: @imgHeight;
+    border-radius: 5px;
+  }
 </style>

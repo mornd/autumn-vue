@@ -36,16 +36,16 @@
       <li class="user-info-li">
         <el-dropdown @command="handleCommand">
           <div class="user-info">
-            <!--用户头像 src默认未加载图片路径-->
-            <el-avatar :size="30" src="" @error="avatarLoadingFailure" class="user_face">
+            <!--用户头像-->
+            <el-avatar
+              :src="userAvatar"
+              @error="avatarLoadingFailure"
+              :size="30"
+              class="user_face"
+            >
               <!--图片加载失败显示的默认图片-->
-              <img src="../../../assets/images/avatar/user1.png" />
+              <img :src="errorAvatar">
             </el-avatar>
-            <!--<el-avatar :size="30" src="https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg" @error="() => true" class="user_face">
-              &lt;!&ndash;图片加载失败显示的默认图片&ndash;&gt;
-              <img src="../../../assets/images/avatar/default.png">
-            </el-avatar>-->
-
             <!--用户名-->
             <span v-text="loginName"></span>
           </div>
@@ -86,6 +86,9 @@
   import MoreDrawer from './moreDrawer/MoreDrawer'
   import NowDate from '@/components/gadgets/NowDate'
   import weather_plugin from './WeatherPlugin'
+  //使用js方式动态导入本地图片
+  import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png'
+  import errorAvatar from '@/assets/images/avatar/errorAvatar.png'
 
   export default {
     name: "HeaderBar",
@@ -94,21 +97,29 @@
       return {
         //浏览器是否全屏展示
         fullscreen: false,
-        drawerVisible: false
+        drawerVisible: false,
+        //用户未选择头像时展示的默认图片
+        defaultAvatar,
+        //图片路径错误显示的图片
+        errorAvatar,
       }
     },
     mounted() {
+      console.log(this.user);
       let that = this
       window.onresize = function(){
         if(!that.checkFull()){
-          that.fullscreen = false;
+          that.fullscreen = false
         }
       }
     },
     computed: {
       //获取当前登录用户信息
       ...mapState(['user', 'isCollapse', 'theme']),
-      ...mapGetters(['loginName'])
+      ...mapGetters(['loginName']),
+      userAvatar() {
+        return this.user.avatar ? this.user.avatar : this.defaultAvatar
+      }
     },
     methods: {
       //展开收起菜单
@@ -127,7 +138,7 @@
         if (isFull === undefined) {
           isFull = false
         }
-        return isFull;
+        return isFull
       },
       //浏览器全屏事件
       handleFullScreen(){
@@ -177,9 +188,9 @@
         }
       },
       //用户头像加载失败回调
-      avatarLoadingFailure(){
+      avatarLoadingFailure(e){
         this.$message.error('用户头像加载失败');
-        return true;
+        return true
       },
     }
   }
@@ -211,6 +222,7 @@
           width: 30px;
           height: 32px;
           background-color: #FFF;
+          box-shadow: 0 0 2px rgb(0 21 41 / 35%);
           vertical-align: middle;
           position: relative;
         }

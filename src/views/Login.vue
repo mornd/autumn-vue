@@ -1,10 +1,6 @@
 <template>
   <!--登录页面主体部分-->
-  <div class="login-body"
-       v-loading="loading"
-       element-loading-text="正在登入..."
-       element-loading-spinner="el-icon-loading"
-       element-loading-background="rgba(0, 0, 0, 0.2)">
+  <div class="login-body">
     <!--登录表单容器-->
     <el-form ref="loginForm"
              :rules="rules"
@@ -70,9 +66,15 @@
 
       <el-form-item>
         <!--提交按钮-->
-        <el-button type="primary" class="submitBtn" @click="submitForm()" :style="{backgroundColor: theme}">
+        <el-button
+          type="primary"
+          class="submitBtn"
+          @click="submitForm()"
+          :style="{backgroundColor: theme}"
+          :disabled="loading"
+        >
           <span v-if="!loading">登&emsp;入</span>
-          <span v-else><i class="el-icon-loading" style="margin-right: 10px"/>登&emsp;入&emsp;中&emsp;...</span>
+          <span v-else><i class="el-icon-loading" style="margin-right: 10px"></i>登&emsp;入&emsp;中&emsp;...</span>
         </el-button>
       </el-form-item>
 
@@ -214,38 +216,40 @@
 
       //表单提交
       submitForm() {
-        //与ref属性对应
-        this.$refs['loginForm'].validate(valid => {
-          if (valid) {
-            //加载动画
-            this.loading = true
-            //加密密码😂
-            const tempForm = Object.assign({},
-                this.loginForm,
-                {
-                  desEncrypt: true,
-                  password: encrypt(this.loginForm.password)
-                })
-            //封装的post请求
-            this.$api.postRequest('/userLogin', tempForm).then(res => {
-              if(res.success){
-                //存储用户token
-                const tokenStr = res.data.tokenHead + res.data.token;
-                this.$store.commit('SET_TOKEN', tokenStr);
-                this.$router.replace(this.homePath);
-              }else{
-                //登录失败
-                this.loginForm.code = '';
-                this.getCaptcha();
-                this.loading = false;
-              }
-            })
-          } else {
-            //表单验证不通过
-            this.$message.warning('请重新校验必填项');
-            return false;
-          }
-        });
+        if(!this.loading) {
+          //与ref属性对应
+          this.$refs['loginForm'].validate(valid => {
+            if (valid) {
+              //加载动画
+              this.loading = true
+              //加密密码😂
+              const tempForm = Object.assign({},
+                  this.loginForm,
+                  {
+                    desEncrypt: true,
+                    password: encrypt(this.loginForm.password)
+                  })
+              //封装的post请求
+              this.$api.postRequest('/userLogin', tempForm).then(res => {
+                if(res.success){
+                  //存储用户token
+                  const tokenStr = res.data.tokenHead + res.data.token;
+                  this.$store.commit('SET_TOKEN', tokenStr);
+                  this.$router.replace(this.homePath);
+                }else{
+                  //登录失败
+                  this.loginForm.code = '';
+                  this.getCaptcha();
+                  this.loading = false;
+                }
+              })
+            } else {
+              //表单验证不通过
+              this.$message.warning('请重新校验必填项');
+              return false;
+            }
+          });
+        }
       },
       changeLogin() {
       }

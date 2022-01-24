@@ -86,6 +86,7 @@
             filterable
             multiple
             clearable
+            placeholder=""
             style="width: 100%"
           >
             <el-option

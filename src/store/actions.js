@@ -42,8 +42,8 @@ export default {
             })
             let formatMenus = getFormatMenus(router, menus, state.homeName);
             commit('SET_MENU_ROUTES', formatMenus)
-            resolve()
           }
+          resolve()
         }
       })
     })

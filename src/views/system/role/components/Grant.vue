@@ -14,8 +14,8 @@
           v-model="filterText">
         </el-input>
           <el-button-group style="margin-top: 10px">
-            <el-button type="primary" size="mini" @click="selectAllTree" icon="el-icon-check">全选</el-button>
-            <el-button type="primary" size="mini" @click="clearTree" icon="el-icon-delete">清空</el-button>
+            <el-button type="primary" size="mini" @click="selectAllTree">全选</el-button>
+            <el-button type="primary" size="mini" @click="clearTree">清空</el-button>
           </el-button-group>
 
         <div style="height: 310px; margin-top: 10px; overflow: auto">
@@ -146,7 +146,7 @@
         this.$refs.tree.setCheckedKeys(this.checkKeys)
       },
 
-      //同步选中/清除子节点 check(boolean) = 是否是选中操作
+      //同步选中 | 清除子节点 check(boolean) = 是否是选中操作
       checkChildren(node, check) {
         if(node.enabled == this.enabledState.enabled) { //状态为启用才进行操作
           if(check) {
