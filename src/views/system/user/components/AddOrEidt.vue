@@ -257,7 +257,7 @@
 
 <style lang="less" scoped>
   .from {
-    height: 380px;
+    height: 370px;
     overflow: auto;
     padding-right: 25px
   }
@@ -269,7 +269,7 @@
 
   /*dialog主体*/
   /deep/ .el-dialog__body {
-    padding: 15px 0 5px 10px;
+    padding: 15px 0 5px 15px;
   }
 
   /*表单样式*/

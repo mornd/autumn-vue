@@ -32,7 +32,7 @@
     </div>
 
     <div class="crud-content">
-      <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 10px">添加</el-button>
+      <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
       <el-table
         max-height="520"
         size="small"
@@ -66,6 +66,7 @@
             <div style="height: 38px">
               <el-image
                 class="avatar"
+                fit="cover"
                 :src="scope.row.avatar ? scope.row.avatar : defaultAvatar"
                 :title="scope.row.avatar ? '点击预览' : ''"
                 :preview-src-list="avatarList(scope.row.avatar)"
@@ -92,10 +93,8 @@
         <el-table-column
           prop="age"
           align="center"
+          :formatter="formatAge"
           label="年龄">
-          <template #default="scope">
-            <span>{{ scope.row.birthday | showAge }}</span>
-          </template>
         </el-table-column>
         <el-table-column
           prop="phone"
@@ -137,7 +136,7 @@
         <el-table-column
           prop="name"
           label="操作"
-          width="200"
+          width="150"
           align="center">
           <template #default="scope">
             <div>
@@ -207,7 +206,7 @@
         transData: {
           dialogVisible: false,
         },
-        gender: gender,
+        gender,
         errorAvatar,
         defaultAvatar
       }
@@ -334,6 +333,10 @@
           }).catch(() => {})
         }
       },
+      //将出生日期转为年龄
+      formatAge(row, column, cellValue, index) {
+        return row.birthday ? birthdayToAge(row.birthday) : '未知'
+      },
       //分页操作
       handleSizeChange(size) {
         this.crudObj.pageSize = size
@@ -347,12 +350,6 @@
     computed: {
       ...mapState(['operation', 'enabledState']),
     },
-    filters: {
-      //将生日格式为年龄
-      showAge(birthday) {
-        return birthday ? birthdayToAge(birthday) : '未知'
-      }
-    }
   }
 </script>
 

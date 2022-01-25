@@ -210,7 +210,7 @@
 
 <style lang="less" scoped>
   //form表单高度
-  @form-height: 320px;
+  @form-height: 310px;
 
   .from {
     height: @form-height;

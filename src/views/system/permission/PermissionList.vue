@@ -19,7 +19,7 @@
     </div>
 
     <div class="crud-content">
-      <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 10px">添加</el-button>
+      <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
       <el-table
         max-height="480"
         size="small"
@@ -133,7 +133,7 @@
         <el-table-column
           prop="name"
           label="操作"
-          width="160"
+          width="150"
           align="center">
           <template #default="scope">
             <div>
@@ -318,9 +318,6 @@
           })
         }
       },
-      /*格式化操作*/
-      formatMenuType(row, column, cellValue, index) {
-      }
     }
   }
 </script>

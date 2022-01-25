@@ -1,11 +1,17 @@
 <template>
   <!--登录页面主体部分-->
-  <div class="login-body">
+  <div class="login-body"
+   v-loading="loading"
+   element-loading-text="正在登入..."
+   element-loading-spinner="el-icon-loading"
+   element-loading-background="rgba(0, 0, 0, 0.2)"
+  >
     <!--登录表单容器-->
     <el-form ref="loginForm"
-             :rules="rules"
-             :model="loginForm"
-             class="login-container">
+     :rules="rules"
+     :model="loginForm"
+     class="login-container"
+    >
 
       <!--表单标题-->
       <p class="title" :style="{color : theme}">{{ title }}</p>

@@ -41,6 +41,7 @@
               :src="userAvatar"
               @error="avatarLoadingFailure"
               :size="30"
+              fit="fill"
               class="user_face"
             >
               <!--图片加载失败显示的默认图片-->

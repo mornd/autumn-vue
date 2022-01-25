@@ -64,12 +64,13 @@
     </transition>
 
     <!--菜单数据为空时展示-->
-    <p
+    <div
       v-if="menu.loadingComplete && !menuRoutes.length"
       class="empty-text"
     >
-      /(ㄒoㄒ)/~~&emsp;空空如也！
-    </p>
+      <p v-if="!isCollapse">空空如也!</p>
+      <i v-else class="fa fa-inbox"></i>
+    </div>
   </div>
 </template>
 
@@ -103,8 +104,8 @@
   }
 
   .empty-text {
+    margin-top: 20px;
     text-align: center;
-    font-size: 14px;
     color: @color;
   }
 

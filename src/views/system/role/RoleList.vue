@@ -32,7 +32,8 @@
     </div>
 
     <div class="crud-content">
-      <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 10px">添加</el-button>
+      <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
+
       <el-table
         max-height="430"
         size="small"
@@ -121,6 +122,7 @@
         </el-table-column>
       </el-table>
       <el-pagination
+        style="margin-top: 5px"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :page-sizes="[10, 20, 50]"

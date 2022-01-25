@@ -30,9 +30,9 @@ ul {
 .crud-content {
   background: #FFF;
   margin-top: 10px;
-  padding-top: 10px;
   border-radius: 3px;
-  padding-bottom: 5px;
+  padding: 10px 5px 3px 5px;
+
 }
 
 /*表单项*/
