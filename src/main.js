@@ -9,13 +9,13 @@ import '@/assets/css/plugins.css'
 import '@/assets/css/animations.css'
 
 import 'font-awesome/css/font-awesome.css';
-import '@/plugins/element-ui';
-
-Vue.config.productionTip = false
+import '@/plugins/plugins';
 
 import api from '@/utils/api';
 
 Vue.prototype.$api = api;
+
+Vue.config.productionTip = false
 
 new Vue({
   router,

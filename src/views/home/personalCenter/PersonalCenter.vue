@@ -83,17 +83,17 @@
       </el-card>
     </div>
 
-
     <!--头像选择-->
     <el-dialog
       title="更换头像"
-      :visible.sync="avaterVisible"
-      width="40%">
-      <avater-pincker></avater-pincker>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="avaterVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" size="small">上 传</el-button>
-      </span>
+      :visible.sync="avatarVisible"
+      :width="dialogWidth"
+    >
+      <avatar-pincker
+        :avatarUrl="user.avatar"
+        @uploadSuccess="changeAvatar"
+      >
+      </avatar-pincker>
     </el-dialog>
   </div>
 </template>
@@ -101,7 +101,7 @@
   import ChangeInfo from './ChangeInfo'
   import ChangePassword from './ChangePassword'
   //头像选择
-  import avaterPincker from './avaterPicker'
+  import avatarPincker from './avatarPicker'
   import { mapGetters } from 'vuex'
   import { birthdayToAge } from '@/utils/objUtil'
   import { gender } from '@/constants/systemConsts'
@@ -109,21 +109,47 @@
 
   export default {
     name: "PersonalCenter",
-    components: {ChangePassword, ChangeInfo, avaterPincker},
+    components: {ChangePassword, ChangeInfo, avatarPincker},
     data() {
       return {
         rightInfo: 'info',
         //左侧卡片相关
         defaultAvatar,
         maskVisible: false,
-        avaterVisible: false,
+        avatarVisible: false,
         gender,
+        dialogWidth: '650px'
+      }
+    },
+    mounted() {
+      //dialog缩放的宽度
+      window.onresize = () => {
+        return (() => {
+          this.setDialogWidth()
+        })()
       }
     },
     methods: {
       avatarClick() {
-        this.avaterVisible = true
-      }
+        this.avatarVisible = true
+      },
+      //用户头像上传成功后，更改页面的用户头像
+      changeAvatar(url) {
+        this.avatarVisible = false
+        console.log(url);
+        this.$store.commit('SET_USER_AVATAR', url)
+        //更新数据库信息
+        this.$api.putRequest('/sysUser/avatar', {id: this.user.id, avatar: url}).then(res => {})
+      },
+      setDialogWidth() {
+        let val = document.body.clientWidth
+        const def = 650 // 默认宽度
+        if (val < def) {
+          this.dialogWidth = '100%'
+        } else {
+          this.dialogWidth = def + 'px'
+        }
+      },
     },
     computed: {
       //用户信息
@@ -225,5 +251,10 @@
     .right {
       width: 100%;
     }
+
+    /deep/ .el-dialog {
+      border-radius: 5px;
+    }
+
   }
 </style>

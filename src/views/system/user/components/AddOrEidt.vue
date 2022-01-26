@@ -6,7 +6,7 @@
       :visible.sync="transData.dialogVisible"
       :title="transData.title"
       :close-on-click-modal="false"
-      width="50%"
+      :width="dialogWidth"
     >
       <!--表单-->
       <el-form
@@ -153,8 +153,13 @@
           }
         }
       }
+      //dialog默认宽度
+      const dialogDefWidth = 850
       return {
         currOper: undefined,
+        //dialog宽度
+        dialogWidth: dialogDefWidth + 'px',
+        dialogDefWidth,
         submitLoading: false,
         allRoles: [],
         roleLoading: true,
@@ -182,6 +187,12 @@
       }
     },
     mounted() {
+      //监听body元素宽度
+      window.onresize = () => {
+        return (() => {
+          this.setDialogWidth()
+        })()
+      }
       this.form.status = this.enabledState.enabled
       this.form.gender = this.gender.male
       this.currOper = this.transData.operation
@@ -244,7 +255,17 @@
             return false;
           }
         });
-      }
+      },
+      //动态设置dialog宽度
+      setDialogWidth() {
+        let val = document.body.clientWidth
+        const def = this.dialogDefWidth // 默认宽度
+        if (val < def) {
+          this.dialogWidth = '100%'
+        } else {
+          this.dialogWidth = def + 'px'
+        }
+      },
     },
     computed: {
       ...mapState(['operation', 'enabledState'])

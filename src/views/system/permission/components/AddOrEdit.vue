@@ -6,7 +6,7 @@
       :visible.sync="transData.dialogVisible"
       :title="transData.title"
       :close-on-click-modal="false"
-      width="50%"
+      :width="dialogWidth"
     >
       <template slot="title">
         <span style="font-size: 18px;">{{transData.title}}</span>
@@ -297,9 +297,15 @@
           callback(new Error("编码不能为空"))
         }
       };
+      //dialog默认宽度
+      const dialogDefWidth = 850
+
       return {
         //操作该组件的类型
         currOper: undefined,
+        //dialog宽度
+        dialogWidth: dialogDefWidth + 'px',
+        dialogDefWidth,
         //表单对象
         form: {
           //需指定为空字符串，否则表单验证时会出问题
@@ -381,6 +387,12 @@
       this.form.hidden = this.hiddenFlag.display;
     },
     mounted() {
+      //监听body元素宽度
+      window.onresize = () => {
+        return (() => {
+          this.setDialogWidth()
+        })()
+      }
       this.currOper = this.transData.operation
       if (this.transData.operation != this.operation.add) {
         this.form = this.transData.data
@@ -568,6 +580,16 @@
       //徽章操作
       popoverShow() {
         this.$store.commit('SET_BADGEFLAG', false)
+      },
+      //动态设置dialog宽度
+      setDialogWidth() {
+        let val = document.body.clientWidth
+        const def = this.dialogDefWidth // 默认宽度
+        if (val < def) {
+          this.dialogWidth = '100%'
+        } else {
+          this.dialogWidth = def + 'px'
+        }
       },
     },
     props: {

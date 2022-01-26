@@ -31,5 +31,9 @@ export default {
   //设置页面只加载一次的徽章
   SET_BADGEFLAG(state, flag) {
     state.badgeFlag = flag
+  },
+  //更换头像
+  SET_USER_AVATAR(state, url) {
+    state.user.avatar = url
   }
 }

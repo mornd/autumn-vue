@@ -6,7 +6,7 @@
       :visible.sync="transData.dialogVisible"
       :title="transData.title"
       :close-on-click-modal="false"
-      width="45%"
+      :width="dialogWidth"
     >
       <!--<template slot="title">
         <span style="font-size: 18px;">{{transData.title}}</span>
@@ -141,8 +141,13 @@
           callback(new Error("角色编码不能为空"))
         }
       };
+      //dialog默认宽度
+      const dialogDefWidth = 750
       return {
         currOper: null,
+        //dialog宽度
+        dialogWidth: dialogDefWidth + 'px',
+        dialogDefWidth,
         form: {
           //需指定为空字符串，否则表单验证时会出问题
           id: '',
@@ -161,6 +166,12 @@
       }
     },
     mounted() {
+      //监听body元素宽度
+      window.onresize = () => {
+        return (() => {
+          this.setDialogWidth()
+        })()
+      }
       this.form.enabled = this.enabledState.enabled
       this.currOper = this.transData.operation
       if (this.transData.operation != this.operation.add) {
@@ -197,7 +208,17 @@
             return false;
           }
         });
-      }
+      },
+      //动态设置dialog宽度
+      setDialogWidth() {
+        let val = document.body.clientWidth
+        const def = this.dialogDefWidth // 默认宽度
+        if (val < def) {
+          this.dialogWidth = '100%'
+        } else {
+          this.dialogWidth = def + 'px'
+        }
+      },
     },
     computed: {
       ...mapState(['operation', 'enabledState'])
