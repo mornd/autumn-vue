@@ -205,7 +205,7 @@
       //获取所有角色列表
       getAllRoles() {
         this.roleLoading = true
-        this.$api.getRequest('/sysUser/ageAllRoles').then(res => {
+        this.$api.getRequest('/sysUser/getAllRoles').then(res => {
           if(res.success) {
             this.allRoles = []
             if(arrNotEmpty(res.data)) {

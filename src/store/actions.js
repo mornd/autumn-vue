@@ -75,6 +75,6 @@ export default {
     //跳转到登录页
     router.replace('/login');
     //location.reload()
-    console.log('退出成功。');
+    console.log('退出成功');
   }
 }

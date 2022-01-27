@@ -60,9 +60,6 @@
     </el-form>
 
     <el-result v-if="active === 3" icon="success" title="操作成功" subTitle="你的密码已修改，请重新登录。">
-      <template slot="extra">
-        <el-button type="primary" size="medium">确定</el-button>
-      </template>
     </el-result>
   </div>
 </template>
@@ -133,10 +130,10 @@
           if(valid) {
             this.oldPwdBtnLoading = true
             let encryptPwd = encrypt(this.pwd.oldPwd)
-            this.$api.getRequest(`/sysUser/verifyCurrentPassword/${encryptPwd}`).then(res => {
+            this.$api.getRequest(`/sysUser/verifyCurrentPassword?oldPwd=${encryptPwd}`).then(res => {
               if(res.success) {
                 if(res.data) {
-                  this.active = 1;
+                  this.active = 1
                 } else {
                   this.$message.error('密码验证错误')
                 }
@@ -162,13 +159,12 @@
             this.$api.postRequest(`/sysUser/changePwd`, encryptPwd).then(res => {
               if(res.success) {
                 this.active = 3
-                this.$store.dispatch('logout')
+                //this.$store.dispatch('logout')
+                this.$store.dispatch('tokenExpirationExit')
                 this.$alert('你的密码已修改，请重新登录。', '系统提示', {//下线通知
                   confirmButtonText: '确定',
                   type: 'success',
-                  callback: action => {
-                    //this.$store.dispatch('logout')
-                  }
+                  callback: action => {}
                 });
               }
               this.changePwdBtnLoading = false

@@ -65,7 +65,7 @@
           </ul>
 
           <!--角色tags列表-->
-          <div style="margin-top: 40px">
+          <div style="margin-top: 20px">
             <p>所属角色：</p>
             <div class="roles">
               <el-tag
@@ -188,7 +188,7 @@
 <style lang="less" scoped>
   .container {
     .left {
-      width: 450px;
+      width: 440px;
       margin-right: 15px;
       //头像宽高
       @avatarWidth: 110px;
@@ -262,7 +262,7 @@
         }
 
         .base-info-ul {
-          margin-top: 50px;
+          margin-top: 20px;
           li {
             border-bottom: #F0F3F4 solid 1px;
             i {
@@ -273,15 +273,16 @@
 
         /*角色标签集合*/
         .roles {
-          height: 120px;
+          height: 140px;
           overflow: auto;
           border-bottom: #F0F3F4 solid 1px;
         }
       }
     }
 
+    /*左右两边的卡片组件*/
     .box-card {
-      height: 700px;
+      height: 100%;
     }
     .right {
       width: 100%;

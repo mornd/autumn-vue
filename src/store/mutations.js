@@ -35,5 +35,12 @@ export default {
   //更换头像
   SET_USER_AVATAR(state, url) {
     state.user.avatar = url
+  },
+  //修改用户的一些基本信息（用于用户自己修改自己的信息）
+  SET_USER_BASE_INFO(state, user) {
+    //将修改后的用户信息同步至state中
+    for (const key in user) {
+      state.user[key] = user[key]
+    }
   }
 }
