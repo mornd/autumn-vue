@@ -135,8 +135,8 @@
           });
           return false
         }
-        const isLt2M = file.size / 1024 / 1024 < 5
-        if(!isLt2M) {
+        const isLt5M = file.size / 1024 / 1024 < 5
+        if(!isLt5M) {
           this.$message({
             message: '上传的图片大小需小于5M',
             type: "error"
@@ -170,7 +170,7 @@
             formData.append('file', data, '_' + userId + '.jpg')
             formData.append('id', userId)
             //调用axios上传
-            let res = await _this.$api.postRequest('/upload/image', formData)
+            let res = await _this.$api.postRequest('/upload/avatar', formData)
             if(res.success){
               const url = res.data
               _this.$emit('uploadSuccess', 'http://' + url)

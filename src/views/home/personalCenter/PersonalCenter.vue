@@ -35,35 +35,51 @@
           </div>
         </div>
 
-        <ul class="name">
-          <!--登录名-->
-          <li>{{user.loginName}}</li>
-          <!--姓名-->
-          <li style="font-size: 13px; color: #666">{{user.realName}}</li>
-        </ul>
+        <div class="base-info">
+          <ul class="name">
+            <!--登录名-->
+            <li>{{user.loginName}}</li>
+            <!--姓名-->
+            <li class="real-name">{{user.realName}}</li>
+          </ul>
 
-        <ul class="base-info-ul">
-          <li>
-            <p class="c-center-between">
-              <span><i class="fa fa-user-o"></i>年龄</span>
-              <span>{{user.birthday | showAge}}</span>
-            </p>
-          </li>
-          <li>
-            <p class="c-center-between">
-              <span><i class="fa fa-phone"></i>电话</span>
-              <span>{{user.phone ? user.phone : '空'}}</span>
-            </p>
-          </li>
-          <li>
-            <p class="c-center-between">
-              <span><i class="fa fa-envelope-open-o"></i>邮箱</span>
-              <span>{{user.email ? user.email : '空'}}</span>
-            </p>
-          </li>
-        </ul>
+          <ul class="base-info-ul">
+            <li>
+              <p class="c-center-between">
+                <span><i class="fa fa-user-o"></i>年龄</span>
+                <span>{{user.birthday | showAge}}</span>
+              </p>
+            </li>
+            <li>
+              <p class="c-center-between">
+                <span><i class="fa fa-phone"></i>电话</span>
+                <span>{{user.phone ? user.phone : '空'}}</span>
+              </p>
+            </li>
+            <li>
+              <p class="c-center-between">
+                <span><i class="fa fa-envelope-open-o"></i>邮箱</span>
+                <span>{{user.email ? user.email : '空'}}</span>
+              </p>
+            </li>
+          </ul>
 
-
+          <!--角色tags列表-->
+          <div style="margin-top: 40px">
+            <p>所属角色：</p>
+            <div class="roles">
+              <el-tag
+                style="margin: 0 10px 10px 0"
+                v-for="i in (Array.isArray(user.roles) && user.roles.length ? user.roles : [])"
+                effect="plain"
+                size="small"
+                :type="(i.enabled == enabledState.enabled) ? '' : 'danger'"
+              >
+                {{i.name}}
+              </el-tag>
+            </div>
+          </div>
+        </div>
       </el-card>
     </div>
 
@@ -102,7 +118,7 @@
   import ChangePassword from './ChangePassword'
   //头像选择
   import avatarPincker from './avatarPicker'
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapState } from 'vuex'
   import { birthdayToAge } from '@/utils/objUtil'
   import { gender } from '@/constants/systemConsts'
   import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png'
@@ -136,11 +152,12 @@
       //用户头像上传成功后，更改页面的用户头像
       changeAvatar(url) {
         this.avatarVisible = false
-        console.log(url);
+        console.log('更新后的头像地址为：', url);
         this.$store.commit('SET_USER_AVATAR', url)
         //更新数据库信息
         this.$api.putRequest('/sysUser/avatar', {id: this.user.id, avatar: url}).then(res => {})
       },
+      //修改dialog宽度
       setDialogWidth() {
         let val = document.body.clientWidth
         const def = 650 // 默认宽度
@@ -154,6 +171,7 @@
     computed: {
       //用户信息
       ...mapGetters(['user']),
+      ...mapState(['enabledState']),
       userAvatar() {
         return this.user.avatar ? this.user.avatar : this.defaultAvatar
       }
@@ -224,30 +242,47 @@
           z-index: 100;
         }
       }
-
-      .name {
-        text-align: center;
-        font-size: 22px;
-        color: #333;
-        letter-spacing: 1px;
-        li {
-          margin-top: 20px;
-        }
-      }
-
-      .base-info-ul {
+      //左侧基本信息
+      .base-info {
         font-size: 13px;
         color: #303133;
-        margin-top: 50px;
-        li {
-          border-bottom: #F0F3F4 solid 1px;
-          i {
-            margin-right: 8px;
+        .name {
+          text-align: center;
+          font-size: 22px;
+          color: #333;
+          letter-spacing: 1px;
+          //姓名
+          .real-name {
+            font-size: 13px;
+            color: #666;
           }
+          li {
+            margin-top: 20px;
+          }
+        }
+
+        .base-info-ul {
+          margin-top: 50px;
+          li {
+            border-bottom: #F0F3F4 solid 1px;
+            i {
+              margin-right: 8px;
+            }
+          }
+        }
+
+        /*角色标签集合*/
+        .roles {
+          height: 120px;
+          overflow: auto;
+          border-bottom: #F0F3F4 solid 1px;
         }
       }
     }
 
+    .box-card {
+      height: 700px;
+    }
     .right {
       width: 100%;
     }
@@ -255,6 +290,5 @@
     /deep/ .el-dialog {
       border-radius: 5px;
     }
-
   }
 </style>

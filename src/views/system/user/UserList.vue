@@ -34,7 +34,7 @@
     <div class="crud-content">
       <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
       <el-table
-        max-height="520"
+        max-height="430"
         size="small"
         :data="tableData"
         v-loading="loading">
@@ -51,11 +51,13 @@
         <el-table-column
           prop="loginName"
           align="center"
+          show-overflow-tooltip
           label="登录名">
         </el-table-column>
         <el-table-column
           prop="realName"
           align="center"
+          show-overflow-tooltip
           label="姓名">
         </el-table-column>
         <el-table-column
