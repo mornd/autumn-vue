@@ -146,7 +146,7 @@
           <transition name="fade">
             <el-form-item label="菜单组件" v-if="form.menuType == menuType.menu" prop="component">
               <el-input v-model.trim="form.component" maxlength="30" clearable
-                        placeholder="请输入菜单组件，例：system/userList"></el-input>
+                        placeholder="请输入菜单组件，例：system/user/userList"></el-input>
             </el-form-item>
           </transition>
           <el-form-item label="图标" v-if="form.menuType != menuType.button" prop="icon">

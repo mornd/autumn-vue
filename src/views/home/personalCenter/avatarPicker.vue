@@ -58,7 +58,6 @@
       <input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="selectImg($event)">
       <el-button size="small" type="primary" :loading="submitLoading" @click="uploadImg('blob')">上传</el-button>
     </div>
-
   </div>
 </template>
 
@@ -148,7 +147,7 @@
         reader.onload = (e) => {
           let data
           if (typeof e.target.result === 'object') {
-            // 把Array Buffer转化为blob 如果是base64不需要
+            // 把Array Buffer转化为blob 如果是base64则不需要
             data = window.URL.createObjectURL(new Blob([e.target.result]))
           } else {
             data = e.target.result
