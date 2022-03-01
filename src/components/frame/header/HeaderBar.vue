@@ -197,6 +197,14 @@
   }
 </script>
 
+<!--因为popover组件默认与App.vue组件在同一级，所以需要设置全局样式，这里的style标签去除了scoped属性-->
+<style lang="less">
+  .weather-popover {
+    background: #F5F5F5;
+    padding: 5px;
+  }
+</style>
+
 <style lang="less" scoped>
   //按钮列表宽度
   @li-width: 50px;
@@ -248,11 +256,6 @@
           /*border-bottom: 3px solid #46D800;*/
         }
       }
-    }
-
-    .el-popover .weather-popover {
-      background: red;
-      padding: 2px;
     }
   }
 </style>

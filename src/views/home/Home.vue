@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <router-link to="/system/permission">菜单测试</router-link>
+    <!--<router-link to="/system/permission">菜单测试</router-link>-->
     <br>
 
     <div>
@@ -11,7 +11,6 @@
       <p>湿度：{{weatherResult.humidity}}</p>
       <p>更新时间：{{weatherResult.updateTime}}</p>
     </div>
-
   </div>
 </template>
 

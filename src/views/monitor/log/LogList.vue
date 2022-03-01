@@ -1,116 +1,143 @@
 <template>
   <div>
-    <div>
-      <div class="crud-search">
-        <el-form ref="form" inline :model="crudObj" label-width="70px" label-position="left" size="small">
-          <el-form-item label="登录名">
-            <el-input
-              v-model="crudObj.loginName"
-              clearable
-              prefix-icon="el-icon-search"
-              maxlength="10"
-              type="text"
-            />
-          </el-form-item>
-          <el-form-item label="操作">
-            <el-input
-              v-model="crudObj.realName"
-              clearable
-              prefix-icon="el-icon-search"
-              maxlength="10"
-              type="text"
-            />
-          </el-form-item>
-          <el-form-item>
-            <el-button @click="search" icon="el-icon-search" type="primary">查询</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
+    <div class="crud-search">
+      <el-form ref="form" inline :model="crudObj" label-width="50px" label-position="left" size="small">
+        <el-form-item label="用户">
+          <el-input
+            v-model="crudObj.username"
+            clearable
+            prefix-icon="el-icon-search"
+            maxlength="10"
+            type="text"
+          />
+        </el-form-item>
+        <el-form-item label="时间">
+          <el-date-picker
+            v-model="visitDateScope"
+            type="datetimerange"
+            align="right"
+            unlink-panels
+            value-format="yyyy-MM-dd HH:mm:ss"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="类型">
+          <el-select
+            v-model="crudObj.type"
+            filterable
+            clearable>
+            <el-option
+              v-for="item in logType"
+              :key="item.key"
+              :value="item.key"
+              :label="item.label">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="search" icon="el-icon-search" type="primary">查询</el-button>
+          <el-button @click="reset" icon="el-icon-refresh-right" type="primary">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
 
-      <div class="crud-content">
-        <el-button type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
-        <el-table
-          max-height="430"
-          size="small"
-          :data="tableData"
-          v-loading="loading">
-          <el-table-column
-            label="序号"
-            align="center"
-            type="index">
-          </el-table-column>
-          <el-table-column
-            prop="title"
-            align="center"
-            show-overflow-tooltip
-            label="操作">
-          </el-table-column>
-          <el-table-column
-            prop="username"
-            align="center"
-            show-overflow-tooltip
-            label="用户">
-          </el-table-column>
-          <el-table-column
-            prop="visitDate"
-            align="center"
-            show-overflow-tooltip
-            label="访问时间">
-          </el-table-column>
-          <el-table-column
-            prop="type"
-            align="center"
-            show-overflow-tooltip
-            label="类型">
-          </el-table-column>
-          <el-table-column
-            prop="ip"
-            align="center"
-            show-overflow-tooltip
-            label="IP">
-          </el-table-column>
-          <el-table-column
-            prop="url"
-            align="center"
-            show-overflow-tooltip
-            label="url">
-          </el-table-column>
-          <el-table-column
-            prop="osAndBrowser"
-            align="center"
-            show-overflow-tooltip
-            label="系统-浏览器">
-          </el-table-column>
-          <el-table-column
-            prop="executionTime"
-            align="center"
-            show-overflow-tooltip
-            label="请求耗时">
-            <template #default="scope">
-              <el-tag
-                :type="scope.row.executionTime ? (scope.row.executionTime > 10000 ? 'danger' : '') : ''"
-                size="small"
-                effect="plain">
-                {{ scope.row.executionTime }}ms
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="methodName"
-            align="center"
-            show-overflow-tooltip
-            label="方法名">
-          </el-table-column>
-        </el-table>
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :page-sizes="[10, 20, 50]"
-          :page-size="crudObj.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="crudObj.total">
-        </el-pagination>
-      </div>
+    <div class="crud-content">
+      <el-button type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
+      <el-table
+        max-height="430"
+        size="small"
+        :data="tableData"
+        v-loading="loading">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <div class="log-extend-col">
+              <ul>
+                <li><span>URL</span>{{ props.row.url }}</li>
+                <li><span>方法名</span>{{ props.row.methodName }}</li>
+              </ul>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="序号"
+          align="center"
+          type="index">
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          align="center"
+          show-overflow-tooltip
+          label="操作">
+        </el-table-column>
+        <el-table-column
+          prop="username"
+          align="center"
+          show-overflow-tooltip
+          label="用户">
+        </el-table-column>
+        <el-table-column
+          prop="visitDate"
+          align="center"
+          show-overflow-tooltip
+          label="访问时间">
+        </el-table-column>
+        <el-table-column
+          prop="type"
+          align="center"
+          show-overflow-tooltip
+          label="类型">
+          <template #default="scope">
+            <el-tag
+              type="success"
+              effect="plain"
+              size="small"
+            >
+              <template v-for="item in logType">
+                <span v-if="scope.row.type == item.key">{{ item.label }}</span>
+                <span v-else-if="scope.row.type == item.key">{{ item.label }}</span>
+                <span v-else-if="scope.row.type == item.key">{{ item.label }}</span>
+              </template>
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ip"
+          align="center"
+          show-overflow-tooltip
+          label="IP">
+        </el-table-column>
+        <el-table-column
+          prop="executionTime"
+          align="center"
+          show-overflow-tooltip
+          label="请求耗时">
+          <template #default="scope">
+            <el-tag
+              :type="scope.row.executionTime ? (scope.row.executionTime > 10000 ? 'danger' : '') : ''"
+              size="small"
+              effect="plain">
+              {{ scope.row.executionTime }}ms
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="osAndBrowser"
+          align="center"
+          show-overflow-tooltip
+          label="系统-浏览器">
+        </el-table-column>
+      </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :page-sizes="[10, 20, 50]"
+        :page-size="crudObj.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="crudObj.total">
+      </el-pagination>
     </div>
   </div>
 </template>
@@ -119,7 +146,25 @@
   export default {
     name: "LogList",
     data() {
+      //登录类型
+      const logType = {
+        login: {
+          key: 1,
+          label: '登录'
+        },
+        logout: {
+          key: 2,
+          label: '退出'
+        },
+        other: {
+          key: 3,
+          label: '其他'
+        }
+      }
       return {
+        logType,
+        //日期范围
+        visitDateScope: [],
         crudObj: {
           pageNo: 1,
           pageSize: 10,
@@ -127,6 +172,34 @@
         },
         tableData: [],
         loading: false,
+        //日期选择器的相关配置
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        }
       }
     },
     mounted() {
@@ -135,7 +208,13 @@
     methods: {
       getTable() {
         this.loading = true
-        this.$api.getRequest('/sysLog', {...this.crudObj}).then(res => {
+        console.log(this.crudObj);
+        //拼接日期范围
+        let url = '/sysLog'
+        if(this.visitDateScope) {
+          url += '?visitDateScope=' + this.visitDateScope
+        }
+        this.$api.getRequest(url, {...this.crudObj}).then(res => {
           if(res.success) {
             const data = res.data
             if(!data.records.length && data.total !== 0) {
@@ -150,7 +229,17 @@
         })
       },
       search() {
-
+        this.crudObj.pageNo = 1
+        this.getTable()
+      },
+      //搜索表单重置
+      reset() {
+        this.crudObj.username = ''
+        this.visitDateScope = ''
+        this.crudObj.type = ''
+        this.crudObj.pageNo = 1
+        this.crudObj.pageSize = 10
+        this.getTable()
       },
       //分页操作
       handleSizeChange(size) {
@@ -165,6 +254,16 @@
   }
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+  .crud-content {
+    //扩展列内容
+    .log-extend-col {
+      padding: 5px 18px;
+      ul>li>span:first-child {
+        color: #99A9BF;
+        font-size: 14px;
+        margin-right: 10px;
+      }
+    }
+  }
 </style>
