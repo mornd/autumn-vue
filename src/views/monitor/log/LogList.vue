@@ -45,7 +45,8 @@
     </div>
 
     <div class="crud-content">
-      <el-button type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
+      <el-button type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">配置</el-button>
+      <el-button @click="clearAll" type="danger" size="small" icon="el-icon-delete" style="margin-left: 5px">清空所有数据</el-button>
       <el-table
         max-height="430"
         size="small"
@@ -227,6 +228,19 @@
             }
           }
         })
+      },
+      clearAll() {
+        this.$confirm('是否清空所有日志?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$api.deleteRequest('/sysLog').then(res => {
+            if(res.success) {
+               this.tableData = [];
+            }
+          })
+        }).catch(() => {});
       },
       search() {
         this.crudObj.pageNo = 1
