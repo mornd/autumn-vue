@@ -237,7 +237,7 @@
         }).then(() => {
           this.$api.deleteRequest('/sysLog').then(res => {
             if(res.success) {
-               this.tableData = [];
+               this.getTable()
             }
           })
         }).catch(() => {});

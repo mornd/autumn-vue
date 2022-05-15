@@ -3,7 +3,7 @@ import store from '@/store'
 import { Message, Notification, MessageBox } from 'element-ui'
 import { getToken } from "@/utils/tokenUtil";
 
-//let readyToExit = false //是否是准备退出状态，防止多次弹出token过期的提示
+let readyToExit = false //是否是准备退出状态，防止多次弹出token过期的提示
 
 // create an axios instance
 const service = axios.create({
@@ -80,13 +80,19 @@ service.interceptors.response.use(
         if((excludeUrl.indexOf('userLogout')) >= 0) {
           store.dispatch('tokenExpirationExit')
         } else {
-          MessageBox.confirm('登录状态已过期，你可以继续留在该页面，或者重新登录', '系统提示', {
-            confirmButtonText: '重新登录',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            store.dispatch('tokenExpirationExit')
-          }).catch(() => {});
+          if(!readyToExit) {
+            readyToExit = true
+            MessageBox.confirm('登录状态已过期，你可以继续留在该页面，或者重新登录', '系统提示', {
+              confirmButtonText: '重新登录',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              readyToExit = false
+              store.dispatch('tokenExpirationExit')
+            }).catch(() => {
+              readyToExit = false
+            });
+          }
         }
       } else if(error.response.status == 500) {
         Message.error('抱歉，后端服务貌似宕机了 OvO！');

@@ -91,7 +91,7 @@
           <li title="使用QQ账号登录" style="background-color: #00B0FB"><i class="fa fa-qq"/></li>
           <li title="使用微信账号登录" style="background-color: #46D800"><i class="fa fa-wechat"/></li>
           <!--<li title="使用FaceBook账号登录" style="background-color: #1278F3"><i class="fa fa-facebook-official"/></li>-->
-          <li title="使用Windows账号登录" style="background-color: #0078D7"><i class="fa fa-windows"/></li>
+          <li title="使用Microsoft账号登录" style="background-color: #0078D7"><i class="fa fa-windows"/></li>
           <li title="其他登录方式" :style="{backgroundColor: theme}">
             <i class="el-icon-more" slot="reference"/>
           </li>
@@ -133,10 +133,10 @@
       //表单校验
       const checkUsername = (rule, value, callback) => {
         if(isNotBlank(value)) {
-          if(value.length >= this.minLength) {
+          if(value.length <= this.maxLength) {
             callback()
           } else {
-            callback(new Error('账号长度须在' + this.minLength + '-' + this.maxLength + '之间'))
+            callback(new Error('账号长度过长'))
           }
         } else {
           callback(new Error('请输入账号'))
@@ -177,31 +177,6 @@
           password: [{validator: checkPassword, trigger:"blur"}],
           code: [{required:true, message:"请输入验证码", trigger:"change"}]
         },
-        /*loginMethods: {
-          accountLogin: {
-            title: '账号登录',
-            ref: 'loginForm',
-            showPwdInput: true,
-            showForgetPwd: true,
-            model: {
-              username: 'tom',
-              password: '000',
-              code: '',
-              remember: false,
-              uuid: ''
-            },
-            accountPlaceholder: '账号',
-            passwordPlaceholder: '密码',
-            rules:{
-              username: [{required:true, message:"请输入用户名", trigger:"change"}],
-              password: [{required:true, message:"请输入密码", trigger:"change"}],
-              code: [{required:true, message:"请输入验证码", trigger:"change"}]
-            },
-          },
-          msgLogin: {
-
-          }
-        }*/
       }
     },
     mounted() {
