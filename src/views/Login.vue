@@ -160,8 +160,8 @@
         captchaUrl: '',
         //表单登录属性
         loginForm: {
-          username: 'tom',
-          password: '000',
+          username: '', //'tom',
+          password: '', //'000',
           code: '',
           uuid: '',
           remember: false
