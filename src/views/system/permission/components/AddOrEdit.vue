@@ -131,21 +131,21 @@
             </el-select>
           </el-form-item>
           <el-form-item label="菜单标题" prop="title">
-            <el-input v-model="form.title" maxlength="20" clearable placeholder="请输入菜单标题"></el-input>
+            <el-input v-model="form.title" maxlength="200" clearable placeholder="请输入菜单标题"></el-input>
           </el-form-item>
           <transition name="fade">
             <el-form-item label="菜单编码" prop="code">
-              <el-input v-model="form.code" maxlength="20" clearable placeholder="请输入菜单编码"></el-input>
+              <el-input v-model="form.code" maxlength="200" clearable placeholder="请输入菜单编码"></el-input>
             </el-form-item>
           </transition>
           <transition name="fade">
             <el-form-item label="菜单路径" v-if="form.menuType == menuType.menu" prop="path">
-              <el-input v-model.trim="form.path" maxlength="30" clearable placeholder="请输入菜单路径，例：system/user"></el-input>
+              <el-input v-model.trim="form.path" maxlength="200" clearable placeholder="请输入菜单路径，例：system/user"></el-input>
             </el-form-item>
           </transition>
           <transition name="fade">
             <el-form-item label="菜单组件" v-if="form.menuType == menuType.menu" prop="component">
-              <el-input v-model.trim="form.component" maxlength="30" clearable
+              <el-input v-model.trim="form.component" maxlength="200" clearable
                         placeholder="请输入菜单组件，例：system/user/userList"></el-input>
             </el-form-item>
           </transition>
