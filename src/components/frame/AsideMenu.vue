@@ -62,15 +62,6 @@
         </template>
       </el-menu>
     </transition>
-
-    <!--菜单数据为空时展示-->
-    <div
-      v-if="menu.loadingComplete && !menuRoutes.length"
-      class="empty-text"
-    >
-      <p v-if="!isCollapse">空空如也!</p>
-      <i v-else class="fa fa-inbox"></i>
-    </div>
   </div>
 </template>
 
@@ -101,12 +92,6 @@
     text-align: center;
     margin-top: 5px;
     font-size: 25px;
-  }
-
-  .empty-text {
-    margin-top: 20px;
-    text-align: center;
-    color: @color;
   }
 
   /* 可以设置不同的进入和离开动画 */

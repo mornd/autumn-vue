@@ -23,6 +23,13 @@ const routes = [
     component: () => import('@/views/Login')
   },
   {
+    //第三方登录回调界面
+    path: '/callback',
+    name: '',
+    meta: {title: '登录中...'},
+    component: () => import('@/views/otherLogin/LoginCallback')
+  },
+  {
     //主体布局
     path: '/',
     name: 'Frame',
@@ -82,6 +89,9 @@ router.onReady(() => {
   console.groupEnd()
 })
 
+// 免登录白名单
+const whiteList = ['/login', '/callback']
+
 /**
  * 路由前置导航
  * to：将要去哪个页面
@@ -120,10 +130,11 @@ router.beforeEach((to, from, next) => {
       }
     }
   } else {
-    if(to.path === '/' || to.path === store.state.homePath || to.path.startsWith('/index')) {
-      next('/login')
-    } else if(to.path === '/login') {
+    if(whiteList.indexOf(to.path) !== -1) {
+      // 白名单直接放行
       next()
+    } else if(to.path === '/' || to.path.startsWith('/index')) {
+      next('/login')
     } else {
       next(`/login?redirect=${to.fullPath}`)
     }

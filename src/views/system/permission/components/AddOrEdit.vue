@@ -528,8 +528,9 @@
             if (this.currOper == this.operation.add) {
               this.$api.postRequest('/permission', {...tempForm}).then(res => {
                 if (res.success) {
-                  this.$emit('refreshTable');
+                  //this.$emit('refreshTable');
                   this.transData.dialogVisible = false;
+                  this.$router.go()
                 }
                 this.submitLoading = false;
               })

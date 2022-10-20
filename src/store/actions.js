@@ -31,18 +31,19 @@ export default {
           //菜单数据加载完毕
           commit('MENU_LOADING_COMPLETE')
           //得到后台返回的菜单数据
-          const menus = res.data;
-          if(menus && menus.length){
-            //新增主页菜单
-            menus.unshift({
-              path: state.homePath,
-              icon: 'fa fa-home',
-              title: '首页',
-              menuType: state.menuType.menu,
-            })
-            let formatMenus = getFormatMenus(router, menus, state.homeName);
-            commit('SET_MENU_ROUTES', formatMenus)
+          let menus = res.data;
+          if(!(menus && menus.length)){
+            menus = []
           }
+          //新增主页菜单
+          menus.unshift({
+            path: state.homePath,
+            icon: 'fa fa-home',
+            title: '首页',
+            menuType: state.menuType.menu,
+          })
+          let formatMenus = getFormatMenus(router, menus, state.homeName);
+          commit('SET_MENU_ROUTES', formatMenus)
           resolve()
         }
       })
@@ -76,5 +77,21 @@ export default {
     router.replace('/login');
     //location.reload()
     console.log('退出成功');
+  },
+
+  // gitee 登录
+  otherLoginByGitee({ commit }, userInfo) {
+    return new Promise((resolve, reject) => {
+      api.post('/loginByGitee', userInfo).then(res => {
+        if(res.success) {
+          //存储用户token
+          const tokenStr = res.data.tokenHead + res.data.token
+          commit('SET_TOKEN', tokenStr)
+          resolve()
+        }
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }

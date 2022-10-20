@@ -87,13 +87,27 @@
       <!--其他登入方式-->
       <el-form-item>
         <ul class="other-login">
-          <li title="使用GitHub账号登录" style="background-color: #252A2F"><i class="fa fa-github"/></li>
+          <li title="使用GitHub账号登录" style="background-color: #252A2F; font-size: 25px"><i class="fa fa-github"/></li>
           <li title="使用QQ账号登录" style="background-color: #00B0FB"><i class="fa fa-qq"/></li>
           <li title="使用微信账号登录" style="background-color: #46D800"><i class="fa fa-wechat"/></li>
           <!--<li title="使用FaceBook账号登录" style="background-color: #1278F3"><i class="fa fa-facebook-official"/></li>-->
           <li title="使用Microsoft账号登录" style="background-color: #0078D7"><i class="fa fa-windows"/></li>
-          <li title="其他登录方式" :style="{backgroundColor: theme}">
-            <i class="el-icon-more" slot="reference"/>
+          <li>
+            <el-popover
+                placement="left"
+                width="150"
+                trigger="hover">
+              <div style="padding: 0 10px;">
+                <ul class="other-login">
+                  <li title="使用gitee账号登录" style="background: #46D800; overflow: hidden" @click="giteeLogin">
+                    <img src="../assets/images/other/gitee.jpeg" width="100%" height="100%" alt="">
+                  </li>
+                </ul>
+              </div>
+              <div slot="reference" title="更多登录方式" class="more-login-button" :style="{backgroundColor: theme}">
+                <i class="el-icon-more" slot="reference"/>
+              </div>
+            </el-popover>
           </li>
         </ul>
       </el-form-item>
@@ -103,18 +117,19 @@
     <div class="footer-content" :style="cTheme">
       <ul>
         <li>
+          <i class="fa fa-copyright"></i>
           Copyright © 2021
         </li>
         <li>
-          <i class="fa fa-github"></i>
-          <a href="https://gitee.com/mornd/autumn-vue" target="_blank" :style="cTheme">GitHub</a>
+          <i class="fa fa-git-square"></i>
+          <a href="https://gitee.com/mornd/autumn-vue" target="_blank" :style="cTheme">gitee</a>
         </li>
         <li>
           <i class="fa fa-qq"></i>
           <span>1152229579</span>
         </li>
         <li>
-          <i class="fa fa-history"></i>
+          <i class="fa fa-flag"></i>
           <span>version:1.1</span>
         </li>
       </ul>
@@ -126,6 +141,7 @@
   import { mapState } from 'vuex'
   import { encrypt } from '@/utils/secret'
   import { isNotBlank } from '@/utils/validate'
+  import jsCookie from 'js-cookie'
 
   export default {
     name: "Login",
@@ -232,6 +248,17 @@
           });
         }
       },
+      // gitee 登录
+      giteeLogin() {
+        this.$api.getRequest(`/preLoginByGitee`).then(res => {
+          if(res.success){
+            let data = res.data
+            jsCookie.set('other-login-uuid', data.uuid, 3)
+            window.location = data.authorizeUrl
+          }
+        })
+      },
+      // 切换登录方式
       changeLogin() {
       }
     },
@@ -308,19 +335,25 @@
       font-weight: bold;
     }
 
-    /*其他登录方式*/
-    .other-login {
-      .mixin_ui(@margin: 10px 0 0 0);
-      li {
-        line-height: 35px;
-        font-size: 20px;
-        text-align: center;
-        color: #FFF;
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        cursor: pointer;
-      }
+
+  }
+
+  /*其他登录方式*/
+  .other-login {
+    .mixin_ui(@margin: 10px 0 0 0);
+    li {
+      line-height: 35px;
+      font-size: 20px;
+      text-align: center;
+      color: #FFF;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    /* 更多登录方式按钮 */
+    .more-login-button {
+      border-radius: 50%;
     }
   }
 

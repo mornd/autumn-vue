@@ -7,7 +7,7 @@
             v-model="crudObj.username"
             clearable
             prefix-icon="el-icon-search"
-            maxlength="10"
+            maxlength="100"
             type="text"
           />
         </el-form-item>
@@ -46,7 +46,7 @@
 
     <div class="crud-content">
       <el-button type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">配置</el-button>
-      <el-button @click="clearAll" type="danger" size="small" icon="el-icon-delete" style="margin-left: 5px">清空所有数据</el-button>
+      <el-button @click="clearAll" v-has-permi="['systemMonitor:sysLog:clear']" type="danger" size="small" icon="el-icon-delete" style="margin-left: 5px">清空所有数据</el-button>
       <el-table
         max-height="430"
         size="small"
@@ -58,6 +58,8 @@
               <ul>
                 <li><span>URL</span>{{ props.row.url }}</li>
                 <li><span>方法名</span>{{ props.row.methodName }}</li>
+                <li><span>调用参数</span>{{ props.row.params }}</li>
+                <li><span>返回结果</span>{{ props.row.result }}</li>
               </ul>
             </div>
           </template>
@@ -82,6 +84,7 @@
         <el-table-column
           prop="visitDate"
           align="center"
+          width="140px"
           show-overflow-tooltip
           label="访问时间">
         </el-table-column>
@@ -111,6 +114,12 @@
           label="IP">
         </el-table-column>
         <el-table-column
+            prop="address"
+            align="center"
+            show-overflow-tooltip
+            label="地址">
+        </el-table-column>
+        <el-table-column
           prop="executionTime"
           align="center"
           show-overflow-tooltip
@@ -125,10 +134,16 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="osAndBrowser"
+          prop="os"
           align="center"
           show-overflow-tooltip
-          label="系统-浏览器">
+          label="系统">
+        </el-table-column>
+        <el-table-column
+            prop="browser"
+            align="center"
+            show-overflow-tooltip
+            label="浏览器">
         </el-table-column>
       </el-table>
       <el-pagination
@@ -209,7 +224,6 @@
     methods: {
       getTable() {
         this.loading = true
-        console.log(this.crudObj);
         //拼接日期范围
         let url = '/sysLog'
         if(this.visitDateScope) {
@@ -273,6 +287,9 @@
     //扩展列内容
     .log-extend-col {
       padding: 5px 18px;
+      ul li {
+        margin: 3px 0;
+      }
       ul>li>span:first-child {
         color: #99A9BF;
         font-size: 14px;

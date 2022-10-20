@@ -11,8 +11,11 @@ import '@/assets/css/animations.css'
 import 'font-awesome/css/font-awesome.css';
 import '@/plugins/plugins';
 
+import directive from './directive' // directive
+
 import api from '@/utils/api';
 
+Vue.use(directive)
 Vue.prototype.$api = api;
 
 Vue.config.productionTip = false

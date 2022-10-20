@@ -19,7 +19,7 @@
     </div>
 
     <div class="crud-content">
-      <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
+      <el-button @click="handleAdd" v-has-permi="['system:menu:add']" type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
       <el-table
         max-height="480"
         size="small"
@@ -146,13 +146,13 @@
               <el-button
                 size="mini"
                 type="text"
-                @click="handleEdit(scope.$index, scope.row)">编辑
+                @click="handleEdit(scope.$index, scope.row)" v-has-permi="['system:menu:update']">编辑
               </el-button>
               <el-divider direction="vertical"></el-divider>
               <el-button
                 size="mini"
                 type="text"
-                @click="handleDelete(scope.$index, scope.row)">删除
+                @click="handleDelete(scope.$index, scope.row)" v-has-permi="['system:menu:delete']">删除
               </el-button>
             </div>
           </template>

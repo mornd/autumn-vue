@@ -32,7 +32,7 @@
     </div>
 
     <div class="crud-content">
-      <el-button @click="handleAdd" type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
+      <el-button @click="handleAdd" v-has-permi="['system:role:add']" type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
 
       <el-table
         max-height="430"
@@ -95,7 +95,7 @@
               <el-button
                 size="mini"
                 type="text"
-                @click="handleGrantPers(scope.row)">授权
+                @click="handleGrantPers(scope.row)" v-has-permi="['system:role:update']">授权
               </el-button>
               <el-divider direction="vertical"></el-divider>
               <el-button
@@ -108,14 +108,14 @@
                 size="mini"
                 type="text"
                 :disabled="scope.row.id == superAdminId"
-                @click="handleEdit(scope.row)">编辑
+                @click="handleEdit(scope.row)" v-has-permi="['system:role:update']">编辑
               </el-button>
               <el-divider direction="vertical"></el-divider>
               <el-button
                 size="mini"
                 type="text"
                 :disabled="scope.row.id == superAdminId"
-                @click="handleDelete(scope.row)">删除
+                @click="handleDelete(scope.row)" v-has-permi="['system:role:delete']">删除
               </el-button>
             </div>
           </template>
