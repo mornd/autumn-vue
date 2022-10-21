@@ -29,7 +29,7 @@
 
     <div class="crud-content">
       <el-table
-          max-height="450"
+          max-height="470"
           size="small"
           :data="tableData"
           v-loading="loading">
@@ -201,6 +201,12 @@ export default {
       }).then(() => {
         this.$api.deleteRequest(`/onlineUser/${loginName}`).then(res => {
           this.getTable()
+          if(res.data) {
+            this.$message.success('操作成功')
+          } else {
+            this.$message.error('操作失败')
+          }
+
         })
       })
     },
