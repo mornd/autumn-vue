@@ -23,3 +23,7 @@
   /*background-color: red;*/
   border-radius: 5px;
 }
+
+.crud-search .el-form {
+  height: 40px;
+}

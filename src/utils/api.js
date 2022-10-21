@@ -7,7 +7,7 @@ let readyToExit = false //是否是准备退出状态，防止多次弹出token�
 
 // create an axios instance
 const service = axios.create({
-  baseURL: '/dataView', // url = base url + request url
+  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests 跨域是否带Token
   //timeout: 10000 // request timeout ms
 });

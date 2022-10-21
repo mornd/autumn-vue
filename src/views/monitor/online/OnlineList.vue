@@ -201,12 +201,6 @@ export default {
       }).then(() => {
         this.$api.deleteRequest(`/onlineUser/${loginName}`).then(res => {
           this.getTable()
-          if(res.data) {
-            this.$message.success('操作成功')
-          } else {
-            this.$message.error('操作失败')
-          }
-
         })
       })
     },
