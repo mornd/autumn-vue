@@ -4,6 +4,10 @@ import {getFormatMenus} from "@/utils/menuUtil"
 import { removeToken } from '@/utils/tokenUtil'
 import { removeTheme } from '@/utils/themeUtil'
 
+//使用js方式动态导入本地图片
+import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png' // 用户未选择头像时展示的默认图片
+import errorAvatar from '@/assets/images/avatar/errorAvatar.png' // 图片路径错误显示的图片
+
 export default {
   //设置用户的角色、权限
   setUser({ commit }) {
@@ -13,6 +17,8 @@ export default {
           let userInfo = res.data
           if(userInfo) {
             //存储用户信息
+            // 处理用户头像
+            userInfo.avatar = userInfo.avatar ? userInfo.avatar : defaultAvatar
             commit('SET_USER', userInfo)
             resolve(userInfo)
           } else {
@@ -80,9 +86,9 @@ export default {
   },
 
   // gitee 登录
-  otherLoginByGitee({ commit }, userInfo) {
+  loginByGitee({ commit }, userInfo) {
     return new Promise((resolve, reject) => {
-      api.post('/loginByGitee', userInfo).then(res => {
+      api.postRequest('/loginByGitee', userInfo).then(res => {
         if(res.success) {
           //存储用户token
           const tokenStr = res.data.tokenHead + res.data.token

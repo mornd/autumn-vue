@@ -45,7 +45,7 @@
               class="user_face"
             >
               <!--图片加载失败显示的默认图片-->
-              <img :src="errorAvatar">
+              <img :src="errorAvatar" alt="">
             </el-avatar>
             <!--用户名-->
             <span v-text="loginName"></span>
@@ -88,7 +88,7 @@
   import NowDate from '@/components/gadgets/NowDate'
   import weather_plugin from './WeatherPlugin'
   //使用js方式动态导入本地图片
-  import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png'
+  // import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png'
   import errorAvatar from '@/assets/images/avatar/errorAvatar.png'
 
   export default {
@@ -100,7 +100,7 @@
         fullscreen: false,
         drawerVisible: false,
         //用户未选择头像时展示的默认图片
-        defaultAvatar,
+        // defaultAvatar,
         //图片路径错误显示的图片
         errorAvatar,
       }
@@ -119,7 +119,7 @@
       ...mapState(['user', 'isCollapse', 'theme']),
       ...mapGetters(['loginName']),
       userAvatar() {
-        return this.user.avatar ? this.user.avatar : this.defaultAvatar
+        return this.user.avatar
       }
     },
     methods: {

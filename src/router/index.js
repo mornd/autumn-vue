@@ -24,7 +24,7 @@ const routes = [
   },
   {
     //第三方登录回调界面
-    path: '/callback',
+    path: '/giteeLoginCallback',
     name: '',
     meta: {title: '登录中...'},
     component: () => import('@/views/otherLogin/LoginCallback')
@@ -90,7 +90,7 @@ router.onReady(() => {
 })
 
 // 免登录白名单
-const whiteList = ['/login', '/callback']
+const whiteList = ['/login', '/giteeLoginCallback']
 
 /**
  * 路由前置导航

@@ -107,7 +107,7 @@
     >
       <avatar-pincker
         :avatarUrl="user.avatar"
-        @uploadSuccess="changeAvatar"
+        @uploadSuccess="closePincker"
       >
       </avatar-pincker>
     </el-dialog>
@@ -149,13 +149,9 @@
       avatarClick() {
         this.avatarVisible = true
       },
-      //用户头像上传成功后，更改页面的用户头像
-      changeAvatar(url) {
+      //关闭窗口
+      closePincker() {
         this.avatarVisible = false
-        console.log('更新后的头像地址为：', url);
-        this.$store.commit('SET_USER_AVATAR', url)
-        //更新数据库信息
-        this.$api.putRequest('/sysUser/avatar', {id: this.user.id, avatar: url}).then(res => {})
       },
       //修改dialog宽度
       setDialogWidth() {

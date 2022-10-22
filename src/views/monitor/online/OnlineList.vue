@@ -75,7 +75,7 @@
             prop="address"
             align="center"
             show-overflow-tooltip
-            label="地址">
+            label="访问地址">
         </el-table-column>
         <el-table-column
             prop="os"

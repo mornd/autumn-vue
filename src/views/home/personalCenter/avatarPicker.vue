@@ -160,7 +160,7 @@
       //上传图片
       uploadImg (type) {
         this.submitLoading = true
-        let _this = this;
+        let _this = this
         if (type === 'blob') {
           //获取截图的blob数据
           this.$refs.cropper.getCropBlob(async (data) => {
@@ -172,7 +172,10 @@
             let res = await _this.$api.postRequest('/upload/avatar', formData)
             if(res.success){
               const url = res.data
-              _this.$emit('uploadSuccess', 'http://' + url)
+              console.log('更新后的头像地址为：', url);
+              // 用户头像上传成功后，更改页面的用户头像
+              this.$store.commit('SET_USER_AVATAR', url)
+              _this.$emit('uploadSuccess')
             }
             this.submitLoading = false
           })
