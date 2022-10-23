@@ -108,7 +108,7 @@
       submitForm() {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.$confirm('是否确定修改当前个人信息，如果登录名被修改，则需重新登录，是否继续？', '系统提示', {
+            this.$confirm('是否确定修改当前个人信息？', '系统提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
@@ -116,18 +116,8 @@
               this.submitLoading = true;
               this.$api.putRequest('/sysUser/userUpdate', this.form).then(res => {
                 if (res.success) {
-                  if(res.data) {
-                    //修改用户信息
-                    this.$store.commit('SET_USER_BASE_INFO', this.form)
-                  } else {
-                    //这里是用户修改了登录名，需重新登录
-                    this.$store.dispatch('tokenExpirationExit')
-                    this.$alert('你的登录名已修改，请重新登录。', '系统提示', {//下线通知
-                      confirmButtonText: '确定',
-                      type: 'success',
-                      callback: action => {}
-                    });
-                  }
+                  //修改用户信息
+                  this.$store.commit('SET_USER_BASE_INFO', this.form)
                 }
                 this.submitLoading = false;
               })
