@@ -69,7 +69,7 @@
               <el-image
                 class="avatar"
                 fit="cover"
-                :src="scope.row.avatar ? scope.row.avatar : defaultAvatar"
+                :src="getAvatar(scope.row.avatar)"
                 :title="scope.row.avatar ? '点击预览' : ''"
                 :preview-src-list="avatarList(scope.row.avatar)"
               >
@@ -253,11 +253,25 @@
       },
       //用户列表头像大图预览
       avatarList(src) {
-        if(src) {
+        src = this.getAvatar(src)
+        // 默认图片不需要查看
+        if(defaultAvatar !== src) {
           let arr = []
           arr.push(src)
           return arr
         }
+      },
+      // 设置用户头像
+      getAvatar(avatar) {
+        if(avatar) {
+          if(!avatar.startsWith('http')) {
+            // 使用本地文件
+            return process.env.VUE_APP_BASE_API + avatar
+          } else {
+            return avatar
+          }
+        }
+        return defaultAvatar
       },
       //更改状态
       enabledChange(row) {

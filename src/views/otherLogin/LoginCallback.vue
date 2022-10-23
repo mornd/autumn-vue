@@ -29,7 +29,7 @@ export default {
       }).catch(() => {
       })
     } else {
-      this.$alert('参数不能为空，请重试', '提示', {
+      this.$alert('参数不能为空，请重试', '系统提示', {
         confirmButtonText: '前往登录页面',
         type: 'warning'
       }).then(res => {

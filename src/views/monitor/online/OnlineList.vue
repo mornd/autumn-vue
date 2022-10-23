@@ -199,7 +199,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$api.deleteRequest(`/onlineUser/${loginName}`).then(res => {
+        this.$api.deleteRequest(`/onlineUser/${row.id}`).then(res => {
           this.getTable()
         })
       })

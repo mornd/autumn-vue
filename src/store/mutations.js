@@ -1,5 +1,7 @@
 import { setToken } from '@/utils/tokenUtil'
 import { setTheme } from '@/utils/themeUtil'
+//使用js方式动态导入本地图片
+import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png' // 用户未选择头像时展示的默认图片
 
 export default {
   //设置主题
@@ -34,6 +36,15 @@ export default {
   },
   //更换头像
   SET_USER_AVATAR(state, url) {
+    // 处理用户头像
+    if(url) {
+      if(!url.startsWith('http')) {
+        // 使用本地文件
+        url = process.env.VUE_APP_BASE_API + url
+      }
+    } else {
+      url = defaultAvatar
+    }
     state.user.avatar = url
   },
   //修改用户的一些基本信息（用于用户自己修改自己的信息）

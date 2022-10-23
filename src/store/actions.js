@@ -4,10 +4,6 @@ import {getFormatMenus} from "@/utils/menuUtil"
 import { removeToken } from '@/utils/tokenUtil'
 import { removeTheme } from '@/utils/themeUtil'
 
-//使用js方式动态导入本地图片
-import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png' // 用户未选择头像时展示的默认图片
-import errorAvatar from '@/assets/images/avatar/errorAvatar.png' // 图片路径错误显示的图片
-
 export default {
   //设置用户的角色、权限
   setUser({ commit }) {
@@ -17,9 +13,9 @@ export default {
           let userInfo = res.data
           if(userInfo) {
             //存储用户信息
-            // 处理用户头像
-            userInfo.avatar = userInfo.avatar ? userInfo.avatar : defaultAvatar
             commit('SET_USER', userInfo)
+            // 处理头像
+            commit('SET_USER_AVATAR', userInfo.avatar)
             resolve(userInfo)
           } else {
             reject('获取用户信息失败，请重试！')
