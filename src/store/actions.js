@@ -3,6 +3,7 @@ import api from "@/utils/api"
 import {getFormatMenus} from "@/utils/menuUtil"
 import { removeToken } from '@/utils/tokenUtil'
 import { removeTheme } from '@/utils/themeUtil'
+import { Notification } from 'element-ui';
 
 export default {
   //设置用户的角色、权限
@@ -89,6 +90,14 @@ export default {
           //存储用户token
           const tokenStr = res.data.tokenHead + res.data.token
           commit('SET_TOKEN', tokenStr)
+          if(res.data.msg) {
+            Notification.warning({
+              title: '系统提示',
+              dangerouslyUseHTMLString: true,
+              message: '<p style="color: teal">' + res.data.msg + '</p>',
+              offset: 100
+            })
+          }
           resolve()
         }
       }).catch(err => {

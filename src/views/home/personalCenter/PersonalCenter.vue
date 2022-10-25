@@ -27,6 +27,7 @@
           </div>
           <!--性别-->
           <div
+            v-if="user.gender == gender.male || user.gender == gender.female"
             class="gender"
             :title="user.gender == gender.male ? '男' : '女'"
             :style="{backgroundColor: user.gender == gender.male ? '#409EFF' : 'red'}"

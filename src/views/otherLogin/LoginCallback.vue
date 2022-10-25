@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import jsCookie from 'js-cookie'
 
 export default {
   name: "LoginCallback",
@@ -14,7 +13,7 @@ export default {
   },
   mounted() {
     this.fullscreenLoading = true
-    const uuid = jsCookie.get('other-login-uuid')
+    const uuid = this.$route.query.state
     const code = this.$route.query.code
     if(uuid !== undefined && code !== undefined) {
       console.log(`gitee登录uuid=${uuid},code=${code}`);

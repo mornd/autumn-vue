@@ -48,9 +48,15 @@ service.interceptors.response.use(
             store.dispatch('tokenExpirationExit')
           }
           if(response.data.code == 403){
-            Notification.error({
-              title: '403：您的权限不足！',
-            })
+            if(response.data.message) {
+              Notification.error({
+                title: response.data.message
+              })
+            } else {
+              Notification.error({
+                title: '403：您的权限不足！',
+              })
+            }
           }
           if(response.data.code == 500){
             Notification.error({

@@ -96,6 +96,7 @@
             <el-popover
                 placement="left"
                 width="150"
+                title="更多登录方式"
                 trigger="hover">
               <div style="padding: 0 10px;">
                 <ul class="other-login">
@@ -104,7 +105,7 @@
                   </li>
                 </ul>
               </div>
-              <div slot="reference" title="更多登录方式" class="more-login-button" :style="{backgroundColor: theme}">
+              <div slot="reference" class="more-login-button" :style="{backgroundColor: theme}">
                 <i class="el-icon-more" slot="reference"/>
               </div>
             </el-popover>
@@ -141,7 +142,6 @@
   import { mapState } from 'vuex'
   import { encrypt } from '@/utils/secret'
   import { isNotBlank } from '@/utils/validate'
-  import jsCookie from 'js-cookie'
 
   export default {
     name: "Login",
@@ -253,7 +253,6 @@
         this.$api.getRequest(`/preLoginByGitee`).then(res => {
           if(res.success){
             let data = res.data
-            jsCookie.set('other-login-uuid', data.uuid, 3)
             window.location = data.authorizeUrl
           }
         })
