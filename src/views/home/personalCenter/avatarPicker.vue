@@ -54,7 +54,7 @@
 
     <!--图片操作按钮-->
     <div class="cropper-btns">
-      <label class="select-img-btn" for="uploads">文件夹中选择</label>
+      <label class="select-img-btn" for="uploads">选择本地文件</label>
       <input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="selectImg($event)">
       <el-button size="small" type="primary" :loading="submitLoading" @click="uploadImg('blob')" :disabled="!selectFlag">提交</el-button>
     </div>

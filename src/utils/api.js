@@ -32,7 +32,7 @@ service.interceptors.response.use(
     response => {
       if(response){
         //console.log(response);
-        if(response.status && response.status == 200){
+        if(response.status && response.status === 200){
           if(response.data.success && response.data.code == 200){
             if(response.data.message){
               Notification.success({
@@ -48,20 +48,15 @@ service.interceptors.response.use(
             store.dispatch('tokenExpirationExit')
           }
           if(response.data.code == 403){
-            if(response.data.message) {
-              Notification.error({
-                title: response.data.message
-              })
-            } else {
-              Notification.error({
-                title: '403：您的权限不足！',
-              })
-            }
+            let msg = response.data.message
+            Notification.error({
+              title: (msg ? msg : '403：您的权限不足！')
+            })
           }
           if(response.data.code == 500){
+            let msg = response.data.message
             Notification.error({
-              title: '服务器异常：',
-              message: response.data.message,
+              title: (msg ? msg : '500：服务器异常！')
             })
           }
           if(response.data.code == 600){
@@ -70,17 +65,18 @@ service.interceptors.response.use(
               message: response.data.message,
             })
           }
-          return response.data;
+          return response.data
         }else{
-          Message.error('连接异常！');
+          Message.error('连接异常！')
         }
       }else{
-        Message.error('服务器未响应结果！');
+        Message.error('服务器未响应结果！')
       }
     },
     error => {
       console.log(error);
-      if(error.response.status == 401) {
+      let errMsg = ''
+      if(error.response.status === 401) {
         //退出操作
         const excludeUrl = error.response.request.responseURL;
         if((excludeUrl.indexOf('userLogout')) >= 0) {
@@ -100,23 +96,24 @@ service.interceptors.response.use(
             });
           }
         }
-      } else if(error.response.status == 500) {
-        Message.error('抱歉，后端服务貌似宕机了 OvO！');
-      }else if(error.response.status == 404){
-        Message.error('请求地址不存在！');
-      }else if(error.response.status == 400){
-        Message.error('错误请求，请求参数类型或数量不匹配！');
-      }else if(error.response.status == 403){
-        Message.error('您的权限不足！');
-      }else if(error.response.status == 405){
-        Message.error('请求方式不匹配！');
+      } else if(error.response.status === 500) {
+        errMsg = '抱歉，后端服务貌似宕机了 OvO！'
+      }else if(error.response.status === 404){
+        errMsg = '请求地址不存在！'
+      }else if(error.response.status === 400){
+        errMsg = '错误请求，请求参数类型或数量不匹配！'
+      }else if(error.response.status === 403){
+        errMsg = '您的权限不足！'
+      }else if(error.response.status === 405){
+        errMsg = '请求方式不匹配！'
       } else {
         if(error.message){
-          Message.error(error.message);
+          errMsg = error.message
         }else{
-          Message.error('未知错误！');
+          errMsg = '未知错误！'
         }
       }
+      Message.error(errMsg)
       return Promise.reject(error)
     }
 )

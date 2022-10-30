@@ -341,10 +341,12 @@
             type: 'warning'
           }).then(() => {
             this.$api.deleteRequest(`/sysUser/${row.id}`).then(res => {
-              this.getTable();
-              this.$store.dispatch('setUser').then(res => {
-                this.$store.dispatch('setMenuRoutes')
-              })
+              if(res.success) {
+                this.getTable();
+                this.$store.dispatch('setUser').then(res => {
+                  this.$store.dispatch('setMenuRoutes')
+                })
+              }
             })
           }).catch(() => {})
         }
