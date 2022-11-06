@@ -6,6 +6,7 @@
           <el-input
             v-model="crudObj.username"
             clearable
+            placeholder="例如：tom"
             prefix-icon="el-icon-search"
             maxlength="100"
             type="text"
@@ -117,7 +118,7 @@
             prop="address"
             align="center"
             show-overflow-tooltip
-            label="访问地址">
+            label="用户地址">
         </el-table-column>
         <el-table-column
           prop="executionTime"
@@ -182,6 +183,8 @@
         //日期范围
         visitDateScope: [],
         crudObj: {
+          username: '',
+          type: undefined,
           pageNo: 1,
           pageSize: 10,
           total: 0
@@ -244,7 +247,7 @@
         })
       },
       clearAll() {
-        this.$confirm('是否清空所有日志?', '提示', {
+        this.$confirm('是否清空所有操作日志?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

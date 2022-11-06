@@ -120,6 +120,8 @@ export default {
   data() {
     return {
       crudObj: {
+        loginName: '',
+        realName: '',
         pageNo: 1,
         pageSize: 10,
         total: 0

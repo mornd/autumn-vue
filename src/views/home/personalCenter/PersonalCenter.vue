@@ -95,6 +95,7 @@
             <change-password v-if="rightInfo === 'pwd'"/>
           </el-tab-pane>
           <el-tab-pane label="登录记录" name="log">
+            <my-login-records />
           </el-tab-pane>
         </el-tabs>
       </el-card>
@@ -117,6 +118,7 @@
 <script>
   import ChangeInfo from './ChangeInfo'
   import ChangePassword from './ChangePassword'
+  import myLoginRecords from './myLoginRecords'
   //头像选择
   import avatarPincker from './avatarPicker'
   import { mapGetters, mapState } from 'vuex'
@@ -126,7 +128,7 @@
 
   export default {
     name: "PersonalCenter",
-    components: {ChangePassword, ChangeInfo, avatarPincker},
+    components: {ChangePassword, ChangeInfo, avatarPincker, myLoginRecords},
     data() {
       return {
         rightInfo: 'info',
