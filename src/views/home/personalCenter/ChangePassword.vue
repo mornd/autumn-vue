@@ -135,7 +135,7 @@
                 if(res.data) {
                   this.active = 1
                 } else {
-                  this.$message.error('密码验证错误')
+                  this.$message.error('密码不正确')
                 }
                 this.oldPwdBtnLoading = false
               }

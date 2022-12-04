@@ -246,7 +246,7 @@
       reset() {
         this.crudObj.loginName = ''
         this.crudObj.realName = ''
-        this.crudObj.enabled = ''
+        this.crudObj.status = ''
         this.crudObj.pageNo = 1
         this.crudObj.pageSize = 10
         this.getTable()

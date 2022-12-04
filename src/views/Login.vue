@@ -19,54 +19,92 @@
       <!--表单描述-->
       <p class="desc">越 秀 区 最 具 影 响 力 的 设 计 规 范 之 一</p>
 
-      <el-form-item prop="username">
-        <el-input
-          v-model="loginForm.username"
-          @keyup.enter.native="submitForm"
-          clearable
-          placeholder="账号"
-          :maxlength="maxLength"
-          prefix-icon="el-icon-user-solid"
-        />
-      </el-form-item>
-
-      <el-form-item prop="password">
-        <el-input
-          v-model="loginForm.password"
-          type="password"
-          @keyup.enter.native="submitForm"
-          clearable
-          placeholder="密码"
-          :maxlength="maxLength"
-          prefix-icon="el-icon-lock"
-        />
-      </el-form-item>
-
-      <el-form-item prop="code">
-        <div style="display: flex;justify-content: space-between">
+      <!-- 账号密码登录 -->
+      <div v-if="loginMethod === 'account'">
+        <el-form-item prop="username">
           <el-input
-            v-model.trim="loginForm.code"
-            @keyup.enter.native="submitForm"
-            clearable placeholder="验证码"
-            maxlength="4"
-            style="width: 220px"
-            prefix-icon="el-icon-picture"
+              v-model="loginForm.username"
+              @keyup.enter.native="submitForm"
+              clearable
+              placeholder="账号"
+              :maxlength="maxLength"
+              prefix-icon="el-icon-user-solid"
           />
-          <div class="captcha-content">
-            <div v-if="captchaLoad">
-              <i class="el-icon-loading" style="margin-right: 5px"></i><span>loading...</span>
+        </el-form-item>
+
+        <el-form-item prop="password">
+          <el-input
+              v-model="loginForm.password"
+              type="password"
+              @keyup.enter.native="submitForm"
+              clearable
+              placeholder="密码"
+              :maxlength="maxLength"
+              prefix-icon="el-icon-lock"
+          />
+        </el-form-item>
+
+        <el-form-item prop="code">
+          <div style="display: flex;justify-content: space-between">
+            <el-input
+                v-model.trim="loginForm.code"
+                @keyup.enter.native="submitForm"
+                clearable placeholder="验证码"
+                maxlength="4"
+                style="width: 220px"
+                prefix-icon="el-icon-picture"
+            />
+            <div class="captcha-content">
+              <div v-if="captchaLoad">
+                <i class="el-icon-loading" style="margin-right: 5px"></i><span>loading...</span>
+              </div>
+              <img v-else :src="captchaUrl" @click="getCaptcha()" title="点击更换" />
             </div>
-            <img v-else :src="captchaUrl" @click="getCaptcha()" title="点击更换" />
           </div>
-        </div>
-      </el-form-item>
+        </el-form-item>
+      </div>
+
+      <!-- 短信验证登录 -->
+      <div v-else>
+        <el-form-item prop="phone">
+          <el-input
+              v-model="loginForm.phone"
+              clearable
+              placeholder="手机号码"
+              :maxlength="11"
+              prefix-icon="el-icon-phone"
+          />
+        </el-form-item>
+
+        <el-form-item prop="code">
+          <div style="display: flex;justify-content: space-between">
+            <el-input
+                v-model.trim="loginForm.code"
+                @keyup.enter.native="submitForm"
+                clearable placeholder="验证码"
+                maxlength="10"
+                style="width: 200px"
+                prefix-icon="el-icon-picture"
+            />
+            <div>
+              <el-button
+                  :disabled="sendMsgFlag"
+                  class="send-msg-btn"
+                  :style="{backgroundColor: theme, color: '#FFF'}"
+                  @click="sendPhoneCode()">
+                <span>{{ sendMsgFlag ? sendMsgCountNum + '秒后可重发' : '发送验证码' }}</span>
+              </el-button>
+            </div>
+          </div>
+        </el-form-item>
+      </div>
 
       <el-form-item>
         <el-checkbox v-model="loginForm.remember" :style="cTheme">记住我</el-checkbox>
         <span :style="{color: theme, 'float': 'right'}">
             <span style="cursor: pointer">忘记密码</span>
             <span>&emsp;|&emsp;</span>
-            <span @click="changeLogin()" style="cursor: pointer">短信验证登录</span>
+            <span @click="changeLogin()" style="cursor: pointer">{{ loginMethodTxt }}</span>
           </span>
       </el-form-item>
 
@@ -74,7 +112,7 @@
         <!--提交按钮-->
         <el-button
           type="primary"
-          class="submitBtn"
+          class="submit-btn"
           @click="submitForm()"
           :style="{backgroundColor: theme}"
           :disabled="loading"
@@ -141,7 +179,7 @@
 <script>
   import { mapState } from 'vuex'
   import { encrypt } from '@/utils/secret'
-  import { isNotBlank } from '@/utils/validate'
+  import { isNotBlank, isvalidPhone } from '@/utils/validate'
 
   export default {
     name: "Login",
@@ -169,6 +207,13 @@
           callback(new Error('请输入密码'))
         }
       }
+      const checkPhone = (rule, value, callback) => {
+        if(isvalidPhone(value)) {
+          callback()
+        } else {
+          callback(new Error("手机号码格式不正确"))
+        }
+      }
       return {
         //验证码加载遮罩
         captchaLoad: true,
@@ -178,6 +223,7 @@
         loginForm: {
           username: 'tom', //'tom',
           password: '000', //'000',
+          phone: '',
           code: '',
           uuid: '',
           remember: false
@@ -191,8 +237,16 @@
         rules:{
           username: [{validator: checkUsername, trigger:"blur"}],
           password: [{validator: checkPassword, trigger:"blur"}],
+          phone: [{validator: checkPhone, trigger:"blur"}],
           code: [{required:true, message:"请输入验证码", trigger:"change"}]
         },
+        // 登录发送 account，phone
+        loginMethod: 'account',
+        loginMethodTxt: '短信验证登录',
+        sendMsgFlag: false,
+        firstSendMsgFlag: false,
+        sendMsgTimer: {},
+        sendMsgCountNum: 60,
       }
     },
     mounted() {
@@ -219,34 +273,50 @@
             if (valid) {
               //加载动画
               this.loading = true
-              //加密密码😂
-              const tempForm = Object.assign({},
-                  this.loginForm,
-                  {
-                    desEncrypt: true,
-                    password: encrypt(this.loginForm.password)
-                  })
-              //封装的post请求
-              this.$api.postRequest('/userLogin', tempForm).then(res => {
-                if(res.success){
-                  //存储用户token
-                  const tokenStr = res.data.tokenHead + res.data.token;
-                  this.$store.commit('SET_TOKEN', tokenStr);
-                  this.$router.replace(this.homePath);
-                }else{
-                  //登录失败
-                  this.loginForm.code = '';
-                  this.getCaptcha();
-                  this.loading = false;
-                }
-              })
+              if(this.loginMethod === 'account') {
+                //加密密码😂
+                const tempForm = Object.assign({},
+                    this.loginForm,
+                    {
+                      desEncrypt: true,
+                      password: encrypt(this.loginForm.password)
+                    })
+                //封装的post请求
+                this.$api.postRequest('/userLogin', tempForm).then(res => {
+                  if(res.success){
+                    this.loginSuccessHandle(res)
+                  }else{
+                    //登录失败
+                    this.loginForm.code = '';
+                    this.getCaptcha();
+                    this.loading = false;
+                  }
+                })
+              } else {
+                const tempForm = {phone: this.loginForm.phone, code: this.loginForm.code}
+                this.$api.postRequest('/phoneMsgLogin', tempForm).then(res => {
+                  if(res.success){
+                    this.loginSuccessHandle(res)
+                  }else{
+                    //登录失败
+                    this.loginForm.code = '';
+                    this.loading = false;
+                  }
+                })
+              }
             } else {
               //表单验证不通过
-              this.$message.warning('请重新校验必填项');
               return false;
             }
-          });
+          })
         }
+      },
+      // 登录成功处理
+      loginSuccessHandle(res) {
+        //存储用户token
+        const tokenStr = res.data.tokenHead + res.data.token;
+        this.$store.commit('SET_TOKEN', tokenStr);
+        this.$router.replace(this.homePath);
       },
       // gitee 登录
       giteeLogin() {
@@ -259,6 +329,44 @@
       },
       // 切换登录方式
       changeLogin() {
+        if(this.loginMethod === 'account') {
+          // 账号密码登录
+          this.loginMethodTxt = '账号密码登录'
+          this.loginMethod = 'phone'
+        } else {
+          this.loginMethodTxt = '短信验证登录'
+          this.loginMethod = 'account'
+        }
+        this.loginForm.code = ''
+        this.$refs['loginForm'].clearValidate()
+      },
+      // 发送手机验证码
+      sendPhoneCode() {
+        this.$refs['loginForm'].validateField(['phone'], errorMsg => {
+          if(!errorMsg) {
+            this.$api.getRequest(`/sendLoginPhoneMsgCode/${this.loginForm.phone}`).then(res => {
+              if(res.success) {
+                this.sendMsgFlag = true
+                this.$message.success(res.data)
+                this.countDown()
+              }
+            })
+          }
+        })
+      },
+      // 短信验证码倒计时
+      countDown() {
+        this.sendMsgTimer = setInterval(() => {
+          if(this.sendMsgCountNum - 1 === 0) {
+            // 清除定时器
+            clearInterval(this.sendMsgTimer)
+            // 重置倒计时状态
+            this.sendMsgCountNum = 60
+            this.sendMsgFlag = false
+          } else {
+            this.sendMsgCountNum--
+          }
+        }, 1000)
       }
     },
     computed: {
@@ -327,13 +435,18 @@
     }
 
     /*登录按钮*/
-    .submitBtn {
+    .submit-btn {
       border: none;
       width: 100%;
       font-size: 15px;
       font-weight: bold;
     }
 
+    /* 发送短信按钮 */
+    .send-msg-btn {
+      border: none;
+      width: 135px;
+    }
 
   }
 

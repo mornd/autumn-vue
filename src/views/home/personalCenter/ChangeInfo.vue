@@ -68,7 +68,17 @@
           callback()
         } else {
           if(isvalidPhone(value)) {
-            callback()
+            this.$api.getRequest(`/sysUser/queryPhoneExists?phone=${value}&id=${this.form.id}`).then(res => {
+              if (res.success) {
+                if (res.data) {
+                  callback(new Error("手机号码已被绑定"));
+                } else {
+                  callback()
+                }
+              } else {
+                callback(new Error())
+              }
+            })
           } else {
             callback(new Error("手机号码格式不正确"))
           }

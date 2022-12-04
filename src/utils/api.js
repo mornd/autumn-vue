@@ -97,7 +97,7 @@ service.interceptors.response.use(
           }
         }
       } else if(error.response.status === 500) {
-        errMsg = '抱歉，后端服务貌似宕机了 OvO！'
+        errMsg = '后端服务正在重启或已宕机！'
       }else if(error.response.status === 404){
         errMsg = '请求地址不存在！'
       }else if(error.response.status === 400){

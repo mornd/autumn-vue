@@ -41,6 +41,18 @@
           label="登录时间">
       </el-table-column>
       <el-table-column
+          prop="type"
+          align="center"
+          show-overflow-tooltip
+          label="登录方式">
+        <template #default="scope">
+          <template v-for="item in loginType">
+            <span v-if="scope.row.type == item.key">{{ item.label }}</span>
+            <span v-else-if="scope.row.type == item.key">{{ item.label }}</span>
+          </template>
+        </template>
+      </el-table-column>
+      <el-table-column
           prop="ip"
           align="center"
           show-overflow-tooltip
@@ -81,7 +93,18 @@
 export default {
   name: "myLoginRecords",
   data() {
+    const loginType = {
+      account: {
+        key: 0,
+        label: '账号'
+      },
+      phone_msg: {
+        key: 1,
+        label: '短信'
+      }
+    }
     return {
+      loginType,
       //日期范围
       visitDateScope: [],
       crudObj: {
