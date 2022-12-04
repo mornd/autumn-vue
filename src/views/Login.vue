@@ -102,7 +102,7 @@
       <el-form-item>
         <el-checkbox v-model="loginForm.remember" :style="cTheme">记住我</el-checkbox>
         <span :style="{color: theme, 'float': 'right'}">
-            <span style="cursor: pointer">忘记密码</span>
+            <span style="cursor: pointer" @click="forgetPwd">忘记密码</span>
             <span>&emsp;|&emsp;</span>
             <span @click="changeLogin()" style="cursor: pointer">{{ loginMethodTxt }}</span>
           </span>
@@ -173,6 +173,13 @@
         </li>
       </ul>
     </div>
+
+    <el-drawer :visible.sync="drawer" @close="drawerClose">
+      <span :style="{color: theme, fontWeight: 'bold'}" slot="title">忘记密码</span>
+      <div style="margin: 0 30px">
+        <send-phone-msg ref="forgetPwdForm" :sysTheme="true" @respHandle="forgetPwdRespHandle"></send-phone-msg>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -181,8 +188,11 @@
   import { encrypt } from '@/utils/secret'
   import { isNotBlank, isvalidPhone } from '@/utils/validate'
 
+  import SendPhoneMsg from "@/components/frame/auth/SendPhoneMsg";
+
   export default {
     name: "Login",
+    components: {SendPhoneMsg},
     data() {
       //表单校验
       const checkUsername = (rule, value, callback) => {
@@ -247,6 +257,9 @@
         firstSendMsgFlag: false,
         sendMsgTimer: {},
         sendMsgCountNum: 60,
+
+        // 抽屉
+        drawer: false,
       }
     },
     mounted() {
@@ -367,6 +380,19 @@
             this.sendMsgCountNum--
           }
         }, 1000)
+      },
+      // 忘记密码
+      forgetPwd() {
+        this.drawer = true
+      },
+      forgetPwdRespHandle(res) {
+        if(res) {
+          this.$message.success('密码修改成功')
+          this.drawer = false
+        }
+      },
+      drawerClose() {
+        this.$refs.forgetPwdForm.clearFormPwd()
       }
     },
     computed: {

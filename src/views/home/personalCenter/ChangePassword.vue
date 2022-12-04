@@ -23,7 +23,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item style="margin-top: 20px">
-          <span>🥝&emsp;<span style="font-size: 13px;color: #409EFF;cursor: pointer">忘记密码</span></span>
+          <span>🥝&emsp;<span style="font-size: 13px;color: #409EFF;cursor: pointer" @click="forgetPwd">忘记密码</span></span>
           <el-button
             type="primary"
             :loading="oldPwdBtnLoading"
@@ -61,14 +61,25 @@
 
     <el-result v-if="active === 3" icon="success" title="操作成功" subTitle="你的密码已修改，请重新登录。">
     </el-result>
+
+    <!--  忘记密码功能  -->
+    <el-dialog
+        :close-on-click-modal="false"
+        title="忘记密码"
+        :visible.sync="forgetPwdVisible"
+        width="30%">
+      <SendPhoneMsg @respHandle="respHandle"></SendPhoneMsg>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import { encrypt } from '@/utils/secret'
+  import SendPhoneMsg from "@/components/frame/auth/SendPhoneMsg";
 
   export default {
     name: "ChangePassword",
+    components: {SendPhoneMsg},
     data() {
       const pwdMinLength = 3
       const pwdMaxLength = 20
@@ -117,7 +128,9 @@
           oldPwd: {validator: checkPwd, trigger:"blur"},
           newPwd: {validator: checkPwd, trigger:"blur"},
           confirmPwd: {validator: checkConfirmPwd, trigger:"blur"},
-        }
+        },
+        // 忘记密码功能
+        forgetPwdVisible: false,
       }
     },
     methods: {
@@ -159,13 +172,7 @@
             this.$api.postRequest(`/sysUser/changePwd`, encryptPwd).then(res => {
               if(res.success) {
                 this.active = 3
-                //this.$store.dispatch('logout')
-                this.$store.dispatch('tokenExpirationExit')
-                this.$alert('你的密码已修改，请重新登录。', '系统提示', {//下线通知
-                  confirmButtonText: '确定',
-                  type: 'success',
-                  callback: action => {}
-                });
+                this.updateSuccessHandle()
               }
               this.changePwdBtnLoading = false
             })
@@ -173,6 +180,25 @@
             return false
           }
         })
+      },
+      updateSuccessHandle() {
+        //this.$store.dispatch('logout')
+        this.$store.dispatch('tokenExpirationExit')
+        this.$alert('你的密码已修改，请重新登录。', '系统提示', {//下线通知
+          confirmButtonText: '确定',
+          type: 'success',
+          callback: action => {}
+        });
+      },
+      // 忘记密码
+      forgetPwd() {
+        this.forgetPwdVisible = true
+      },
+      // 忘记密码处理完毕，res = true 验证成功，res = false 验证失败
+      respHandle(res) {
+        if(res) {
+          this.updateSuccessHandle()
+        }
       }
     }
   }
