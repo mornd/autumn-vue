@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { isvalidPhone } from '@/utils/validate'
+import { isvalidPhone, isNotBlank } from '@/utils/validate'
 import { encrypt } from '@/utils/secret'
 import {mapState} from "vuex";
 
@@ -88,7 +88,14 @@ export default {
         callback(new Error("手机号码格式不正确"))
       }
     }
-        //密码校验函数
+    const checkCode = (rule, value, callback) => {
+      if(isNotBlank(value)) {
+        callback()
+      } else {
+        callback(new Error("验证码不能为空"))
+      }
+    }
+    //密码校验函数
     const checkPwd = (rules, value, callback) => {
       if(value && value.trim() !== '') {
         if(value.length >= pwdMinLength) {
@@ -128,7 +135,7 @@ export default {
       //非空验证 与prop属性对应
       rules:{
         phone: [{validator: checkPhone, trigger:"blur"}],
-        code: [{required:true, message:"请输入验证码", trigger:"change"}],
+        code: [{validator: checkCode, trigger:"blur"}],
         newPwd: {validator: checkPwd, trigger:"blur"},
         confirmPwd: {validator: checkConfirmPwd, trigger:"blur"},
       },

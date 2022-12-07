@@ -100,7 +100,7 @@
       </div>
 
       <el-form-item>
-        <el-checkbox v-model="loginForm.remember" :style="cTheme">记住我</el-checkbox>
+        <el-checkbox v-if="rememberMeFlag" v-model="loginForm.rememberMe" :style="cTheme">记住我</el-checkbox>
         <span :style="{color: theme, 'float': 'right'}">
             <span style="cursor: pointer" @click="forgetPwd">忘记密码</span>
             <span>&emsp;|&emsp;</span>
@@ -157,7 +157,7 @@
       <ul>
         <li>
           <i class="fa fa-copyright"></i>
-          Copyright © 2021
+          <span>Copyright © 2021</span>
         </li>
         <li>
           <i class="fa fa-git-square"></i>
@@ -187,6 +187,8 @@
   import { mapState } from 'vuex'
   import { encrypt } from '@/utils/secret'
   import { isNotBlank, isvalidPhone } from '@/utils/validate'
+  import jsCookie from 'js-cookie'
+  import { encryptContent, decryptContent } from '@/utils/jsencrypt'
 
   import SendPhoneMsg from "@/components/frame/auth/SendPhoneMsg";
 
@@ -231,12 +233,12 @@
         captchaUrl: '',
         //表单登录属性
         loginForm: {
-          username: 'tom', //'tom',
-          password: '000', //'000',
+          username: '', //'tom',
+          password: '', //'000',
           phone: '',
           code: '',
           uuid: '',
-          remember: false
+          rememberMe: false
         },
         //整个页面加载遮罩
         loading: false,
@@ -245,11 +247,14 @@
         maxLength: 20,
         //非空验证 与prop属性对应
         rules:{
-          username: [{validator: checkUsername, trigger:"blur"}],
-          password: [{validator: checkPassword, trigger:"blur"}],
-          phone: [{validator: checkPhone, trigger:"blur"}],
-          code: [{required:true, message:"请输入验证码", trigger:"change"}]
+          username: [{validator: checkUsername, trigger: "blur"}],
+          password: [{validator: checkPassword, trigger: "blur"}],
+          phone: [{validator: checkPhone, trigger: "blur"}],
+          code: [{required:true, message: "请输入验证码", trigger: ["change"]}]
         },
+        rememberMeFlag: true,
+        // 记住我多长时间，单位：天
+        rememberMeDays: 30,
         // 登录发送 account，phone
         loginMethod: 'account',
         loginMethodTxt: '短信验证登录',
@@ -263,7 +268,8 @@
       }
     },
     mounted() {
-      this.getCaptcha();
+      this.getCaptcha()
+      this.getCookie()
     },
     methods: {
       //获取验证码
@@ -278,6 +284,16 @@
         })
       },
 
+      //  获取保存在 cookie 中的登录信息
+      getCookie() {
+        const username = jsCookie.get("username");
+        const password = jsCookie.get("password");
+        const rememberMe = jsCookie.get('rememberMe')
+        if(username !== undefined) this.loginForm.username = username
+        if(password !== undefined) this.loginForm.password = decryptContent(password)
+        if(rememberMe !== undefined) this.loginForm.rememberMe = Boolean(rememberMe)
+      },
+
       //表单提交
       submitForm() {
         if(!this.loading) {
@@ -287,6 +303,15 @@
               //加载动画
               this.loading = true
               if(this.loginMethod === 'account') {
+                if (this.loginForm.rememberMe) {
+                  jsCookie.set("username", this.loginForm.username, { expires: this.rememberMeDays });
+                  jsCookie.set("password", encryptContent(this.loginForm.password), { expires: this.rememberMeDays });
+                  jsCookie.set('rememberMe', this.loginForm.rememberMe, { expires: this.rememberMeDays });
+                } else {
+                  jsCookie.remove("username");
+                  jsCookie.remove("password");
+                  jsCookie.remove('rememberMe');
+                }
                 //加密密码😂
                 const tempForm = Object.assign({},
                     this.loginForm,
@@ -343,10 +368,12 @@
       // 切换登录方式
       changeLogin() {
         if(this.loginMethod === 'account') {
+          this.rememberMeFlag = false
           // 账号密码登录
           this.loginMethodTxt = '账号密码登录'
           this.loginMethod = 'phone'
         } else {
+          this.rememberMeFlag = true
           this.loginMethodTxt = '短信验证登录'
           this.loginMethod = 'account'
         }
@@ -405,7 +432,9 @@
   }
 </script>
 
+<!-- 局部样式 -->
 <style lang="less" scoped>
+
   //定义ul混入
   .mixin_ui(@margin: 0) {
     margin: @margin;
@@ -516,5 +545,27 @@
         }
       }
     }
+  }
+</style>
+
+<!-- 全局样式 -->
+<style lang="less">
+  /* el checkbox 组件 */
+  .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate
+    /* 图标 */
+  .el-checkbox__inner{
+    background-color: #009F95;
+    border-color: #009F95;
+  }
+  /* 字体 */
+  .el-checkbox__input.is-checked + .el-checkbox__label {
+    color: #009F95;
+  }
+  .el-checkbox.is-bordered.is-checked{
+    border-color: #009F95;
+  }
+  /* 取消选中的图标边框 */
+  .el-checkbox__input.is-focus .el-checkbox__inner{
+    border-color: #009F95;
   }
 </style>
