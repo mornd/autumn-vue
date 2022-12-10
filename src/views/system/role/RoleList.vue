@@ -127,6 +127,7 @@
         @current-change="handleCurrentChange"
         :page-sizes="[10, 20, 50]"
         :page-size="crudObj.pageSize"
+        :current-page.sync="crudObj.currentPage"
         layout="total, sizes, prev, pager, next, jumper"
         :total="crudObj.total">
       </el-pagination>
@@ -164,7 +165,11 @@
         loading: false,
         tableData: [],
         crudObj: {
+          name: '',
+          code: '',
+          enabled: '',
           pageNo: 1,
+          currentPage: 1,
           pageSize: 10,
           total: 0
         },
@@ -206,7 +211,6 @@
       },
       //表头搜索
       search() {
-        this.crudObj.pageNo = 1
         this.getTable()
       },
       //搜索表单重置
@@ -214,6 +218,7 @@
         this.crudObj.name = ''
         this.crudObj.code = ''
         this.crudObj.enabled = ''
+        this.crudObj.currentPage = 1
         this.crudObj.pageNo = 1
         this.crudObj.pageSize = 10
         this.getTable()

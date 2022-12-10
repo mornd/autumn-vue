@@ -46,7 +46,7 @@
     </div>
 
     <div class="crud-content">
-      <el-button @click="clearAll" v-has-permi="['systemMonitor:sysLog:clear']" type="danger" size="small" icon="el-icon-delete" style="margin-left: 5px">清空所有数据</el-button>
+      <el-button @click="clearAll" v-has-permi="['systemMonitor:sysLoginInfor:truncate']" type="danger" size="small" icon="el-icon-delete" style="margin-left: 5px">清空所有数据</el-button>
       <el-table
           max-height="430"
           size="small"
@@ -136,6 +136,7 @@
           @current-change="handleCurrentChange"
           :page-sizes="[10, 20, 50]"
           :page-size="crudObj.pageSize"
+          :current-page.sync="crudObj.currentPage"
           layout="total, sizes, prev, pager, next, jumper"
           :total="crudObj.total">
       </el-pagination>
@@ -176,6 +177,7 @@ export default {
       crudObj: {
         loginName: '',
         status: undefined,
+        currentPage: 1,
         pageNo: 1,
         pageSize: 10,
         total: 0
@@ -251,7 +253,6 @@ export default {
       }).catch(() => {});
     },
     search() {
-      this.crudObj.pageNo = 1
       this.getTable()
     },
     //搜索表单重置
@@ -259,6 +260,7 @@ export default {
       this.crudObj.loginName = ''
       this.visitDateScope = ''
       this.crudObj.status = ''
+      this.crudObj.currentPage = 1
       this.crudObj.pageNo = 1
       this.crudObj.pageSize = 10
       this.getTable()

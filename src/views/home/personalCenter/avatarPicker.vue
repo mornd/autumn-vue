@@ -99,13 +99,15 @@
     mounted() {
       //如果用户已有头像则先展示用户头像
       if(this.avatarUrl) {
+        // 使用阿里云存储时，这里会出现跨域问题，需在云控制台->跨域设置中配置
+        // 参考链接：https://blog.csdn.net/qq_24950043/article/details/125074912
         this.option.img = this.avatarUrl
       }
     },
     methods: {
       //初始化函数
       imgLoad (msg) {
-        //console.log("工具初始化函数====="+msg)
+        // console.log("工具初始化函数====="+msg)
       },
       //图片缩放
       changeScale (num) {
