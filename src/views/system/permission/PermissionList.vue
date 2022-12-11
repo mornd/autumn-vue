@@ -279,13 +279,13 @@
         let msg, url, enabled = this.enabledState.enabled, disabled = this.enabledState.disabled
         if (enabled == row.enabled) {
           msg = '是否启用该节点？'
-          url = `/permission/changeState?id=${row.id}&state=${enabled}`
+          url = `/permission/changeState/${row.id}/${enabled}`
         } else if (disabled == row.enabled) {
           msg = '是否禁用该节点及该节点的所有子节点？'
           if(row.children && row.children.length) {
             msg += '若再启用该节点时，另需手动启用该节点的所有子节点，是否继续？'
           }
-          url = `/permission/changeState?id=${row.id}&state=${disabled}`
+          url = `/permission/changeState/${row.id}/${disabled}`
         }
         if(msg) {
           this.$confirm(msg, '系统提示', {
@@ -293,7 +293,7 @@
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.$api.getRequest(url).then(res => {
+            this.$api.putRequest(url).then(res => {
               if (res.success) {
                 this.getTable();
                 this.$store.dispatch('setUser').then(res => {

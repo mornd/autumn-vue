@@ -229,17 +229,17 @@
         let msg, url, enabled = this.enabledState.enabled, disabled = this.enabledState.disabled
         if (enabled == row.enabled) {
           msg = '是否启用该角色？'
-          url = `/role/changeState?id=${row.id}&state=${enabled}`
+          url = `/role/changeState/${row.id}/${enabled}`
         } else if (disabled == row.enabled) {
           msg = '是否禁用该角色？'
-          url = `/role/changeState?id=${row.id}&state=${disabled}`
+          url = `/role/changeState/${row.id}/${disabled}`
         }
         this.$confirm(msg, '系统提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$api.getRequest(url).then(res => {
+          this.$api.putRequest(url).then(res => {
             if (res.success) {
               this.getTable();
               this.$store.dispatch('setUser').then(res => {

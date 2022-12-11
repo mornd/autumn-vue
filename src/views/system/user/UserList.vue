@@ -281,17 +281,17 @@
         let msg, url, enabled = this.enabledState.enabled, disabled = this.enabledState.disabled
         if (enabled == row.status) {
           msg = '是否启用该用户？'
-          url = `/sysUser/changeState?id=${row.id}&state=${enabled}`
+          url = `/sysUser/changeState/${row.id}/${enabled}`
         } else if (disabled == row.status) {
           msg = '是否禁用该用户？'
-          url = `/sysUser/changeState?id=${row.id}&state=${disabled}`
+          url = `/sysUser/changeState/${row.id}/${disabled}`
         }
         this.$confirm(msg, '系统提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$api.getRequest(url).then(res => {
+          this.$api.putRequest(url).then(res => {
             if (res.success) {
               this.getTable()
               this.$store.dispatch('setUser').then(res => {
