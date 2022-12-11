@@ -260,7 +260,6 @@
         loginMethodTxt: '短信验证登录',
         sendMsgFlag: false,
         firstSendMsgFlag: false,
-        sendMsgTimer: {},
         sendMsgCountNum: 60,
 
         // 抽屉
@@ -384,11 +383,13 @@
       sendPhoneCode() {
         this.$refs['loginForm'].validateField(['phone'], errorMsg => {
           if(!errorMsg) {
+            this.sendMsgFlag = true
             this.$api.getRequest(`/sendLoginPhoneMsgCode/${this.loginForm.phone}`).then(res => {
               if(res.success) {
-                this.sendMsgFlag = true
                 this.$message.success(res.data)
                 this.countDown()
+              } else {
+                this.sendMsgFlag = false
               }
             })
           }
@@ -396,10 +397,10 @@
       },
       // 短信验证码倒计时
       countDown() {
-        this.sendMsgTimer = setInterval(() => {
+        const timer = setInterval(() => {
           if(this.sendMsgCountNum - 1 === 0) {
             // 清除定时器
-            clearInterval(this.sendMsgTimer)
+            clearInterval(timer)
             // 重置倒计时状态
             this.sendMsgCountNum = 60
             this.sendMsgFlag = false
@@ -549,7 +550,7 @@
 </style>
 
 <!-- 全局样式 -->
-<style lang="less">
+<!--<style lang="less">
   /* el checkbox 组件 */
   .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate
     /* 图标 */
@@ -568,4 +569,4 @@
   .el-checkbox__input.is-focus .el-checkbox__inner{
     border-color: #009F95;
   }
-</style>
+</style>-->

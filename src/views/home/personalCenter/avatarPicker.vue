@@ -56,7 +56,7 @@
     <div class="cropper-btns">
       <label class="select-img-btn" for="uploads">选择本地文件</label>
       <input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="selectImg($event)">
-      <el-button size="small" type="primary" :loading="submitLoading" @click="uploadImg('blob')" :disabled="!selectFlag">提交</el-button>
+      <el-button size="small" type="primary" :loading="submitLoading" @click="uploadImg('blob')">提交</el-button>
     </div>
   </div>
 </template>
@@ -70,7 +70,6 @@
       return {
         previews: {},
         submitLoading: false,
-        selectFlag: false,
         option:{
           img: '',             //裁剪图片的地址
           outputSize: 1,       //裁剪生成图片的质量(可选0.1 - 1)
@@ -97,12 +96,9 @@
       }
     },
     mounted() {
-      //如果用户已有头像则先展示用户头像
-      if(this.avatarUrl) {
-        // 使用阿里云存储时，这里会出现跨域问题，需在云控制台->跨域设置中配置
-        // 参考链接：https://blog.csdn.net/qq_24950043/article/details/125074912
-        this.option.img = this.avatarUrl
-      }
+      // 使用阿里云存储时，这里会出现跨域问题，需在云控制台->跨域设置中配置
+      // 参考链接：https://blog.csdn.net/qq_24950043/article/details/125074912
+      this.option.img = this.avatarUrl
     },
     methods: {
       //初始化函数
@@ -145,7 +141,6 @@
           });
           return false
         }
-        this.selectFlag = true
         //转化为blob
         let reader = new FileReader()
         reader.onload = (e) => {
@@ -163,13 +158,17 @@
       },
       //上传图片
       uploadImg (type) {
+        if(!this.option.img) {
+          this.$message.error('未选择文件')
+          return
+        }
         this.submitLoading = true
         let _this = this
         if (type === 'blob') {
           //获取截图的blob数据
           this.$refs.cropper.getCropBlob(async (data) => {
             let formData = new FormData();
-            const userId = _this.user.id
+            const userId = _this.user.id;
             formData.append('file', data, '_' + userId + '.jpg')
             formData.append('id', userId)
             //调用axios上传
@@ -178,7 +177,6 @@
               let url = res.data
               console.log('更新后的头像地址为：', url);
               // 用户头像上传成功后，更改页面的用户头像
-              // 这里有个bug，更新完头像后，右上角头像有时会跟着变，有时不会。
               this.$store.commit('SET_USER_AVATAR', url)
               _this.$emit('uploadSuccess')
             }

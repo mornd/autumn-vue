@@ -20,16 +20,14 @@
               style="width: 60%"
               prefix-icon="el-icon-picture"
           />
-          <div>
-            <el-button
-                :disabled="sendMsgFlag"
-                type="primary"
-                :style="sysTheme ? {backgroundColor: theme} : {}"
-                class="send-msg-btn"
-                @click="sendPhoneCode()">
-              <span>{{ sendMsgFlag ? sendMsgCountNum + '秒后可重发' : '发送验证码' }}</span>
-            </el-button>
-          </div>
+          <el-button
+              :disabled="sendMsgFlag"
+              type="primary"
+              :style="sysTheme ? {backgroundColor: theme} : {}"
+              class="send-msg-btn"
+              @click="sendPhoneCode()">
+            <span>{{ sendMsgFlag ? sendMsgCountNum + '秒后可重发' : '发送验证码' }}</span>
+          </el-button>
         </div>
       </el-form-item>
 
@@ -140,7 +138,6 @@ export default {
         confirmPwd: {validator: checkConfirmPwd, trigger:"blur"},
       },
       sendMsgFlag: false,
-      sendMsgTimer: {},
       sendMsgCountNum: 60
     }
   },
@@ -148,11 +145,13 @@ export default {
     sendPhoneCode() {
       this.$refs['form'].validateField(['phone'], errorMsg => {
         if(!errorMsg) {
+          this.sendMsgFlag = true
           this.$api.getRequest(`/sendForgetPwdPhoneMsgCode/${this.form.phone}`).then(res => {
             if(res.success) {
-              this.sendMsgFlag = true
               this.$message.success(res.data)
               this.countDown()
+            } else {
+              this.sendMsgFlag = false
             }
           })
         }
@@ -160,10 +159,10 @@ export default {
     },
     // 短信验证码倒计时
     countDown() {
-      this.sendMsgTimer = setInterval(() => {
+      const timer = setInterval(() => {
         if(this.sendMsgCountNum - 1 === 0) {
           // 清除定时器
-          clearInterval(this.sendMsgTimer)
+          clearInterval(timer)
           // 重置倒计时状态
           this.sendMsgCountNum = 60
           this.sendMsgFlag = false

@@ -106,7 +106,6 @@
       }
     },
     mounted() {
-      console.log(this.user);
       let that = this
       window.onresize = function(){
         if(!that.checkFull()){
