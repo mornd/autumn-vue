@@ -29,7 +29,6 @@
 
 <style scoped>
   .home {
-    padding: 5px;
   }
 
   .el-carousel__item h3 {

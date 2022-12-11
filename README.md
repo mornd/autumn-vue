@@ -1,19 +1,19 @@
-# autumn_vue
+### autumn_vue  前端项目
 
-## Project setup
+#### 第一次运行时，在终端执行（下载依赖）
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+#### 启动项目
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+#### 打包项目
 ```
 npm run build
 ```
 
-### Customize configuration
+#### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

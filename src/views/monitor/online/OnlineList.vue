@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="crud-search">
-      <el-form ref="form" inline :model="crudObj" label-width="60px" label-position="left" size="small">
+      <el-form ref="form" inline :model="crudObj" label-width="60px" label-position="left" size="mini">
         <el-form-item label="登录名">
           <el-input
               v-model="crudObj.loginName"

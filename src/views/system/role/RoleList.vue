@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="crud-search">
-      <el-form ref="form" inline :model="crudObj" label-width="50px" label-position="left" size="small">
+      <el-form ref="form" inline :model="crudObj" label-width="50px" label-position="left" size="mini">
         <el-form-item label="名称">
           <el-input
             v-model="crudObj.name"
@@ -32,7 +32,7 @@
     </div>
 
     <div class="crud-content">
-      <el-button @click="handleAdd" v-has-permi="['system:role:add']" type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
+      <el-button @click="handleAdd" v-has-permi="['system:role:add']" type="primary" size="mini" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
 
       <el-table
         max-height="430"
@@ -71,7 +71,8 @@
               :active-color="enabledColor"
               :inactive-color="disabledColor"
               :active-value="enabledState.enabled"
-              :inactive-value="enabledState.disabled">
+              :inactive-value="enabledState.disabled"
+              size="mini">
             </el-switch>
           </template>
         </el-table-column>

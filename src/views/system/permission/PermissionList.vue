@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="crud-search">
-      <el-form ref="form" inline :model="searchObj" label-width="50px" label-position="left" @submit.native.prevent size="small">
+      <el-form ref="form" inline :model="searchObj" label-width="50px" label-position="left" @submit.native.prevent size="mini">
         <el-form-item label="名称">
           <el-input
             v-model="searchObj.title"
@@ -19,7 +19,7 @@
     </div>
 
     <div class="crud-content">
-      <el-button @click="handleAdd" v-has-permi="['system:menu:add']" type="primary" size="small" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
+      <el-button @click="handleAdd" v-has-permi="['system:menu:add']" type="primary" size="mini" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
       <el-table
         max-height="480"
         size="small"

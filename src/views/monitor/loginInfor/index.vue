@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="crud-search">
-      <el-form ref="form" inline :model="crudObj" label-width="50px" label-position="left" size="small">
+      <el-form ref="form" inline :model="crudObj" label-width="50px" label-position="left" size="mini">
         <el-form-item label="用户">
           <el-input
               v-model="crudObj.loginName"
@@ -46,7 +46,7 @@
     </div>
 
     <div class="crud-content">
-      <el-button @click="clearAll" v-has-permi="['systemMonitor:sysLoginInfor:truncate']" type="danger" size="small" icon="el-icon-delete" style="margin-left: 5px">清空所有数据</el-button>
+      <el-button @click="clearAll" v-has-permi="['systemMonitor:sysLoginInfor:truncate']" type="danger" size="mini" icon="el-icon-delete" style="margin-left: 5px">清空所有数据</el-button>
       <el-table
           max-height="430"
           size="small"

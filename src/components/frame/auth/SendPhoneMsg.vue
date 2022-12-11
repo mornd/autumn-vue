@@ -38,7 +38,7 @@
             v-model="form.newPwd"
             show-password
             clearable
-            placeholder="请输入长度在3-20位字母、数字或符号之间的新密码"
+            placeholder="请输入长度在3-20位字母、数字或符号的新密码"
             :maxlength="pwdMaxLength"
             :minLength="pwdMinLength"
         ></el-input>
