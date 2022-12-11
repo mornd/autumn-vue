@@ -5,11 +5,12 @@ const getFormatMenus = (router, menus, parentName) => {
     //递归处理子集
     if (menu.children instanceof Array && menu.children.length) {
       getFormatMenus(router, menu.children, parentName);
+    } else {
+      //将菜单转换为路由对象
+      const route = generateRoute(menu)
+      //path相同可覆盖 重复路由的component指向第一个路由的
+      router.addRoute(parentName, route)
     }
-    //将菜单转换为路由对象
-    const route = generateRoute(menu)
-    //path相同可覆盖 重复路由的component指向第一个路由的
-    router.addRoute(parentName, route)
     return menu
   })
 }

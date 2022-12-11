@@ -596,8 +596,7 @@
     props: {
       transData: {
         type: Object,
-        default: () => {
-        },
+        default: () => {},
         require: true,
       }
     },

@@ -3,20 +3,20 @@
   <div class="header">
     <!--头部左侧图标列表-->
     <ul>
-      <li :title="isCollapse ? '展开菜单' : '收起菜单'" @click="toggleCollapse">
+      <li :title="isCollapse ? '展开菜单' : '收起菜单'" @click="toggleCollapse" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
       </li>
-      <li @click="$router.go()" title="刷新">
+      <li @click="$router.go()" title="刷新" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i class="el-icon-refresh"></i>
       </li>
     </ul>
     <!--头部右侧图标列表-->
     <ul>
-      <li @click="handleFullScreen" :title="fullscreen ? '退出全屏' : '全屏'">
+      <li @click="handleFullScreen" :title="fullscreen ? '退出全屏' : '全屏'" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i :class="fullscreen ? 'el-icon-close' : 'el-icon-full-screen'"></i>
       </li>
       <!--天气-->
-      <li>
+      <li @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <el-popover
           placement="bottom-end"
           title=""
@@ -30,7 +30,7 @@
           </div>
         </el-popover>
       </li>
-      <li title="通知">
+      <li title="通知" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i class="el-icon-bell"></i>
       </li>
       <li class="user-info-li">
@@ -59,7 +59,7 @@
           </template>
         </el-dropdown>
       </li>
-      <li title="更多" @click="drawerVisible = true">
+      <li title="更多" @click="drawerVisible = true" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i class="el-icon-s-operation"></i>
       </li>
     </ul>
@@ -193,6 +193,13 @@
         this.$message.error('用户头像加载失败');
         return true
       },
+      // 下边框边粗提示
+      addActive($event) {
+        $event.currentTarget.style.borderBottom = `3.5px solid ${this.theme}`;
+      },
+      removeActive($event) {
+        $event.currentTarget.style.borderBottom = '';
+      }
     }
   }
 </script>
@@ -253,7 +260,6 @@
         //鼠标移至头部icon
         &:hover {
           background-color: #F7F7F7;
-          /*border-bottom: 3px solid #46D800;*/
         }
       }
     }

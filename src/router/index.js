@@ -45,11 +45,13 @@ const routes = [
       },
       {
         path: 'personalCenter',
+        name: '个人中心',
         meta: {title: '个人中心'},
         component: () => import('@/views/home/personalCenter/PersonalCenter')
       },
       {
         path: 'systemSettings',
+        name: '系统设置',
         meta: {title: '系统设置'},
         component: () => import('@/views/home/SystemSettings')
       },
