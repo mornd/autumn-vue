@@ -1,13 +1,13 @@
 <template>
   <!--侧边栏-->
-  <div class="container">
+  <div id="aside-container">
 
     <!-- 左侧 logo -->
     <aside-logo />
 
     <!--  左侧菜单  -->
     <div class="menu-bar">
-      <asideMenu />
+      <aside-menu />
     </div>
 
   </div>
@@ -30,13 +30,13 @@ export default {
   /* logo 高度 */
   @logo-height: 60px;
 
-  .container {
+  #aside-container {
     /* 滚动条生效 */
     height: 100%;
     /* 菜单 */
     .menu-bar {
       height: calc(100% - @logo-height);
-      /* 新增属性，设置滚动条不占位置，火狐不生效 */
+      /* 新增属性，设置滚动条不占位置，google，edge支持，火狐不支持 */
       overflow-y: overlay;
       overflow-x: hidden;
     }

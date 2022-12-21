@@ -15,5 +15,4 @@ npm run serve
 npm run build
 ```
 
-#### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+[项目后端地址点击这里](https://gitee.com/mornd/autumn-boot)

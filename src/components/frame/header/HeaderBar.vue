@@ -13,7 +13,7 @@
     <!--头部右侧图标列表-->
     <ul>
       <li @click="handleFullScreen" :title="fullscreen ? '退出全屏' : '全屏'" @mouseover="addActive($event)" @mouseout="removeActive($event)">
-        <i :class="fullscreen ? 'el-icon-close' : 'el-icon-full-screen'"></i>
+        <i :class="fullscreen ? 'el-icon-circle-close' : 'el-icon-full-screen'"></i>
       </li>
       <li title="在线聊天" @click="toChat" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i class="el-icon-chat-dot-round"></i>

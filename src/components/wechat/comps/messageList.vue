@@ -56,12 +56,11 @@ export default {
 
 <style lang="less" scoped>
   .main {
-    height: 370px;
+    height: 368px;
     // 滚动条
     overflow-y: scroll;
     overflow-x: hidden;
     padding: 10px 20px;
-    border-bottom: 1px solid #E7E7E7;
     ul li {
       padding: 0;
     }

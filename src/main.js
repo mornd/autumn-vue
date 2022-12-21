@@ -8,6 +8,9 @@ import '@/assets/css/costom.css'
 import '@/assets/css/plugins.css'
 import '@/assets/css/animations.css'
 
+// 引入阿里矢量图标库，使用时还需加上类名： iconfont
+import '@/assets/iconfont/alibaba/iconfont.css'
+
 import 'font-awesome/css/font-awesome.css';
 import '@/plugins/plugins';
 

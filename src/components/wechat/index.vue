@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div class="container" :style="{width}">
       <div>
         <aside-bar />
       </div>
@@ -8,7 +8,7 @@
         <userList />
       </div>
       <div class="message">
-        <message />
+        <message @zoom="zoom"/>
       </div>
     </div>
   </div>
@@ -23,6 +23,8 @@ export default {
   name: "index",
   data () {
     return {
+      width: '880px',
+      screenFull: false,
     }
   },
   mounted:function() {
@@ -32,6 +34,16 @@ export default {
     asideBar,
     userList,
     message
+  },
+  methods: {
+    zoom() {
+      if(this.screenFull) {
+        this.width = '880px'
+      } else {
+        this.width = '100%'
+      }
+      this.screenFull = !this.screenFull
+    }
   }
 }
 
@@ -46,9 +58,7 @@ export default {
 
 <style lang="less" scoped>
   .container {
-    width: 880px;
-    //width: 100%;
-    height: 600px;
+    height: 100%;
     display: flex;
     justify-content: left;
     overflow: hidden;
@@ -59,7 +69,6 @@ export default {
 
     .message {
       width: 100%;
-      overflow:hidden;
     }
   }
 </style>
