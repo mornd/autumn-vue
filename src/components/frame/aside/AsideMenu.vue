@@ -1,13 +1,9 @@
 <template>
-  <!--左侧菜单组件-->
-  <div class="container">
-
-    <!--左侧logo-->
-    <aside-logo />
-
+  <!-- 菜单主体 -->
+  <div>
     <!--获取菜单请求之前的加载动画-->
     <div v-if="!menu.loadingComplete"
-     class="Before-loading"
+         class="before-loading"
     >
       <i class="el-icon-loading" :style="{color: theme}"></i>
     </div>
@@ -22,16 +18,15 @@
     -->
     <transition name="slide-fade"><!--过渡动画-->
       <el-menu
-        router
-        unique-opened
-        :default-active="$route.path"
-        background-color="#28333E"
-        text-color="#FFFFFFB3"
-        :active-text-color="theme"
-        :collapse="isCollapse"
-        v-if="menuRoutes.length"
-        :collapse-transition="false"
-        style="border-right: none"
+          router
+          unique-opened
+          v-if="menuRoutes.length"
+          text-color="#FFFFFFB3"
+          background-color="#28333E"
+          :default-active="$route.path"
+          :active-text-color="theme"
+          :collapse="isCollapse"
+          style="border: none"
       >
         <template v-for="item in menuRoutes">
           <template v-if="item.menuType == menuType.catalogue">
@@ -42,10 +37,10 @@
               </template>
               <!--子菜单-->
               <el-menu-item
-                      v-for="lower in item.children"
-                      :key="lower.id"
-                      :index="lower.path"
-                      :disabled="lower.enabled === enabledState.disabled">
+                  v-for="lower in item.children"
+                  :key="lower.id"
+                  :index="lower.path"
+                  :disabled="lower.enabled === enabledState.disabled">
                 <template #title>
                   <i :class="lower.icon" class="icon-right"></i>
                   <span>{{ lower.title }}</span>
@@ -66,12 +61,11 @@
 </template>
 
 <script>
+
   import { mapState, mapGetters } from 'vuex'
-  import AsideLogo from '@/components/frame/AsideLogo'
 
   export default {
     name: "AsideMenu",
-    components: {AsideLogo},
     computed: {
       //获取vuex中菜单数据 用于菜单遍历
       ...mapState(['isCollapse', 'theme', 'menu', 'menuType', 'enabledState']),
@@ -84,11 +78,31 @@
   //文字颜色
   @color: #FFFFFFB3;
 
+  // 自定义菜单背景 需去除 el-menu 标签的 background-color 属性这里才会生效
+  /*.el-menu {
+    // 目录菜单
+    .el-submenu /deep/ .el-submenu__title {
+      background: #28333E;
+      &:hover {
+        background-color: #202932;
+      }
+    }
+    // 子菜单
+    .el-menu-item {
+      background: #1F2D3D;
+      border: none;
+      &:hover {
+        background: #202932;
+      }
+    }
+  }*/
+
+
   .icon-right {
     margin: 0 18px 0 5px;
   }
 
-  .Before-loading {
+  .before-loading {
     text-align: center;
     margin-top: 5px;
     font-size: 25px;
@@ -107,5 +121,4 @@
     transform: translateY(5px);
     opacity: 0;
   }
-
 </style>

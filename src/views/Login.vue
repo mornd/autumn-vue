@@ -250,7 +250,7 @@
           username: [{validator: checkUsername, trigger: "blur"}],
           password: [{validator: checkPassword, trigger: "blur"}],
           phone: [{validator: checkPhone, trigger: "blur"}],
-          code: [{required:true, message: "请输入验证码", trigger: ["change"]}]
+          code: [{required: true, message: "请输入验证码", trigger: ["change"]}]
         },
         rememberMeFlag: true,
         // 记住我多长时间，单位：天
@@ -288,9 +288,9 @@
         const username = jsCookie.get("username");
         const password = jsCookie.get("password");
         const rememberMe = jsCookie.get('rememberMe')
-        if(username !== undefined) this.loginForm.username = username
-        if(password !== undefined) this.loginForm.password = decryptContent(password)
-        if(rememberMe !== undefined) this.loginForm.rememberMe = Boolean(rememberMe)
+        if(username) this.loginForm.username = username
+        if(password) this.loginForm.password = decryptContent(password)
+        if(rememberMe) this.loginForm.rememberMe = Boolean(rememberMe)
       },
 
       //表单提交

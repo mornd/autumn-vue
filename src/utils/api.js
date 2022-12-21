@@ -43,20 +43,20 @@ service.interceptors.response.use(
           }
           if(response.data.code == 401){
             Notification.error({
-              title: '401：您未登录或token已过期！',
+              title: '401：您未登录或token已过期',
             });
             store.dispatch('tokenExpirationExit')
           }
           if(response.data.code == 403){
             let msg = response.data.message
             Notification.error({
-              title: (msg ? msg : '403：您的权限不足！')
+              title: (msg ? msg : '403：您的权限不足')
             })
           }
           if(response.data.code == 500){
             let msg = response.data.message
             Notification.error({
-              title: (msg ? msg : '500：服务器异常！')
+              title: (msg ? msg : '500：服务器异常')
             })
           }
           if(response.data.code == 600){

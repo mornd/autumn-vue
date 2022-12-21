@@ -11,7 +11,7 @@
           <!--图片-->
           <el-image
             @click="avatarClick"
-            :src="userAvatar"
+            :src="user.avatar"
             fit="cover"
             class="avatar"
           >
@@ -124,7 +124,6 @@
   import { mapGetters, mapState } from 'vuex'
   import { birthdayToAge } from '@/utils/objUtil'
   import { gender } from '@/constants/systemConsts'
-  import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png'
 
   export default {
     name: "PersonalCenter",
@@ -133,7 +132,6 @@
       return {
         rightInfo: 'info',
         //左侧卡片相关
-        defaultAvatar,
         maskVisible: false,
         avatarVisible: false,
         gender,
@@ -170,10 +168,7 @@
     computed: {
       //用户信息
       ...mapGetters(['user']),
-      ...mapState(['enabledState']),
-      userAvatar() {
-        return this.user.avatar ? this.user.avatar : this.defaultAvatar
-      }
+      ...mapState(['enabledState'])
     },
     filters: {
       //将生日格式为年龄

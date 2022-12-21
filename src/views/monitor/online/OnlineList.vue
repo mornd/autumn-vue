@@ -29,7 +29,6 @@
 
     <div class="crud-content">
       <el-table
-          max-height="470"
           size="small"
           :data="tableData"
           v-loading="loading">
@@ -96,7 +95,7 @@
             width="150"
             align="center">
           <template #default="scope">
-            <el-button @click="kick(scope.row)" v-has-permi="['onlineUser:kick']" type="text" size="mini" icon="fa fa-chain-broken">&nbsp;&nbsp;强退</el-button>
+            <el-button @click="kick(scope.row)" v-has-permi="['onlineUser:kick']" type="text" size="mini" icon="fa fa-chain-broken">&nbsp;&nbsp;{{ scope.row.id == user.id ? '强退自己' : '强退' }}</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -136,7 +135,7 @@ export default {
     this.getTable()
   },
   computed: {
-
+    ...mapState(['user']),
   },
   methods: {
     // 计算登录时间距现在的差
@@ -198,7 +197,7 @@ export default {
     // 强退用户
     kick(row) {
       const loginName = row.loginName
-      this.$confirm(`确定要强制退出登录名为${loginName}的用户吗?`, '提示', {
+      this.$confirm(row.id == this.user.id ? '确定要强制退出你自己吗?' : `确定要强制退出登录名为${loginName}的用户吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

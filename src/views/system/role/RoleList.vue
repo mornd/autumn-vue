@@ -35,7 +35,6 @@
       <el-button @click="handleAdd" v-has-permi="['system:role:add']" type="primary" size="mini" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
 
       <el-table
-        max-height="430"
         size="small"
         :data="tableData"
         v-loading="loading">

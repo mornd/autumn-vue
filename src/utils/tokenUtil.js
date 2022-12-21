@@ -1,6 +1,6 @@
 import jsCookie from 'js-cookie';
 
-const tokenKey = 'autumn_token_key';
+const tokenKey = 'autumn_token';
 const expires = 3; // day
 
 /**

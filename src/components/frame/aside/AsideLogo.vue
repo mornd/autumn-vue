@@ -18,13 +18,17 @@
 </script>
 
 <style lang="less" scoped>
+  // 高度
+  @logo-height: 59px;
+
   #logo {
+    width: 100%;
     border-bottom: 1px solid #101117;
-    height: 60px;
+    height: @logo-height;
     text-align: center;
     font-size: 23px;
     font-weight: bold;
-    line-height: 60px;
+    line-height: @logo-height;
     span {
       cursor: pointer
     }

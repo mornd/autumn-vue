@@ -1,43 +1,45 @@
 <template>
-  <!--主容器-->
-  <el-container class="container">
-    <!--用于处理Frame组件的其他操作-->
+  <!-- 主容器 -->
+  <el-container id="frame-container">
+    <!-- 用于处理Frame组件的其他操作 -->
     <frame-operations/>
 
-    <!--左侧内容-->
-    <el-aside :width="isCollapse ? '64px' : '250px'" class="el-aside">
+    <!-- 左侧内容 -->
+    <el-aside :width="isCollapse ? '64px' : '240px'">
 
-      <!--左侧菜单-->
-      <aside-menu class="aside-menu"/>
+      <!-- 左侧菜单 + logo -->
+      <aside-bar />
 
     </el-aside>
 
     <el-container>
 
-      <!--头部-->
+      <!-- 头部 -->
       <el-header>
 
-        <!--头部工具栏-->
-        <header-bar/>
+        <!-- 头部工具栏 -->
+        <header-bar />
 
       </el-header>
 
-      <!--头部面包屑-->
-      <header-bread-crumb/>
+      <!-- 头部面包屑 -->
+      <header-bread-crumb />
 
-      <!--中间主体-->
+      <!-- 中间主体 -->
       <el-main class="el-main">
 
-        <!--路由过渡动画-->
+        <!-- 路由过渡动画 -->
         <transition name="slide-fade">
-          <!--路由占位符-->
+          <!-- 路由占位符 -->
           <router-view class="router-view"/>
         </transition>
 
       </el-main>
 
-      <!--底部-->
-      <el-footer height="0"/>
+      <!-- 底部 -->
+      <el-footer height="5">
+        <footer-bar />
+      </el-footer>
 
     </el-container>
 
@@ -47,16 +49,18 @@
 <!--<div style="min-height: calc(100vh - 10px)"></div>-->
 <script>
   import {mapState} from 'vuex'
-  import AsideMenu from '@/components/frame/AsideMenu'
+  import asideBar from '@/components/frame/aside'
   import HeaderBar from '@/components/frame/header/HeaderBar'
   import HeaderBreadCrumb from '@/components/frame/HeaderBreadCrumb'
   import FrameOperations from './FrameOperations'
+  import footerBar from "@/components/frame/footer";
 
   export default {
     name: 'Frame',
     components: {
-      AsideMenu,
+      asideBar,
       HeaderBar,
+      footerBar,
       HeaderBreadCrumb,
       FrameOperations
     },
@@ -78,7 +82,7 @@
   @main-background: #F5F5F5;
 
   //主容器
-  .container {
+  #frame-container {
     height: 100%;
     overflow: hidden;
 
@@ -91,9 +95,6 @@
       box-shadow: 2px 0 6px rgb(0 21 41 / 35%);
       //将侧边栏的阴影展示在中间主体的上方
       z-index: 100;
-      .aside-menu {
-        overflow: auto;
-      }
     }
 
     //头部
@@ -108,7 +109,6 @@
       background: @main-background;
       /*路由占位符*/
       .router-view {
-        overflow: hidden;
         height: 100%;
         border-radius: 3px;
         box-sizing: border-box;

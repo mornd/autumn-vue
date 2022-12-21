@@ -49,7 +49,6 @@
       <el-button type="primary" size="mini" icon="el-icon-plus" style="margin-left: 5px">配置</el-button>
       <el-button @click="clearAll" v-has-permi="['systemMonitor:sysLog:clear']" type="danger" size="mini" icon="el-icon-delete" style="margin-left: 5px">清空所有数据</el-button>
       <el-table
-        max-height="430"
         size="small"
         :data="tableData"
         v-loading="loading">

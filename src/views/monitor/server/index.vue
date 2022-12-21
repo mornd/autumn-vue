@@ -1,9 +1,9 @@
 <template>
-  <div style="height: 605px; overflow-y: scroll; padding: 5px" v-loading="loading"  element-loading-text="正在加载服务监控数据，请稍候！" >
-    <el-row :gutter="15">
+  <div v-loading="loading" element-loading-text="正在加载服务监控数据，请稍候！" >
+    <el-row :gutter="12">
       <el-col :span="12" class="card-box">
         <el-card>
-          <div slot="header"><span>CPU</span></div>
+          <div slot="header"><span class="title">CPU</span></div>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <table cellspacing="0" style="width: 100%;">
               <thead>
@@ -37,7 +37,7 @@
 
       <el-col :span="12" class="card-box">
         <el-card>
-          <div slot="header"><span>内存</span></div>
+          <div slot="header"><span class="title">内存</span></div>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <table cellspacing="0" style="width: 100%;">
               <thead>
@@ -77,7 +77,7 @@
       <el-col style="margin-top: 10px" :span="24" class="card-box">
         <el-card>
           <div slot="header">
-            <span>服务器信息</span>
+            <span class="title">服务器信息</span>
           </div>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <table cellspacing="0" style="width: 100%;">
@@ -103,7 +103,7 @@
       <el-col style="margin-top: 10px" :span="24" class="card-box">
         <el-card>
           <div slot="header">
-            <span>Java虚拟机信息</span>
+            <span class="title">Java虚拟机信息</span>
           </div>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <table cellspacing="0" style="width: 100%;table-layout:fixed;">
@@ -141,7 +141,7 @@
       <el-col style="margin-top: 10px" :span="24" class="card-box">
         <el-card>
           <div slot="header">
-            <span>磁盘状态</span>
+            <span class="title">磁盘状态</span>
           </div>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <table cellspacing="0" style="width: 100%;">
@@ -201,5 +201,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .title {
+    font-weight: bold;
+  }
 </style>

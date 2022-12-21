@@ -48,7 +48,6 @@
     <div class="crud-content">
       <el-button @click="clearAll" v-has-permi="['systemMonitor:sysLoginInfor:truncate']" type="danger" size="mini" icon="el-icon-delete" style="margin-left: 5px">清空所有数据</el-button>
       <el-table
-          max-height="430"
           size="small"
           :data="tableData"
           v-loading="loading">

@@ -83,6 +83,7 @@
         @current-change="handleCurrentChange"
         :page-sizes="[10, 20, 50]"
         :page-size="crudObj.pageSize"
+        :current-page.sync="crudObj.currentPage"
         layout="total, sizes, prev, pager, next, jumper"
         :total="crudObj.total">
     </el-pagination>
@@ -110,6 +111,7 @@ export default {
       crudObj: {
         pageNo: 1,
         pageSize: 10,
+        currentPage: 1,
         total: 0
       },
       tableData: [],
@@ -191,6 +193,7 @@ export default {
       this.visitDateScope = ''
       this.crudObj.pageNo = 1
       this.crudObj.pageSize = 10
+      this.crudObj.currentPage = 1
       this.getTable()
     },
     //分页操作

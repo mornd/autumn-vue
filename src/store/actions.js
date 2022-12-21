@@ -2,21 +2,28 @@ import router from '@/router'
 import api from "@/utils/api"
 import {getFormatMenus} from "@/utils/menuUtil"
 import { removeToken } from '@/utils/tokenUtil'
-import { removeTheme } from '@/utils/themeUtil'
 import { Notification } from 'element-ui';
+import { getToken } from '@/utils/tokenUtil'
+import Vue from 'vue'
+
+import SockJS from 'sockjs-client'
+import Stomp from 'stompjs'
 
 export default {
   //设置用户的角色、权限
-  setUser({ commit }) {
+  setUser({ commit, dispatch }) {
     return new Promise((resolve, reject) => {
       api.getRequest('/sysUser/getLoginUser').then(res => {
         if(res.success) {
           let userInfo = res.data
-          if(userInfo) {
+          if(userInfo && userInfo.id) {
             //存储用户信息
             commit('SET_USER', userInfo)
             // 处理头像
             commit('SET_USER_AVATAR', userInfo.avatar)
+            //  建立在线聊天连接
+            dispatch('chatConnect')
+
             resolve(userInfo)
           } else {
             reject('获取用户信息失败，请重试！')
@@ -79,7 +86,6 @@ export default {
     //跳转到登录页
     router.replace('/login');
     //location.reload()
-    console.log('退出成功');
   },
 
   // gitee 登录
@@ -103,6 +109,43 @@ export default {
       }).catch(err => {
         reject(err)
       })
+    })
+  },
+
+  // chat
+  // 初始化所有聊天好友
+  initChatFriends (context) {
+    api.getRequest('/chat/users').then(res => {
+      if(res.success) {
+        context.commit('INIT_CHAT_FRIENDS', res.data)
+      }
+    })
+  },
+  // 建立 webSorct 连接
+  chatConnect({ state, commit }) {
+    state.stomp = Stomp.over(new SockJS('/ws/endPoint'))
+    const token = getToken()
+    state.stomp.connect({'Authorization': token}, success => {
+      //  订阅消息频道，这里的 /user 前缀是固定的
+      state.stomp.subscribe('/user/queue/chat', message => {
+        console.log(message.body);
+        let receiveMessage = JSON.parse(message.body)
+        if(!state.selectChatUser || receiveMessage.from != state.selectChatUser.loginName) {
+          Notification.success({
+            title: `[${receiveMessage.fromName}]发来一条消息`,
+            message: receiveMessage.content.length > 10 ? receiveMessage.content.substr(0, 10) : receiveMessage.content
+          })
+          // 小红点
+          Vue.set(state.isDot, state.user.loginName + '#' + receiveMessage.from, true)
+
+        }
+        receiveMessage.self = false
+        receiveMessage.to = receiveMessage.from
+        commit('SEND_CHAT_MESSAGE', receiveMessage)
+      })
+    }, error => {
+      console.log(error);
+      Notification.error('无法建立在线聊天：' + error)
     })
   }
 }

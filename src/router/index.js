@@ -43,6 +43,19 @@ const routes = [
         meta: {title: '首页'},
         component: () => import('@/views/home/Home'),
       },
+        // 刷新页面
+      {
+        path: 'refresh',
+        name: 'refresh',
+        component: () => import('@/views/home/refresh')
+      },
+      {
+        //主页
+        path: 'wechat',
+        name: '在线聊天',
+        meta: {title: '在线聊天'},
+        component: () => import('@/components/wechat/index'),
+      },
       {
         path: 'personalCenter',
         name: '个人中心',

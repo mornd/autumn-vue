@@ -9,24 +9,22 @@ module.exports = {
     open: true,
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
+        ws: false,
         //代理的后台路径
         target: 'http://localhost:9001',
         pathRewrite: {
-          ['^' + process.env.VUE_APP_BASE_API]: process.env.VUE_APP_BASE_API //读取的是 .env.development 文件的 VUE_APP_BASE_API 值
+          ['^' + process.env.VUE_APP_BASE_API]: '/' //读取的是 .env.development 文件的 VUE_APP_BASE_API 值
         },
         // pathRewrite: { '^/dataView': 'dataView' }, // 路径重写 若后端接口添加了context-path为/dataView，这里重写后必须为dataView
         //是否跨域
         changeOrigin: true, //true 代理服务器的地址和后台服务器（1001）一致， false// 代理服务器的地址和前台服务器（1000）一致 默认：true
-      }
-      // 使用一级目录配置 (axios不加前缀，代理后端地址)
-      /*'/': {
-        target: 'http://localhost:9001',
+      },
+      // websocket
+      ['/ws']: {
+        ws: true,
+        target: 'ws://localhost:9001',
         changeOrigin: true,
-        //代理路径更改
-        pathReWrite: {
-          '^/': '/'
-        }
-      }*/
+      }
     }
   }
 }

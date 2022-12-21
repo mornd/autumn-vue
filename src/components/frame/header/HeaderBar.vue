@@ -6,7 +6,7 @@
       <li :title="isCollapse ? '展开菜单' : '收起菜单'" @click="toggleCollapse" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
       </li>
-      <li @click="$router.go()" title="刷新" @mouseover="addActive($event)" @mouseout="removeActive($event)">
+      <li @click="refresh" title="刷新" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i class="el-icon-refresh"></i>
       </li>
     </ul>
@@ -15,14 +15,20 @@
       <li @click="handleFullScreen" :title="fullscreen ? '退出全屏' : '全屏'" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i :class="fullscreen ? 'el-icon-close' : 'el-icon-full-screen'"></i>
       </li>
+      <li title="在线聊天" @click="toChat" @mouseover="addActive($event)" @mouseout="removeActive($event)">
+        <i class="el-icon-chat-dot-round"></i>
+      </li>
+      <li title="通知" @mouseover="addActive($event)" @mouseout="removeActive($event)">
+        <i class="el-icon-bell"></i>
+      </li>
       <!--天气-->
       <li @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <el-popover
-          placement="bottom-end"
-          title=""
-          width="450"
-          popper-class="weather-popover"
-          trigger="hover"
+            placement="bottom-end"
+            title=""
+            width="450"
+            popper-class="weather-popover"
+            trigger="hover"
         >
           <weather_plugin :width="450" :height="150"></weather_plugin>
           <div slot="reference">
@@ -30,15 +36,12 @@
           </div>
         </el-popover>
       </li>
-      <li title="通知" @mouseover="addActive($event)" @mouseout="removeActive($event)">
-        <i class="el-icon-bell"></i>
-      </li>
       <li class="user-info-li">
         <el-dropdown @command="handleCommand">
           <div class="user-info">
             <!--用户头像-->
             <el-avatar
-              :src="userAvatar"
+              :src="user.avatar"
               @error="avatarLoadingFailure"
               :size="30"
               fit="fill"
@@ -87,9 +90,7 @@
   import MoreDrawer from './moreDrawer/MoreDrawer'
   import NowDate from '@/components/gadgets/NowDate'
   import weather_plugin from './WeatherPlugin'
-  //使用js方式动态导入本地图片
-  import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png'
-  import errorAvatar from '@/assets/images/avatar/errorAvatar.png'
+  import { defaultAvatar, errorAvatar } from "@/utils/userUtil";
 
   export default {
     name: "HeaderBar",
@@ -116,15 +117,20 @@
     computed: {
       //获取当前登录用户信息
       ...mapState(['user', 'isCollapse', 'theme']),
-      ...mapGetters(['loginName']),
-      userAvatar() {
-        return this.user.avatar ? this.user.avatar : this.defaultAvatar
-      }
+      ...mapGetters(['loginName'])
     },
     methods: {
       //展开收起菜单
       toggleCollapse() {
         this.$store.commit('TOGGLE_COLLAPSE')
+      },
+      // 刷新页面
+      refresh() {
+        this.$router.push({path: '/refresh'})
+      },
+      // 在线聊天功能
+      toChat() {
+        this.$router.push('/wechat')
       },
       checkFull() {
         //判断浏览器是否处于全屏状态 （需要考虑兼容问题）

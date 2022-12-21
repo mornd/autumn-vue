@@ -1,7 +1,7 @@
 import { setToken } from '@/utils/tokenUtil'
 import { setTheme } from '@/utils/themeUtil'
-//使用js方式动态导入本地图片
-import defaultAvatar from '@/assets/images/avatar/defaultAvatar.png' // 用户未选择头像时展示的默认图片
+import { generateAvatar } from "@/utils/userUtil";
+import Vue from 'vue'
 
 export default {
   //设置主题
@@ -36,16 +36,7 @@ export default {
   },
   //更换头像
   SET_USER_AVATAR(state, url) {
-    // 处理用户头像
-    if(url) {
-      if(!url.startsWith('http')) {
-        // 使用本地文件
-        url = process.env.VUE_APP_BASE_API + url
-      }
-    } else {
-      url = defaultAvatar
-    }
-    state.user.avatar = url
+    state.user.avatar = generateAvatar(url)
   },
   //修改用户的一些基本信息（用于用户自己修改自己的信息）
   SET_USER_BASE_INFO(state, user) {
@@ -53,5 +44,33 @@ export default {
     for (const key in user) {
       state.user[key] = user[key]
     }
+  },
+
+  // chat
+  changeSelectChatUser (state, key) {
+    Vue.set(state.isDot, state.user.loginName + '#' + key.loginName, false)
+    state.selectChatUser = key;
+  },
+
+  SEND_CHAT_MESSAGE (state, messageObj) {
+    let ses = state.sessions[state.user.loginName + '#' + messageObj.to]
+    if(!ses) {
+      // state.sessions[state.user.loginName + '#' + messageObj.to] = []
+      Vue.set(state.sessions, state.user.loginName + '#' + messageObj.to, [])
+    }
+    state.sessions[state.user.loginName + '#' + messageObj.to].push({
+      content: messageObj.content,
+      date: new Date(),
+      self: messageObj.self
+    })
+  },
+
+  INIT_CHAT_FRIENDS (state, data) {
+    let localRecord = localStorage.getItem('vue-chat-session')
+    if(localRecord) {
+      state.sessions = JSON.parse(localRecord)
+    }
+    state.chatUserList = data
   }
+
 }

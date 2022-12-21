@@ -43,5 +43,43 @@ export default {
     edit: 'edit',
     see: 'see'
   },
-  badgeFlag: true //新增或编辑窗口小徽章显示flag
+  badgeFlag: true, //新增或编辑窗口小徽章显示flag
+
+  // chat
+  stomp: null,
+  // 所有聊天用户
+  chatUserList: [],
+  //     [{
+  //   id:1,
+  //   user:{
+  //     name:'柯彩英',
+  //     img:'http://localhost:9000/dataView/profile/avatar/30570f88-b120-422f-b018-82cb5f7bef0d.jpg'
+  //   },
+  //   messages:[{
+  //     content:'123',
+  //     date:now
+  //   },{
+  //     content:'项目地址(原作者): https://github.com/coffcer/vue-chat',
+  //     date:now
+  //   },{
+  //     content:'本项目地址(重构): https://github.com/is-liyiwei',
+  //     date:now
+  //   }]
+  // },{
+  //   id:2,
+  //   user:{
+  //     name:'文佩',
+  //     img:'http://localhost:9000/dataView/profile/avatar/30570f88-b120-422f-b018-82cb5f7bef0d.jpg'
+  //   },
+  //   messages:[{
+  //     content:'Hi，我是文佩哦',
+  //     date:now
+  //   }]
+  // }],
+  // 当前选中的聊天人
+  selectChatUser: undefined,
+  sessions: {},
+  isDot: {},
+  filterKey:''
+
 }
