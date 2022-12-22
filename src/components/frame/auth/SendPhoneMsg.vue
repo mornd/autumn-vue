@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-form ref="form" :model="form" :rules="rules" :style="{width: formWidth}" size="small">
+    <el-form ref="form" :model="form" :rules="rules" style="width: 100%" size="small">
       <el-form-item label="手机号码" label-width="70px" prop="phone">
         <el-input
             v-model="form.phone"
@@ -204,12 +204,6 @@ export default {
       type: Boolean,
       required: true,
       default: () => false
-    },
-    // 表单宽度
-    formWidth: {
-      type: String,
-      require: false,
-      default: () => '400px'
     }
   },
   computed: {

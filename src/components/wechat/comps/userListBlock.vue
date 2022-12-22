@@ -4,7 +4,7 @@
          :class="selectStyle"
          @click="changeSelectChatUser(chatUser)">
       <div class="avatar-container">
-        <el-badge :is-dot="isDot[user.loginName + '#' +  chatUser.loginName]" class="item">
+        <el-badge :value="'1'" :hidden="!isDot[user.loginName + '#' +  chatUser.loginName]" class="item">
           <img class="avatar" :src="generateAvatar(chatUser.avatar)" :alt="chatUser.name" :title="chatUser.loginName" />
         </el-badge>
       </div>
@@ -114,4 +114,21 @@ export default {
     background: #C5C4C4;
   }
 
+</style>
+
+<style scoped>
+  >>> .el-badge__content {
+    background-color: #FA5151;
+    border-radius: 10px;
+    color: #FFF;
+    display: inline-block;
+    font-size: 1%;
+    height: 14px;
+    line-height: 14px;
+    padding: 0 4px;
+    text-align: center;
+    white-space: nowrap;
+    transform: translateY(-50%) translateX(95%);
+    border: none;
+  }
 </style>

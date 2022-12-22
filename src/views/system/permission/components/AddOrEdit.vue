@@ -84,7 +84,7 @@
                 </div>
 
                 <div v-else class="tree-wrap">
-                  <el-input v-model="parentMenuFilterText" placeholder="输入名称进行搜索" v-if="parentTreeList.length"
+                  <el-input v-model="parentMenuFilterText" placeholder="输入名称进行搜索，点击每项菜单右侧图标来确定选择" v-if="parentTreeList.length"
                             style="padding-bottom: 5px" clearable></el-input>
                   <!--树形菜单-->
                   <div class="tree-content">

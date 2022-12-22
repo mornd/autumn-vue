@@ -81,8 +81,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  //组件高度
+  @input-height: 150px;
+
   #input-main {
-    height: 150px;
+    height: @input-height;
     width: 100%;
     border-top: 1px solid #E7E7E7;
     position: absolute;

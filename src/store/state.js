@@ -53,6 +53,7 @@ export default {
   selectChatUser: undefined,
   sessions: {},
   isDot: {},
-  filterKey:''
-
+  filterKey:'',
+  chat: {
+  }
 }

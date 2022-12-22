@@ -59,6 +59,8 @@ export default {
 <style lang="less" scoped>
   .container {
     height: 100%;
+    min-height: 600px;
+    min-width: 880px;
     display: flex;
     justify-content: left;
     overflow: hidden;

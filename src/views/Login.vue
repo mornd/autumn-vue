@@ -10,7 +10,7 @@
     <el-form ref="loginForm"
      :rules="rules"
      :model="loginForm"
-     class="login-container"
+     id="login-container"
     >
 
       <!--表单标题-->
@@ -456,7 +456,7 @@
     background-size: cover;
 
     /*登录主容器*/
-    .login-container {
+    #login-container {
       background-clip: padding-box;
       position: absolute;
       top: 50%;

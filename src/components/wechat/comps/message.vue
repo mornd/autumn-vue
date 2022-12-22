@@ -15,23 +15,19 @@
         <!--  更多按钮 -->
         <i class="el-icon-more more" />
       </div>
-      <div>
-        <div v-if="selectChatUser">
-          <!-- 消息列表展示 -->
-          <message-list />
 
-          <!-- 用户输入框 -->
-<!--          <message-input />-->
-        </div>
-        <!-- 空内容 -->
-        <div v-else class="empty">
-          <i class="fa fa-wechat" />
-        </div>
+      <div class="message-list" v-if="selectChatUser" ref="scrollElement">
+        <!-- 消息列表展示 -->
+        <message-list />
+      </div>
+      <!-- 空内容 -->
+      <div v-else class="empty">
+        <i class="fa fa-wechat" />
       </div>
     </div>
 
-    <!-- 消息列表展示 -->
-    <message-input v-if="selectChatUser"/>
+    <!-- 用户输入框 -->
+    <message-input v-if="selectChatUser" />
   </div>
 </template>
 
@@ -50,10 +46,26 @@ export default {
     messageList,
     messageInput
   },
+  created() {
+  },
   computed: {
-    ...mapState(['selectChatUser', 'user']),
+    ...mapState(['selectChatUser', 'user', 'sessions']),
   },
   methods: {
+    // 滚动条移至最顶部
+    handleScrollTop() {
+      this.$nextTick(() => {
+        let scrollElem = this.$refs.scrollElement;
+        scrollElem.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    },
+    // 滚动条移至最底部
+    handleScrollBottom() {
+      this.$nextTick(() => {
+        let scrollElem = this.$refs.scrollElement;
+        scrollElem.scrollTo({ top: scrollElem .scrollHeight, behavior: 'smooth' });
+      });
+    },
     // 尺寸缩放
     zoom() {
       this.$emit('zoom')
@@ -62,11 +74,27 @@ export default {
     close() {
       this.$router.go(-1)
     }
+  },
+  watch: {
+    sessions: {
+      handler(oldVal, newVal) {
+        this.handleScrollBottom()
+      },
+      // 深度监听
+      deep: true,
+      // 页面首次加载也执行一次
+      immediate: true
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
+  //  头部区域高度
+  @header-height: 60px;
+  // 消息输入部分高度
+  @message-input-height: 150px;
+
   #message-container {
     background: #F5F5F5;
     position: relative;
@@ -75,14 +103,15 @@ export default {
     .main {
       position: relative;
       border-left: 1px solid #E7E7E7;
+      height: 100%;
       .header {
-        height: 60px;
+        height: @header-height;
         border-bottom: 1px solid #E7E7E7;
 
         /* 对方聊天名称 */
         .name {
-          line-height: 60px;
-          font-size: 19px;
+          line-height: @header-height;
+          font-size: 21px;
           margin-left: 22px;
         }
       }
@@ -122,6 +151,14 @@ export default {
         .more:hover {
           color: #303133;
         }
+      }
+
+      /*  消息列表 */
+      .message-list {
+        overflow-x: hidden;
+        // 高度 = 总高度 - 头部 - 底部输入框部分
+        height: calc(100% - @header-height - @message-input-height);
+        overflow-y: overlay;
       }
 
       /* 空状态 */

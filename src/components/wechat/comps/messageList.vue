@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="main" v-scroll-bottom="sessions">
+    <div class="main">
       <ul>
         <li v-for="item in sessions[user.loginName + '#' + selectChatUser.loginName]">
           <p class="time">
@@ -41,26 +41,14 @@ export default {
       }
       return `${date.getHours()}:${date.getMinutes()}`;
     }
-  },
-  directives: {/*这个是vue的自定义指令,官方文档有详细说明*/
-    // 发送消息后滚动到底部,这里无法使用原作者的方法，也未找到合理的方法解决，暂用setTimeout的方法模拟
-    'scroll-bottom' (el) {
-      //console.log(el.scrollTop);
-      setTimeout(function () {
-        el.scrollTop+=9999;
-      },1)
-    }
   }
 }
 </script>
 
 <style lang="less" scoped>
   .main {
-    height: 368px;
-    // 滚动条
-    overflow-y: scroll;
-    overflow-x: hidden;
-    padding: 10px 20px;
+    height: 100%;
+    padding: 10px 20px 20px 20px;
     ul li {
       padding: 0;
     }
@@ -69,8 +57,8 @@ export default {
       text-align: center;
       > span {
         display: inline-block;
-        padding: 2.5px 6px;
-        font-size: 8px;
+        padding: 3px 8px;
+        font-size: 10px;
         color: #FFF;
         background-color: #DADADA;
         border-radius: 2px;
