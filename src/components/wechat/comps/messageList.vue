@@ -74,6 +74,7 @@ export default {
       cursor: pointer;
     }
     .text {
+      white-space: normal;
       display: inline-block;
       padding: 10px;
       max-width: 80%;

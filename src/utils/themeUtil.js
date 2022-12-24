@@ -1,18 +1,19 @@
-import jsCookie from 'js-cookie';
 import { defaultTheme } from '@/constants/themeConst'
-const expires = 3; // day
 
 //缓存key
-export const themeKey = 'autumn_theme'
+export const themeKey = 'theme'
 
 export const getTheme = () => {
-  return jsCookie.get(themeKey) ? jsCookie.get(themeKey) : defaultTheme
+  // localStorage  可永久保存
+  // sessionStorage 一旦页面叉掉，浏览器会自动清空
+  const theme = window.localStorage.getItem(themeKey)
+  return theme ? theme : defaultTheme
 }
 
 export const setTheme = (theme) => {
-  return jsCookie.set(themeKey, theme, {expires})
+  localStorage.setItem(themeKey, theme)
 }
 
 export const removeTheme = () => {
-  jsCookie.remove(themeKey)
+  localStorage.removeItem(themeKey)
 }

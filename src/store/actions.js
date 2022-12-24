@@ -62,7 +62,6 @@ export default {
 
   //退出系统
   logout({ getters, dispatch }) {
-    console.log('用户正在执行退出命令，用户名：', getters.loginName);
     return new Promise((resolve, reject) => {
       api.postRequest('userLogout').then(res => {
         //调用下一个actions

@@ -1,5 +1,5 @@
 import { setToken } from '@/utils/tokenUtil'
-import { setTheme } from '@/utils/themeUtil'
+import { setTheme, setMenuCollapse } from '@/constants/preferenceSetting'
 import { generateAvatar } from "@/utils/userUtil";
 import Vue from 'vue'
 
@@ -22,7 +22,10 @@ export default {
   MENU_LOADING_COMPLETE: state => {
     state.menu.loadingComplete = true
   },
-  TOGGLE_COLLAPSE: (state) => state.isCollapse = !state.isCollapse,
+  TOGGLE_COLLAPSE: (state) => {
+    state.isCollapse = !state.isCollapse
+    setMenuCollapse(state.isCollapse)
+  },
   //登出操作
   LOGOUT: (state) => {
     state.menuRoutes = []

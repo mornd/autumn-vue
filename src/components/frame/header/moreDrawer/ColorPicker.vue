@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import { defaultTheme } from '@/utils/themeUtil'
+  import { defaultTheme } from '@/constants/preferenceSetting'
   import  { defaultList } from '@/constants/themeConst'
 
   export default {

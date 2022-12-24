@@ -1,5 +1,5 @@
 import { getToken } from '@/utils/tokenUtil'
-import { getTheme } from '@/utils/themeUtil'
+import { getTheme, getMenuCollapse } from '@/constants/preferenceSetting'
 import { title, logo, homePath, homeName } from '@/constants/systemConsts'
 
 export default {
@@ -11,7 +11,7 @@ export default {
   //token
   tokenStr: getToken(),
   //是否收起左侧菜单
-  isCollapse: false,
+  isCollapse: getMenuCollapse(),
   //当前登录用户信息
   user: null,
   //路由菜单
@@ -46,7 +46,7 @@ export default {
   badgeFlag: true, //新增或编辑窗口小徽章显示flag
 
   // chat
-  stomp: null,
+  stomp: undefined,
   // 所有聊天用户
   chatUserList: [],
   // 当前选中的聊天人
