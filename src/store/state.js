@@ -22,6 +22,7 @@ export default {
   homeName: homeName,
   menu: {
     loadingComplete: false,
+    badgeFlag: true, //新增或编辑窗口小徽章显示flag
   },
   //菜单按钮类型
   menuType: {
@@ -45,15 +46,22 @@ export default {
   },
   badgeFlag: true, //新增或编辑窗口小徽章显示flag
 
-  // chat
+  // chat 聊天
   stomp: undefined,
-  // 所有聊天用户
-  chatUserList: [],
-  // 当前选中的聊天人
-  selectChatUser: undefined,
-  sessions: {},
-  isDot: {},
-  filterKey:'',
   chat: {
+    // 侧边栏按钮选中
+    asideBarActive: 'chat',
+    // 我的通讯录好友
+    allFriends: null,
+    // 最近聊天好友
+    recentUsers: null,
+    // 当前选中的聊天好友
+    selectedUser: null,
+    // 会话信息
+    session: {},
+    // 用户列表搜索关键字
+    userSearch: '',
+    userListScrollTop: true
   }
+
 }

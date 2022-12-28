@@ -39,7 +39,7 @@
 <script>
   import { mapState } from 'vuex'
 
-  import { isNotBlank,isvalidPhone } from '@/utils/validate'
+  import { isNotBlank,isvalidPhone,validAccount } from '@/utils/validate'
   import { gender } from '@/constants/systemConsts'
 
   export default {
@@ -47,17 +47,21 @@
     data() {
       const validateLoginName = (rule, value, callback) => {
         if (isNotBlank(value)) {
-          this.$api.getRequest(`/sysUser/queryLoginNameExists?id=${this.form.id}&name=${value}`).then(res => {
-            if (res.success) {
-              if (res.data) {
-                callback(new Error("登录名已重复"));
+          if(validAccount(value)) {
+            this.$api.getRequest(`/sysUser/queryLoginNameExists?id=${this.form.id}&name=${value}`).then(res => {
+              if (res.success) {
+                if (res.data) {
+                  callback(new Error("登录名已重复"));
+                } else {
+                  callback()
+                }
               } else {
-                callback()
+                callback(new Error())
               }
-            } else {
-              callback(new Error())
-            }
-          })
+            })
+          } else {
+            callback(new Error("登录名须由2-20个字母、数字、下划线组成，且以字母开头"))
+          }
         } else {
           callback(new Error("登录名不能为空"))
         }

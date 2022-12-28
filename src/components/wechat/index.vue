@@ -18,6 +18,7 @@
 import asideBar from "./comps/asideBar";
 import userList from "./comps/userList";
 import message from "./comps/message";
+import {mapState} from "vuex";
 
 export default {
   name: "index",
@@ -27,13 +28,19 @@ export default {
       screenFull: false,
     }
   },
-  mounted:function() {
-    this.$store.dispatch('initChatFriends');
-  },
   components: {
     asideBar,
     userList,
     message
+  },
+  mounted() {
+    // 加载聊天用户
+    if(this.chat.recentUsers === null) {
+      this.$store.dispatch('getRecentChatUsers')
+    }
+    if(this.chat.allFriends === null) {
+      this.$store.dispatch('getAllChatFriends')
+    }
   },
   methods: {
     zoom() {
@@ -44,7 +51,10 @@ export default {
       }
       this.screenFull = !this.screenFull
     }
-  }
+  },
+  computed: {
+    ...mapState(['chat'])
+  },
 }
 
 /*

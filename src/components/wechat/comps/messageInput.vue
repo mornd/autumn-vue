@@ -14,13 +14,13 @@
         <li title="聊天记录">
           <i class="el-icon-chat-dot-round" />
         </li>
-        <li v-show="message.trim() !== ''" @click="message = ''">
+        <li v-show="message.trim() !== ''" @click="clear">
           <i class="el-icon-delete" title="清空输入框" />
         </li>
       </ul>
 
-      <ul class="right-icons">
-        <li title="语言聊天">
+      <ul class="right-icons" v-if="chat.selectedUser ? user.id !== chat.selectedUser.id : false">
+        <li title="语音聊天">
           <i class="el-icon-phone-outline" />
         </li>
         <li title="视频聊天">
@@ -33,6 +33,7 @@
             :rows="3"
             size="medium"
             resize="none"
+            ref="messageInput"
             @keyup.enter.native="listenSendMessage"
             v-model="message">
         </el-input>
@@ -55,25 +56,53 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'selectChatUser']),
+    ...mapState(['user', 'chat']),
   },
   methods: {
+    // 清空输入框
+    clear() {
+      this.message = ''
+    },
+    // 快捷键发送
     listenSendMessage (e) {
-      console.log(e.ctrlKey);
-      if (e.ctrlKey && e.keyCode ===13) {
+      if (e.ctrlKey && e.keyCode === 13) {
         this.sendMessage()
       }
     },
     sendMessage() {
       if(this.message.length && '' !== this.message.trim()) {
-        let messageObj = {
-          to: this.selectChatUser.loginName,
+        const selectedUser = this.chat.selectedUser
+        // 构建消息对象
+        const messageObj = {
+          to: selectedUser.loginName,
+          toName: selectedUser.name,
           content: this.message,
+          date: new Date(),
           self: true
         }
-        this.message = ''
+        this.chat.selectedUser.lastMessage = this.message
+        this.clear()
+        // 本地添加一条消息记录
+        const sessionKey = `${this.user.loginName}#${selectedUser.loginName}`
+        if(!this.chat.session[sessionKey]) {
+          this.chat.session[sessionKey] = []
+        }
+        this.chat.session[sessionKey].push(messageObj)
         this.$store.state.stomp.send('/ws/chat', {}, JSON.stringify(messageObj))
-        this.$store.commit('SEND_CHAT_MESSAGE', messageObj);
+      }
+    }
+  },
+  watch: {
+    // 切换用户时，清空输入框
+    'chat.selectedUser': {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        this.clear()
+        this.$nextTick(() => {
+          // 输入框获取焦点
+          this.$refs.messageInput.focus()
+        })
       }
     }
   }

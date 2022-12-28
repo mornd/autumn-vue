@@ -95,7 +95,7 @@
             width="150"
             align="center">
           <template #default="scope">
-            <el-button @click="kick(scope.row)" v-has-permi="['onlineUser:kick']" type="text" size="mini" icon="fa fa-chain-broken">&nbsp;&nbsp;{{ scope.row.id == user.id ? '强退自己' : '强退' }}</el-button>
+            <el-button @click="kick(scope.row)" v-has-permi="['onlineUser:kick']" type="text" size="mini" icon="fa fa-chain-broken">&nbsp;&nbsp;强退</el-button>
           </template>
         </el-table-column>
       </el-table>

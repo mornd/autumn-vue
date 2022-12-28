@@ -79,7 +79,6 @@ export default {
     window.sessionStorage.clear();
     //删除cookie数据
     removeToken()
-    //removeTheme()
     //清空vuex中的菜单信息
     commit('LOGOUT')
     //跳转到登录页
@@ -113,38 +112,82 @@ export default {
 
   // chat
   // 初始化所有聊天好友
-  initChatFriends (context) {
-    api.getRequest('/chat/users').then(res => {
+  getAllChatFriends (context) {
+    api.getRequest('/chat/allFriends').then(res => {
       if(res.success) {
-        context.commit('INIT_CHAT_FRIENDS', res.data)
+        context.commit('SET_ALL_CHAT_FRIENDS', res.data)
       }
     })
   },
-  // 建立 webSorct 连接
+  getRecentChatUsers(context) {
+    api.getRequest('/chat/getRecentUsers').then(res => {
+      if(res.success) {
+        context.commit('SET_RECENT_CHAT_USERS', res.data)
+      }
+    })
+  },
+
+  // 建立 webSocket 连接
   chatConnect({ state, commit }) {
     state.stomp = Stomp.over(new SockJS('/ws/endPoint'))
     const token = getToken()
     state.stomp.connect({'Authorization': token}, success => {
       //  订阅消息频道，这里的 /user 前缀是固定的
       state.stomp.subscribe('/user/queue/chat', message => {
-        console.log(message.body);
         let receiveMessage = JSON.parse(message.body)
-        if(!state.selectChatUser || receiveMessage.from != state.selectChatUser.loginName) {
+        const chat = state.chat
+
+        // 聊天列表是否已经聊过天
+        if(chat.selectedUser && chat.selectedUser.loginName === receiveMessage.from) {
+          chat.selectedUser.lastDate = receiveMessage.date
+          chat.selectedUser.lastMessage = receiveMessage.content
+          api.putRequest(`/chat/read/${receiveMessage.from}`).then(res => {})
+        } else {
+          let chatExist = false
+          for (let i = 0; i< chat.recentUsers.length; i++) {
+            if(receiveMessage.from === chat.recentUsers[i].loginName) {
+              if(chat.recentUsers[i].unread && chat.recentUsers[i].unread > 0) {
+                // 设置未读消息个数
+                chat.recentUsers[i].unread++
+              } else {
+                chat.recentUsers[i].unread = 1
+              }
+              chat.recentUsers[i].lastDate = receiveMessage.date
+              chat.recentUsers[i].lastMessage = receiveMessage.content
+              commit('CHAT_TO_FIRST', chat.recentUsers[i])
+              chatExist = true
+            }
+          }
+          if(!chatExist) {
+            // 不存在则去所有用户中查找
+            for(let i = 0; i < chat.allFriends.length; i++) {
+              if(receiveMessage.from === chat.allFriends[i].loginName) {
+                chat.allFriends[i].unread = 1
+                chat.allFriends[i].lastDate = receiveMessage.date
+                chat.allFriends[i].lastMessage = receiveMessage.content
+                commit('CHAT_TO_FIRST', chat.allFriends[i])
+                break
+              }
+            }
+          }
+        }
+
+        if(!chat.selectedUser || receiveMessage.from !== chat.selectedUser.loginName) {
           Notification.success({
             title: `[${receiveMessage.fromName}]发来一条消息`,
-            message: receiveMessage.content.length > 10 ? receiveMessage.content.substr(0, 10) : receiveMessage.content
+            message: receiveMessage.content.length > 10 ? `${receiveMessage.content.substr(0, 10)}...` : receiveMessage.content
           })
-          // 小红点
-          Vue.set(state.isDot, state.user.loginName + '#' + receiveMessage.from, true)
-
         }
         receiveMessage.self = false
-        receiveMessage.to = receiveMessage.from
-        commit('SEND_CHAT_MESSAGE', receiveMessage)
+        const sessionKey = `${state.user.loginName}#${receiveMessage.from}`
+        if(!chat.session[sessionKey]) {
+          chat.session[sessionKey] = []
+        }
+        chat.session[sessionKey].push(receiveMessage)
       })
     }, error => {
       console.log(error);
-      Notification.error('无法建立在线聊天：' + error)
+      Notification.error('无法构建在线聊天，连接失败')
     })
   }
 }

@@ -2,7 +2,7 @@
   <div id="message-container">
     <div class="main">
       <div class="header">
-        <span class="name">{{ selectChatUser ? selectChatUser.name : '' }}</span>
+        <span class="name">{{ chat.selectedUser ? chat.selectedUser.name : '' }}</span>
       </div>
 
       <div class="icons">
@@ -13,10 +13,10 @@
         </ul>
 
         <!--  更多按钮 -->
-        <i class="el-icon-more more" />
+        <i class="el-icon-more more" v-if="chat.selectedUser ? user.id !== chat.selectedUser.id : false"/>
       </div>
 
-      <div class="message-list" v-if="selectChatUser" ref="scrollElement">
+      <div class="message-list" v-if="chat.selectedUser" ref="scrollElement">
         <!-- 消息列表展示 -->
         <message-list />
       </div>
@@ -27,7 +27,7 @@
     </div>
 
     <!-- 用户输入框 -->
-    <message-input v-if="selectChatUser" />
+    <message-input v-if="chat.selectedUser" />
   </div>
 </template>
 
@@ -46,24 +46,26 @@ export default {
     messageList,
     messageInput
   },
-  created() {
-  },
   computed: {
-    ...mapState(['selectChatUser', 'user', 'sessions']),
+    ...mapState(['user', 'chat']),
   },
   methods: {
     // 滚动条移至最顶部
     handleScrollTop() {
       this.$nextTick(() => {
         let scrollElem = this.$refs.scrollElement;
-        scrollElem.scrollTo({ top: 0, behavior: 'smooth' });
+        if(scrollElem) {
+          scrollElem.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       });
     },
     // 滚动条移至最底部
     handleScrollBottom() {
       this.$nextTick(() => {
         let scrollElem = this.$refs.scrollElement;
-        scrollElem.scrollTo({ top: scrollElem .scrollHeight, behavior: 'smooth' });
+        if(scrollElem) {
+          scrollElem.scrollTo({ top: scrollElem .scrollHeight, behavior: 'smooth' });
+        }
       });
     },
     // 尺寸缩放
@@ -76,7 +78,16 @@ export default {
     }
   },
   watch: {
-    sessions: {
+    'chat.selectedUser': {
+      handler(oldVal, newVal) {
+        this.handleScrollBottom()
+      },
+      // 深度监听
+      deep: true,
+      // 页面首次加载也执行一次
+      immediate: true
+    },
+    'chat.session': {
       handler(oldVal, newVal) {
         this.handleScrollBottom()
       },

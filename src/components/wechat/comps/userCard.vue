@@ -2,18 +2,18 @@
   <div>
     <div class="main"
          :class="selectStyle"
-         @click="changeSelectChatUser(chatUser)">
+         @click="selectUser(chatUser)">
       <div class="avatar-container">
-        <el-badge :value="'1'" :hidden="!isDot[user.loginName + '#' +  chatUser.loginName]" class="item">
-          <img class="avatar" :src="generateAvatar(chatUser.avatar)" :alt="chatUser.name" :title="chatUser.loginName" />
+        <el-badge :value="chatUser.unread | getBadge" :hidden="!chatUser.unread">
+          <img class="avatar" :src="generateAvatar(chatUser.avatar)" />
         </el-badge>
       </div>
       <div class="info">
         <div>
-          <span class="name">{{ chatUser.name }}</span>
-          <span class="time">20:21</span>
+          <span class="name" :title="chatUser.loginName">{{ chatUser.name }}</span>
+          <span class="time">{{ chatDateFormatter(chatUser.lastDate) }}</span>
         </div>
-        <span class="message">哈哈哈哈哈哈哈哈哈</span>
+        <span class="message">{{chatUser.lastMessage}}</span>
       </div>
     </div>
   </div>
@@ -22,6 +22,7 @@
 <script>
 import {mapState} from "vuex";
 import { generateAvatar } from "@/utils/userUtil";
+import { chatDateFormatter } from "@/utils/dateUtil";
 
 
 export default {
@@ -29,19 +30,30 @@ export default {
   data() {
     return {
       generateAvatar,
+      chatDateFormatter
     }
   },
   methods: {
-    changeSelectChatUser(user) {
-      this.$store.commit('changeSelectChatUser', user)
+    selectUser(user) {
+      if(this.chat.userSearch.trim() !== '') {
+        this.chat.userSearch = ''
+        this.$store.commit('CHAT_TO_FIRST_CHOOSE', user)
+      } else {
+        this.chat.selectedUser = user
+      }
+      if(this.chat.selectedUser.unread && this.chat.selectedUser.unread > 0) {
+        this.chat.selectedUser.unread = undefined
+        // 已读消息
+        this.$api.putRequest(`/chat/read/${this.chat.selectedUser.loginName}`).then(res => {})
+      }
     },
   },
   computed: {
-    ...mapState(['chatUserList', 'selectChatUser', 'isDot', 'user']),
+    ...mapState(['user', 'chat']),
     selectStyle() {
       return {
-        active: this.selectChatUser ? (this.chatUser.loginName === this.selectChatUser.loginName) : false,
-        'mouse-move-up': this.selectChatUser ? (this.chatUser.loginName !== this.selectChatUser.loginName) : false
+        active: this.chat.selectedUser ? (this.chatUser.loginName === this.chat.selectedUser.loginName) : false,
+        'mouse-move-up': this.chat.selectedUser ? (this.chatUser.loginName !== this.chat.selectedUser.loginName) : true
       }
     }
   },
@@ -50,6 +62,12 @@ export default {
       type: Object,
       default: () => {},
       require: true,
+    }
+  },
+  filters: {
+    // 格式化红点
+    getBadge(value) {
+      return value ? (value < 100) ? value : '99+' : value
     }
   }
 }
@@ -92,6 +110,7 @@ export default {
         right: 0;
         color: #9999A8;
         font-size: 12px;
+        letter-spacing: 1px;
       }
 
       // 消息

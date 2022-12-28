@@ -2,12 +2,12 @@
   <div>
     <div class="main">
       <ul>
-        <li v-for="item in sessions[user.loginName + '#' + selectChatUser.loginName]">
+        <li v-for="item in session">
           <p class="time">
-            <span>{{item.date | time}}</span>
+            <span>{{ chatDateFormatter(item.date) }}</span>
           </p>
           <div class="message" :class="{self: item.self}">
-            <img class="avatar" :src="generateAvatar(item.self ? user.avatar : selectChatUser.avatar)" :alt="user.name" />
+            <img class="avatar" :src="generateAvatar(item.self ? user.avatar : chat.selectedUser.avatar)" :alt="user.name" />
             <span class="text">
               {{item.content}}
             </span>
@@ -21,25 +21,45 @@
 <script>
 import {mapState} from 'vuex'
 import { generateAvatar } from "@/utils/userUtil";
+import {chatDateFormatter} from "@/utils/dateUtil";
 
 export default {
   name: 'messageList',
   data () {
     return {
-      generateAvatar
+      generateAvatar,
+      chatDateFormatter,
+      session: []
     }
   },
   computed: {
-    ...mapState(['sessions', 'user', 'selectChatUser']),
+    ...mapState(['user', 'chat']),
   },
-  methods: {
-  },
-  filters:{
-    time (date) {
-      if (date) {
-        date = new Date(date);
+  watch: {
+    'chat.session': {
+      deep: true,
+      immediate: true,
+      handler(value) {
+        console.log('^^^^^^^^^^^^^^^^^session变动');
+        this.session = value[this.user.loginName + '#' + this.chat.selectedUser.loginName]
       }
-      return `${date.getHours()}:${date.getMinutes()}`;
+    },
+    'chat.selectedUser': {
+      deep: true,
+      immediate: true,
+      handler(newVal, oldVal) {
+        const sessionKey = `${this.user.loginName}#${newVal.loginName}`
+        if(this.chat.session[sessionKey] === undefined) {
+          console.log('send');
+          this.$api.getRequest(`/chat/getSession/${newVal.loginName}`).then(res => {
+            if(res.success) {
+              this.$set(this.chat.session, sessionKey, res.data)
+            }
+          })
+        } else {
+          console.log('cache');
+        }
+      }
     }
   }
 }
@@ -55,9 +75,10 @@ export default {
     /* 聊天时间 */
     .time {
       text-align: center;
+      letter-spacing: 1px;
       > span {
         display: inline-block;
-        padding: 3px 8px;
+        padding: 2px 5px;
         font-size: 10px;
         color: #FFF;
         background-color: #DADADA;

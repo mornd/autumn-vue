@@ -15,12 +15,9 @@ const store = new Vuex.Store({
   getters,
 })
 
-store.watch(function (state) {
-  return state.sessions
-},function (val) {
-  localStorage.setItem('vue-chat-session', JSON.stringify(val));
-},{
-  deep:true
-})
+//  监听 store
+store.watch( state => {return state.chat.session}, value => {
+  localStorage.setItem('chat-session', JSON.stringify(value));
+}, {deep: true})
 
 export default store

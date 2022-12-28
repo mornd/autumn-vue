@@ -1,29 +1,30 @@
 <template>
   <div class="main">
     <!-- 我的头像 -->
-    <div class="avatar-container">
-      <img class="avatar" :src="user.avatar" :alt="user.name" :title="user.name">
+    <div class="avatar-container" :title="user.name">
+      <img class="avatar" :src="user.avatar">
     </div>
 
     <!-- 工具栏 -->
     <ul>
-      <li title="聊天" @click="chat('a1')">
-        <i :class="active === 'a1' ? 'fa fa-comment active' : 'fa fa-comment-o'"></i>
+      <li title="聊天" @click="to('chat')">
+        <i :class="chat.asideBarActive === 'chat' ? 'fa fa-comment active' : 'fa fa-comment-o'"></i>
       </li>
-      <li title="通讯录" @click="users('a2')">
-        <i :class="active === 'a2' ? 'fa fa-user active' : 'fa fa-user-o'"></i>
+      <li title="通讯录" @click="to('users')">
+        <i :class="chat.asideBarActive === 'users' ? 'fa fa-user active' : 'fa fa-user-o'"></i>
       </li>
       <li>
-        <i class="fa fa-file-text-o"></i>
+        <i class="el-icon-folder-opened"></i>
       </li>
     </ul>
 
+    <!-- 底部 -->
     <ul class="bottom-tool">
       <li>
-        <i class="fa fa-comment-o"></i>
+        <i class="fa fa-cog"></i>
       </li>
       <li>
-        <i class="fa fa-th-list"></i>
+        <i class="fa fa-reorder"></i>
       </li>
     </ul>
   </div>
@@ -34,21 +35,14 @@ import {mapState} from "vuex";
 
 export default {
   name: "asideBar",
-  data() {
-    return {
-      active: 'a1'
-    }
-  },
   methods: {
-    chat(n) {
-      this.active = n
-    },
-    users(n) {
-      this.active = n
+    // 点击跳转右侧页面
+    to(name) {
+      this.chat.asideBarActive = name
     }
   },
   computed: {
-    ...mapState(['user']),
+    ...mapState(['user', 'chat'])
   }
 }
 </script>
@@ -104,7 +98,7 @@ export default {
       bottom: 5px;
     }
   }
-  // 当前激化选项
+  // 当前激活选项
   .active {
     color: #07C160;
   }

@@ -186,7 +186,7 @@
 <script>
   import { mapState } from 'vuex'
   import { encrypt } from '@/utils/secret'
-  import { isNotBlank, isvalidPhone } from '@/utils/validate'
+  import { isNotBlank, isvalidPhone, validAccount } from '@/utils/validate'
   import jsCookie from 'js-cookie'
   import { encryptContent, decryptContent } from '@/utils/jsencrypt'
 
@@ -199,10 +199,10 @@
       //表单校验
       const checkUsername = (rule, value, callback) => {
         if(isNotBlank(value)) {
-          if(value.length <= this.maxLength) {
+          if(validAccount(value)) {
             callback()
           } else {
-            callback(new Error('账号长度过长'))
+            callback(new Error('账号须由2-20个字母、数字、下划线组成，且以字母开头'))
           }
         } else {
           callback(new Error('请输入账号'))

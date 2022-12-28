@@ -22,7 +22,7 @@
             <li v-for="c in tipContent">{{c}}</li>
           </ul>
           <template slot="reference">
-            <el-badge :value="badgeFlag ? 'new' : ''" type="danger">
+            <el-badge :value="menu.badgeFlag ? 'new' : ''" type="danger">
               <i class="fa fa-tag badge-icon"></i>
             </el-badge>
           </template>
@@ -378,7 +378,7 @@
       }
     },
     computed: {
-      ...mapState(['title', 'logo', 'menuType', 'enabledState', 'operation', 'badgeFlag'])
+      ...mapState(['title', 'logo', 'menuType', 'enabledState', 'operation', 'menu'])
     },
     created() {
       //表单赋默认值
@@ -580,7 +580,7 @@
       },
       //徽章操作
       popoverShow() {
-        this.$store.commit('SET_BADGEFLAG', false)
+        this.menu.badgeFlag = false
       },
       //动态设置dialog宽度
       setDialogWidth() {

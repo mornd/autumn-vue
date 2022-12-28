@@ -12,6 +12,15 @@ export function isNotBlank(val) {
 }
 
 /**
+ * 校验登录名（账号）
+ * @param val
+ * @returns {boolean}
+ */
+export function validAccount(val) {
+  return /^[a-zA-Z][a-zA-Z0-9_]{1,19}$/.test(val)
+}
+
+/**
  * @param {string} path
  * @returns {Boolean}
  */

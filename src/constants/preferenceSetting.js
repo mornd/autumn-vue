@@ -15,7 +15,7 @@ export const getTheme = () => {
   // localStorage  可永久保存
   // sessionStorage 一旦页面叉掉，浏览器会自动清空
   const value = window.localStorage.getItem(themeKey)
-  return value ? value : defaultTheme
+  return value === null ? defaultTheme : value
 }
 
 export const setTheme = (value) => {

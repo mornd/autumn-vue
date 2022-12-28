@@ -1,6 +1,7 @@
 import { setToken } from '@/utils/tokenUtil'
 import { setTheme, setMenuCollapse } from '@/constants/preferenceSetting'
 import { generateAvatar } from "@/utils/userUtil";
+import { toFirst } from "@/utils/chatUtil";
 import Vue from 'vue'
 
 export default {
@@ -32,10 +33,7 @@ export default {
     state.user = null
     state.roles = []
     state.permissions = []
-  },
-  //设置页面只加载一次的徽章
-  SET_BADGEFLAG(state, flag) {
-    state.badgeFlag = flag
+    state.chat = {}
   },
   //更换头像
   SET_USER_AVATAR(state, url) {
@@ -50,30 +48,21 @@ export default {
   },
 
   // chat
-  changeSelectChatUser (state, key) {
-    Vue.set(state.isDot, state.user.loginName + '#' + key.loginName, false)
-    state.selectChatUser = key;
+
+  SET_ALL_CHAT_FRIENDS (state, data) {
+    state.chat.allFriends = data
   },
-
-  SEND_CHAT_MESSAGE (state, messageObj) {
-    let ses = state.sessions[state.user.loginName + '#' + messageObj.to]
-    if(!ses) {
-      // state.sessions[state.user.loginName + '#' + messageObj.to] = []
-      Vue.set(state.sessions, state.user.loginName + '#' + messageObj.to, [])
-    }
-    state.sessions[state.user.loginName + '#' + messageObj.to].push({
-      content: messageObj.content,
-      date: new Date(),
-      self: messageObj.self
-    })
+  SET_RECENT_CHAT_USERS(state, data) {
+    state.chat.recentUsers = data
   },
-
-  INIT_CHAT_FRIENDS (state, data) {
-    let localRecord = localStorage.getItem('vue-chat-session')
-    if(localRecord) {
-      state.sessions = JSON.parse(localRecord)
-    }
-    state.chatUserList = data
-  }
-
+  // 设置用户到第一行
+  CHAT_TO_FIRST(state, user) {
+    toFirst(state.chat.recentUsers, user)
+  },
+  //  设置聊天用户到第一行并选中
+  CHAT_TO_FIRST_CHOOSE(state, user) {
+    toFirst(state.chat.recentUsers, user)
+    state.chat.selectedUser = user
+    state.chat.asideBarActive = 'chat'
+  },
 }

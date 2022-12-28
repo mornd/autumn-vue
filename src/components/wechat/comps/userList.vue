@@ -5,7 +5,7 @@
         <el-input
             class="search"
             placeholder="搜索"
-            v-model="search"
+            v-model="chat.userSearch"
             size="mini"
             clearable>
           <i slot="prefix" class="el-input__icon el-icon-search wechat-icon-bg"></i>
@@ -16,34 +16,67 @@
       </div>
     </div>
 
-    <div class="user-list">
+    <div class="user-list" v-show="chat.asideBarActive === 'chat'" ref="scrollElement">
         <ul>
-          <li v-for="(item,index) in chatUserList" :key="index">
-            <userListBlock :chatUser="item"/>
+          <li v-for="item in chat.recentUsers" :key="item.id">
+            <user-card
+                :chatUser="item"
+                v-show="filterUser(item)"
+            />
           </li>
         </ul>
+      </div>
+
+    <div class="user-list" v-show="chat.asideBarActive === 'users'">
+      <ul>
+        <li v-for="item in chat.allFriends" :key="item.id">
+          <user-card-small
+              :chatUser="item"
+              v-show="filterUser(item)"
+          />
+        </li>
+      </ul>
     </div>
   </div>
 </template>
 
 <script>
 
-import userListBlock from "./userListBlock";
+import userCard from "./userCard";
+import UserCardSmall from "./userCardSmall";
 import {mapState} from "vuex";
 
 export default {
   name: "userList",
   components: {
-    userListBlock
+    userCard,
+    UserCardSmall
   },
-  data() {
-    return {
-      search: ''
-    }
+  methods: {
+    // 搜索用户
+    filterUser(user) {
+      return (this.chat.userSearch.trim() === '') ? true
+          : user.name.includes(this.chat.userSearch.trim())
+    },
+    // 滚动条移至最顶部
+    handleScrollTop() {
+      this.$nextTick(() => {
+        let scrollElem = this.$refs.scrollElement;
+        if(scrollElem) {
+          scrollElem.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      });
+    },
   },
   computed: {
-    ...mapState(['chatUserList', 'selectChatUser', 'user']),
+    ...mapState(['user', 'chat'])
   },
+  watch: {
+    // 滚动条需要移至最顶部
+    'chat.userListScrollTop'() {
+      this.handleScrollTop()
+    }
+  }
 }
 </script>
 
@@ -120,3 +153,4 @@ export default {
     color: #646464;
   }
 </style>
+
