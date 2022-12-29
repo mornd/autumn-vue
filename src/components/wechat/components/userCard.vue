@@ -13,7 +13,7 @@
           <span class="name" :title="chatUser.loginName">{{ chatUser.name }}</span>
           <span class="time">{{ chatDateFormatter(chatUser.lastDate) }}</span>
         </div>
-        <span class="message">{{chatUser.lastMessage}}</span>
+        <span class="message">{{ chatUser.lastMessage }}</span>
       </div>
     </div>
   </div>
@@ -106,16 +106,22 @@ export default {
       .time {
         position: absolute;
         right: 0;
-        color: #9999A8;
+        color: grey;
         font-size: 12px;
         letter-spacing: 1px;
       }
 
       // 消息
       .message {
+        // 这里是固定的宽度
+        width: 171px;
+        white-space:nowrap; //不换行
+        text-overflow: ellipsis; //超出的显示省略号
+        overflow:hidden; //超出部分隐藏
+        word-wrap:normal; //长单词不换行-兼容ie
         font-size: 12px;
         position: absolute;
-        color: #9999A8;
+        color: grey;
         bottom: 0;
       }
     }

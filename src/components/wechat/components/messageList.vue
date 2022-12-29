@@ -8,9 +8,11 @@
           </p>
           <div class="message" :class="{self: item.self}">
             <img class="avatar" :src="(item.self ? user.avatar : chat.selectedUser.avatar) | avatar" :alt="user.name" />
-            <span class="text">
-              {{item.content}}
-            </span>
+            <div>
+              <i class="el-icon-caret-right self-text" v-if="item.self" />
+              <i class="el-icon-caret-left other-text" v-else />
+              <span class="text" v-text="item.content"></span>
+            </div>
           </div>
         </li>
       </ul>
@@ -89,15 +91,28 @@ export default {
       height: @avatar-size;
       border-radius: 3px;
       cursor: pointer;
+      // 相邻兄弟选择器,下一个兄弟
+      + div {
+        position: relative;
+      }
     }
     .text {
-      white-space: normal;
+      white-space: pre-wrap; // 展示换行
+      word-wrap: break-word;
+      word-break: break-all; // 设置文字超出换行
+      overflow: hidden;
       display: inline-block;
       padding: 10px;
       max-width: 80%;
       border-radius: 5px;
       line-height: 20px;
     }
+
+    // 自己发的消息字体颜色
+    @selfTextColor: #95EC69;
+    // 对方消息字体颜色
+    @otherTextColor: #FFF;
+
     /* 对方的聊天消息 */
     .message {
       .avatar {
@@ -105,7 +120,7 @@ export default {
         margin: 0 10px 0 0;
       }
       .text {
-        background-color: #FFF;
+        background-color: @otherTextColor;
         font-size: 14px;
       }
     }
@@ -118,9 +133,23 @@ export default {
         margin: 0 0 0 10px;
       }
       .text {
-        background-color: #95EC69;
+        background-color: @selfTextColor;
         text-align: left;
       }
+    }
+
+    // 消息两侧的三角形图标
+    .self-text {
+      position: absolute;
+      top: 10px;
+      color: @selfTextColor;
+      right: 35.5px;
+    }
+    .other-text {
+      position: absolute;
+      top: 10px;
+      color: @otherTextColor;
+      left: 35.5px;
     }
   }
 </style>
