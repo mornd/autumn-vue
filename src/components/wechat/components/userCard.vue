@@ -5,7 +5,7 @@
          @click="selectUser(chatUser)">
       <div class="avatar-container">
         <el-badge :value="chatUser.unread | getBadge" :hidden="!chatUser.unread">
-          <img class="avatar" :src="generateAvatar(chatUser.avatar)" />
+          <img class="avatar" :src="chatUser.avatar | avatar" />
         </el-badge>
       </div>
       <div class="info">
@@ -21,7 +21,6 @@
 
 <script>
 import {mapState} from "vuex";
-import { generateAvatar } from "@/utils/userUtil";
 import { chatDateFormatter } from "@/utils/dateUtil";
 
 
@@ -29,7 +28,6 @@ export default {
   name: "userListBlock",
   data() {
     return {
-      generateAvatar,
       chatDateFormatter
     }
   },
@@ -41,7 +39,7 @@ export default {
       } else {
         this.chat.selectedUser = user
       }
-      if(this.chat.selectedUser.unread && this.chat.selectedUser.unread > 0) {
+      if(this.chat.selectedUser.unread > 0) {
         this.chat.selectedUser.unread = undefined
         // 已读消息
         this.$api.putRequest(`/chat/read/${this.chat.selectedUser.loginName}`).then(res => {})

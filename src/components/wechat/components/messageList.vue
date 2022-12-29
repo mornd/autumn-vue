@@ -7,7 +7,7 @@
             <span>{{ chatDateFormatter(item.date) }}</span>
           </p>
           <div class="message" :class="{self: item.self}">
-            <img class="avatar" :src="generateAvatar(item.self ? user.avatar : chat.selectedUser.avatar)" :alt="user.name" />
+            <img class="avatar" :src="(item.self ? user.avatar : chat.selectedUser.avatar) | avatar" :alt="user.name" />
             <span class="text">
               {{item.content}}
             </span>
@@ -20,14 +20,12 @@
 
 <script>
 import {mapState} from 'vuex'
-import { generateAvatar } from "@/utils/userUtil";
 import {chatDateFormatter} from "@/utils/dateUtil";
 
 export default {
   name: 'messageList',
   data () {
     return {
-      generateAvatar,
       chatDateFormatter,
       session: []
     }
@@ -40,7 +38,6 @@ export default {
       deep: true,
       immediate: true,
       handler(value) {
-        console.log('^^^^^^^^^^^^^^^^^session变动');
         this.session = value[this.user.loginName + '#' + this.chat.selectedUser.loginName]
       }
     },
@@ -50,14 +47,13 @@ export default {
       handler(newVal, oldVal) {
         const sessionKey = `${this.user.loginName}#${newVal.loginName}`
         if(this.chat.session[sessionKey] === undefined) {
-          console.log('send');
           this.$api.getRequest(`/chat/getSession/${newVal.loginName}`).then(res => {
             if(res.success) {
               this.$set(this.chat.session, sessionKey, res.data)
             }
           })
         } else {
-          console.log('cache');
+          this.session = this.chat.session[this.user.loginName + '#' + newVal.loginName]
         }
       }
     }

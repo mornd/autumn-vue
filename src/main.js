@@ -21,9 +21,15 @@ import api from '@/utils/api';
 Vue.use(directive)
 Vue.prototype.$api = api;
 
+// 注册全局过滤器
+import * as filters from '@/filter/index'
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+
 Vue.config.productionTip = false
 
-new Vue({
+const vue = new Vue({
   router,
   store,
   render: h => h(App)

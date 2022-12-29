@@ -16,7 +16,9 @@
         <i :class="fullscreen ? 'el-icon-close' : 'el-icon-full-screen'"></i>
       </li>
       <li title="在线聊天" @click="toChat" @mouseover="addActive($event)" @mouseout="removeActive($event)">
-        <i class="el-icon-chat-dot-round"></i>
+        <el-badge :value="getUnread | chatBadge" :hidden="$route.path === '/wechat' || getUnread <= 0">
+          <i class="el-icon-chat-dot-round" />
+        </el-badge>
       </li>
       <li title="通知" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i class="el-icon-bell"></i>
@@ -90,7 +92,7 @@
   import MoreDrawer from './moreDrawer/MoreDrawer'
   import NowDate from '@/components/gadgets/NowDate'
   import weather_plugin from './WeatherPlugin'
-  import { defaultAvatar, errorAvatar } from "@/utils/userUtil";
+  import { defaultAvatar, errorAvatar } from "@/constants/systemConsts";
 
   export default {
     name: "HeaderBar",
@@ -116,8 +118,20 @@
     },
     computed: {
       //获取当前登录用户信息
-      ...mapState(['user', 'isCollapse', 'theme']),
-      ...mapGetters(['loginName'])
+      ...mapState(['user', 'isCollapse', 'theme', 'chat']),
+      ...mapGetters(['loginName']),
+      getUnread() {
+        let count = 0
+        let arr = this.chat.recentUsers
+        if(arr) {
+          for(let i = 0; i< arr.length; i++) {
+            if(arr[i].unread > 0) {
+              count += arr[i].unread
+            }
+          }
+        }
+        return count === 0 ? undefined : count
+      }
     },
     methods: {
       //展开收起菜单
@@ -205,6 +219,12 @@
       removeActive($event) {
         $event.currentTarget.style.borderBottom = '';
       }
+    },
+    filters: {
+      // 格式化红点
+      chatBadge(value) {
+        return value ? (value < 100) ? value : '99+' : value
+      }
     }
   }
 </script>
@@ -269,4 +289,22 @@
       }
     }
   }
+</style>
+
+
+<style scoped>
+>>> .el-badge__content {
+  background-color: #FA5151;
+  border-radius: 10px;
+  color: #FFF;
+  display: inline-block;
+  font-size: 1%;
+  height: 14px;
+  line-height: 14px;
+  padding: 0 4px;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateY(100%) translateX(95%);
+  border: none;
+}
 </style>

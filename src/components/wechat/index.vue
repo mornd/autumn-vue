@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import asideBar from "./comps/asideBar";
-import userList from "./comps/userList";
-import message from "./comps/message";
+import asideBar from "./components/asideBar";
+import userList from "./components/userList";
+import message from "./components/message";
 import {mapState} from "vuex";
 
 export default {
@@ -34,13 +34,6 @@ export default {
     message
   },
   mounted() {
-    // 加载聊天用户
-    if(this.chat.recentUsers === null) {
-      this.$store.dispatch('getRecentChatUsers')
-    }
-    if(this.chat.allFriends === null) {
-      this.$store.dispatch('getAllChatFriends')
-    }
   },
   methods: {
     zoom() {
@@ -69,6 +62,7 @@ export default {
 <style lang="less" scoped>
   .container {
     height: 100%;
+    width: 100%;
     min-height: 600px;
     min-width: 880px;
     display: flex;

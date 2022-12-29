@@ -3,7 +3,7 @@
     <div class="main mouse-move-up"
          @click="selectUser(chatUser)">
       <div class="avatar-container">
-        <img class="avatar" :src="generateAvatar(chatUser.avatar)"  />
+        <img class="avatar" :src="chatUser.avatar | avatar"  />
         <span class="name" :title="chatUser.loginName">{{ chatUser.name }}</span>
       </div>
     </div>
@@ -11,16 +11,10 @@
 </template>
 
 <script>
-import { generateAvatar } from "@/utils/userUtil";
 import {mapState} from "vuex";
 
 export default {
   name: "userCardSmall",
-  data() {
-    return {
-      generateAvatar,
-    }
-  },
   methods: {
     // 单击事件
     selectUser(user) {

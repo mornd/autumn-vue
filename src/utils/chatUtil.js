@@ -20,6 +20,9 @@ export const toFirst = (list, user) => {
     if(user.lastDate) {
       exists.lastDate = user.lastDate
     }
+    if(user.unread <= 0) {
+      exists.unread = undefined
+    }
     user = exists
   }
   list.unshift(user)

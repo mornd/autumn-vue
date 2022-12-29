@@ -1,14 +1,4 @@
-import assetsDefaultAvatar from '@/assets/images/avatar/defaultAvatar.png'
-import assetsErrorAvatar from '@/assets/images/avatar/errorAvatar.png'
-
-/**
- * 系统默认头像
- */
-export const defaultAvatar = assetsDefaultAvatar
-/**
- * 头像加载失败显示的内容
- */
-export const errorAvatar = assetsErrorAvatar
+import { defaultAvatar, errorAvatar } from "@/constants/systemConsts";
 
 /**
  * 根据头像路径区分是否查询本地后端
@@ -28,4 +18,3 @@ export const generateAvatar = (avatar) => {
     return defaultAvatar
   }
 }
-

@@ -80,8 +80,9 @@ export default {
           date: new Date(),
           self: true
         }
-        this.chat.selectedUser.lastMessage = this.message
         this.clear()
+        this.chat.selectedUser.lastMessage = messageObj.content
+        this.chat.selectedUser.lastDate = messageObj.date
         // 本地添加一条消息记录
         const sessionKey = `${this.user.loginName}#${selectedUser.loginName}`
         if(!this.chat.session[sessionKey]) {

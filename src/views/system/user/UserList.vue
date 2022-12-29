@@ -189,7 +189,8 @@
   import { gender } from '@/constants/systemConsts'
   import AddOrEdit from './components/AddOrEidt'
   import { birthdayToAge } from '@/utils/objUtil'
-  import { defaultAvatar, generateAvatar } from "@/utils/userUtil";
+  import { defaultAvatar } from "@/constants/systemConsts";
+  import { generateAvatar } from "@/utils/userUtil";
 
   export default {
     name: "UserList",

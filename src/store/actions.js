@@ -11,7 +11,7 @@ import Stomp from 'stompjs'
 
 export default {
   //设置用户的角色、权限
-  setUser({ commit, dispatch }) {
+  setUser({ commit, dispatch, state }) {
     return new Promise((resolve, reject) => {
       api.getRequest('/sysUser/getLoginUser').then(res => {
         if(res.success) {
@@ -23,6 +23,14 @@ export default {
             commit('SET_USER_AVATAR', userInfo.avatar)
             //  建立在线聊天连接
             dispatch('chatConnect')
+
+            // 加载聊天用户
+            if(state.chat.recentUsers === null) {
+              dispatch('getRecentChatUsers')
+            }
+            if(state.chat.allFriends === null) {
+              dispatch('getAllChatFriends')
+            }
 
             resolve(userInfo)
           } else {
@@ -143,10 +151,16 @@ export default {
           chat.selectedUser.lastMessage = receiveMessage.content
           api.putRequest(`/chat/read/${receiveMessage.from}`).then(res => {})
         } else {
+          Notification.success({
+            title: `[${receiveMessage.fromName}]发来一条消息`,
+            dangerouslyUseHTMLString: true,
+            message: receiveMessage.content.length > 30 ? `${receiveMessage.content.substr(0, 30)}...` : receiveMessage.content,
+            offset: 100
+          })
           let chatExist = false
           for (let i = 0; i< chat.recentUsers.length; i++) {
             if(receiveMessage.from === chat.recentUsers[i].loginName) {
-              if(chat.recentUsers[i].unread && chat.recentUsers[i].unread > 0) {
+              if(chat.recentUsers[i].unread > 0) {
                 // 设置未读消息个数
                 chat.recentUsers[i].unread++
               } else {
@@ -156,6 +170,7 @@ export default {
               chat.recentUsers[i].lastMessage = receiveMessage.content
               commit('CHAT_TO_FIRST', chat.recentUsers[i])
               chatExist = true
+              break
             }
           }
           if(!chatExist) {
@@ -170,13 +185,6 @@ export default {
               }
             }
           }
-        }
-
-        if(!chat.selectedUser || receiveMessage.from !== chat.selectedUser.loginName) {
-          Notification.success({
-            title: `[${receiveMessage.fromName}]发来一条消息`,
-            message: receiveMessage.content.length > 10 ? `${receiveMessage.content.substr(0, 10)}...` : receiveMessage.content
-          })
         }
         receiveMessage.self = false
         const sessionKey = `${state.user.loginName}#${receiveMessage.from}`

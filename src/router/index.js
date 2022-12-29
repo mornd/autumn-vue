@@ -50,7 +50,6 @@ const routes = [
         component: () => import('@/views/home/refresh')
       },
       {
-        //主页
         path: 'wechat',
         name: '在线聊天',
         meta: {title: '在线聊天'},

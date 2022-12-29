@@ -1,29 +1,31 @@
 <template>
   <div class="main">
     <!-- 我的头像 -->
-    <div class="avatar-container" :title="user.name">
-      <img class="avatar" :src="user.avatar">
+    <div class="avatar-container" :title="user.loginName">
+      <img class="avatar" :src="user.avatar | avatar">
     </div>
 
     <!-- 工具栏 -->
     <ul>
       <li title="聊天" @click="to('chat')">
-        <i :class="chat.asideBarActive === 'chat' ? 'fa fa-comment active' : 'fa fa-comment-o'"></i>
+        <el-badge :value="getUnread | getBadge" :hidden="getUnread <= 0">
+          <i :class="chat.asideBarActive === 'chat' ? 'fa fa-comment active' : 'fa fa-comment-o'"></i>
+        </el-badge>
       </li>
       <li title="通讯录" @click="to('users')">
         <i :class="chat.asideBarActive === 'users' ? 'fa fa-user active' : 'fa fa-user-o'"></i>
       </li>
       <li>
-        <i class="el-icon-folder-opened"></i>
+        <i title="文件" class="el-icon-folder-opened"></i>
       </li>
     </ul>
 
     <!-- 底部 -->
     <ul class="bottom-tool">
-      <li>
+      <li title="设置">
         <i class="fa fa-cog"></i>
       </li>
-      <li>
+      <li title="更多">
         <i class="fa fa-reorder"></i>
       </li>
     </ul>
@@ -42,7 +44,23 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'chat'])
+    ...mapState(['user', 'chat']),
+    getUnread() {
+      let count = 0
+      let arr = this.chat.recentUsers
+      if(arr) {
+        arr.forEach(i => {
+          if(i.unread > 0) count += i.unread
+        })
+      }
+      return count === 0 ? undefined : count
+    }
+  },
+  filters: {
+    // 格式化红点
+    getBadge(value) {
+      return value ? (value < 100) ? value : '99+' : value
+    }
   }
 }
 </script>
@@ -102,4 +120,22 @@ export default {
   .active {
     color: #07C160;
   }
+</style>
+
+
+<style scoped>
+>>> .el-badge__content {
+  background-color: #FA5151;
+  border-radius: 10px;
+  color: #FFF;
+  display: inline-block;
+  font-size: 1%;
+  height: 14px;
+  line-height: 14px;
+  padding: 0 4px;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateY(40%) translateX(95%);
+  border: none;
+}
 </style>
