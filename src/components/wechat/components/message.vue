@@ -9,7 +9,7 @@
         <ul>
           <li title="最小化"><i class="el-icon-minus"></i></li>
           <li @click="zoom" title="缩放"><i class="el-icon-full-screen"></i></li>
-          <li @click="full" title="新窗口打开"><i class="el-icon-copy-document"></i></li>
+          <li v-if="model !== 'full'" @click="full" title="新窗口打开"><i class="el-icon-copy-document"></i></li>
           <li title="关闭" @click="close"><i class="el-icon-close"></i></li>
         </ul>
 
@@ -39,10 +39,6 @@ import {mapState} from "vuex";
 
 export default {
   name: "message",
-  data() {
-    return {
-    }
-  },
   components: {
     messageList,
     messageInput
@@ -74,17 +70,19 @@ export default {
       this.$emit('zoom')
     },
     full() {
+      this.close()
       let routeData = this.$router.resolve({
         path: "/fullwechat",
-        query: {full: true}
+        query: {model: 'full'}
       })
-      window.open(routeData.href, '_blank');
+      window.open(routeData.href, '_blank')
     },
     // 关闭窗口
     close() {
       this.$router.go(-1)
     }
   },
+  props: ['model'],
   watch: {
     'chat.selectedUser': {
       handler(oldVal, newVal) {
@@ -121,7 +119,6 @@ export default {
 
     .main {
       position: relative;
-      border-left: 1px solid #E7E7E7;
       height: 100%;
       .header {
         height: @header-height;

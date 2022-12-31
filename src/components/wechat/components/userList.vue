@@ -89,6 +89,7 @@ export default {
     width: 250px;
     overflow: hidden;
     background-color: #E4E4E6;
+    border-right: 1px solid #E7E7E7;
 
     /* 头部搜索区域 */
     .header {
@@ -131,6 +132,7 @@ export default {
 
     // 好友列表
     .user-list {
+      width: 100%;
       height: calc(100% - @header-height);
       overflow-y: overlay;
     }

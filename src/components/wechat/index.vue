@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container" :style="{width: full ? '100%' : width}">
+    <div class="container" :style="modelStyle">
       <div>
         <aside-bar />
       </div>
@@ -8,7 +8,7 @@
         <userList />
       </div>
       <div class="message">
-        <message @zoom="zoom"/>
+        <message :model="model" @zoom="zoom"/>
       </div>
     </div>
   </div>
@@ -24,10 +24,26 @@ export default {
   name: "index",
   data () {
     return {
-      width: '880px',
-      zoomFlag: false,
-      // 是否全屏
-      full: this.$route.query.full
+      // 收缩后宽度
+      shrinkWidth: '900px',
+      // 全屏高度
+      fullHeight: '716px',
+      // 宽度最大化，这里不是指全屏
+      widthMax: false,
+      // 全屏 === full
+      model: this.$route.query.model,
+      modelStyle: {
+        width: undefined,
+        height: undefined,
+      }
+    }
+  },
+  mounted() {
+    const value = sessionStorage.getItem('chat-widthMax')
+    if(value !== null) this.widthMax = JSON.parse(value)
+    this.modelStyle = {
+      width: this.widthMax ? '100%' : this.shrinkWidth,
+      height: this.model === 'full' ? this.fullHeight : '100%'
     }
   },
   components: {
@@ -35,17 +51,21 @@ export default {
     userList,
     message
   },
-  mounted() {
-    console.log(this.full);
-  },
   methods: {
     zoom() {
-      if(this.zoomFlag) {
-        this.width = '880px'
+      if(this.widthMax) {
+        this.modelStyle = {
+          width: this.shrinkWidth,
+          height: this.model === 'full' ? this.fullHeight : '100%',
+        }
       } else {
-        this.width = '100%'
+        this.modelStyle = {
+          width: '100%',
+          height: this.model === 'full' ? this.fullHeight : '100%'
+        }
       }
-      this.zoomFlag = !this.zoomFlag
+      this.widthMax = !this.widthMax
+      sessionStorage.setItem('chat-widthMax', JSON.stringify(this.widthMax))
     }
   },
   computed: {
@@ -67,7 +87,7 @@ export default {
     height: 100%;
     width: 100%;
     min-height: 600px;
-    min-width: 880px;
+    min-width: 900px;
     display: flex;
     justify-content: left;
     overflow: hidden;

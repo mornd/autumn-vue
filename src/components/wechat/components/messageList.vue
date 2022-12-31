@@ -40,6 +40,7 @@ export default {
       deep: true,
       immediate: true,
       handler(value) {
+        this.session = []
         this.session = value[this.user.loginName + '#' + this.chat.selectedUser.loginName]
       }
     },
@@ -47,6 +48,7 @@ export default {
       deep: true,
       immediate: true,
       handler(newVal, oldVal) {
+        this.session = []
         const sessionKey = `${this.user.loginName}#${newVal.loginName}`
         if(this.chat.session[sessionKey] === undefined) {
           this.$api.getRequest(`/chat/getSession/${newVal.loginName}`).then(res => {

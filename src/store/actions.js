@@ -151,11 +151,10 @@ export default {
           chat.selectedUser.lastMessage = receiveMessage.content
           api.putRequest(`/chat/read/${receiveMessage.from}`).then(res => {})
         } else {
-          Notification.success({
-            title: `[${receiveMessage.fromName}]发来一条消息`,
+          Notification.info({
+            title: `${receiveMessage.fromName}:`,
             dangerouslyUseHTMLString: true,
             message: receiveMessage.content.length > 30 ? `${receiveMessage.content.substr(0, 30)}...` : receiveMessage.content,
-            offset: 100
           })
           let chatExist = false
           for (let i = 0; i< chat.recentUsers.length; i++) {
