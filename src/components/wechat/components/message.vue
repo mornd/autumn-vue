@@ -8,7 +8,8 @@
       <div class="icons">
         <ul>
           <li title="最小化"><i class="el-icon-minus"></i></li>
-          <li @click="zoom" title="最大化"><i class="el-icon-full-screen"></i></li>
+          <li @click="zoom" title="缩放"><i class="el-icon-full-screen"></i></li>
+          <li @click="full" title="新窗口打开"><i class="el-icon-copy-document"></i></li>
           <li title="关闭" @click="close"><i class="el-icon-close"></i></li>
         </ul>
 
@@ -72,6 +73,13 @@ export default {
     zoom() {
       this.$emit('zoom')
     },
+    full() {
+      let routeData = this.$router.resolve({
+        path: "/fullwechat",
+        query: {full: true}
+      })
+      window.open(routeData.href, '_blank');
+    },
     // 关闭窗口
     close() {
       this.$router.go(-1)
@@ -104,7 +112,7 @@ export default {
   //  头部区域高度
   @header-height: 60px;
   // 消息输入部分高度
-  @message-input-height: 150px;
+  @message-input-height: 156px;
 
   #message-container {
     background: #F5F5F5;

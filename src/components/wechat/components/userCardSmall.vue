@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="main mouse-move-up"
-         @click="selectUser(chatUser)">
+         @click="selectUser(chatUser)" :title="chatUser.loginName">
       <div class="avatar-container">
         <img class="avatar" :src="chatUser.avatar | avatar"  />
-        <span class="name" :title="chatUser.loginName">{{ chatUser.name }}</span>
+        <span class="name" :title="chatUser.name">{{ chatUser.name }}</span>
       </div>
     </div>
   </div>

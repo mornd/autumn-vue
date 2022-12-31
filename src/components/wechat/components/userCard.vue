@@ -10,7 +10,7 @@
       </div>
       <div class="info">
         <div>
-          <span class="name" :title="chatUser.loginName">{{ chatUser.name }}</span>
+          <span class="name" :title="chatUser.name">{{ chatUser.name }}</span>
           <span class="time">{{ chatDateFormatter(chatUser.lastDate) }}</span>
         </div>
         <span class="message">{{ chatUser.lastMessage }}</span>
@@ -96,6 +96,11 @@ export default {
 
       // 名称
       .name {
+        width: 105px;
+        white-space:nowrap; //不换行
+        text-overflow: ellipsis; //超出的显示省略号
+        overflow:hidden; //超出部分隐藏
+        word-wrap:normal; //长单词不换行-兼容ie
         font-size: 15px;
         position: absolute;
         left: 0;

@@ -30,6 +30,12 @@ const routes = [
     component: () => import('@/views/otherLogin/LoginCallback')
   },
   {
+    path: '/fullwechat',
+    name: '在线聊天',
+    meta: {title: '在线聊天'},
+    component: () => import('@/components/wechat/index'),
+  },
+  {
     //主体布局
     path: '/',
     name: 'Frame',

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container" :style="{width}">
+    <div class="container" :style="{width: full ? '100%' : width}">
       <div>
         <aside-bar />
       </div>
@@ -25,7 +25,9 @@ export default {
   data () {
     return {
       width: '880px',
-      screenFull: false,
+      zoomFlag: false,
+      // 是否全屏
+      full: this.$route.query.full
     }
   },
   components: {
@@ -34,15 +36,16 @@ export default {
     message
   },
   mounted() {
+    console.log(this.full);
   },
   methods: {
     zoom() {
-      if(this.screenFull) {
+      if(this.zoomFlag) {
         this.width = '880px'
       } else {
         this.width = '100%'
       }
-      this.screenFull = !this.screenFull
+      this.zoomFlag = !this.zoomFlag
     }
   },
   computed: {

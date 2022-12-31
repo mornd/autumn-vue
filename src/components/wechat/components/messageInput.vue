@@ -3,7 +3,14 @@
     <div class="inner-container">
       <ul class="left-icons">
         <li title="表情">
-          <i class="iconfont icon-xiaolian" />
+          <el-popover
+              placement="top"
+              width="310"
+              v-model="emojiVisible"
+              trigger="click">
+            <emoji-picker @choose="chooseEmoji" />
+            <i slot="reference" class="iconfont icon-xiaolian" />
+          </el-popover>
         </li>
         <li title="发送文件">
           <i class="el-icon-folder-opened" />
@@ -34,6 +41,9 @@
             size="medium"
             resize="none"
             ref="messageInput"
+            id="message-input"
+            style="font-size: 16px"
+            @blur="saveBlur"
             @keyup.enter.native="listenSendMessage"
             v-model="message">
         </el-input>
@@ -47,21 +57,60 @@
 
 <script>
 import {mapState} from "vuex";
+import EmojiPicker from "./emojiPicker";
 
 export default {
   name: "messageInput",
+  components: {
+    EmojiPicker
+  },
   data() {
     return {
-      message: ''
+      emojiVisible: false,
+      message: '',
+      messageBlurIndex: 0,
     }
   },
   computed: {
     ...mapState(['user', 'chat']),
   },
   methods: {
+    // 记录光标位置
+    saveBlur(e) {
+      this.messageBlurIndex = e.srcElement.selectionStart
+    },
+    chooseEmoji(emoji) {
+      this.emojiVisible = false
+      // 光标位置插入表情
+      if(this.message.length === this.messageBlurIndex) {
+        this.message += emoji
+      } else {
+        // 将表情符号插入到光标位置
+        let index = this.messageBlurIndex
+        let msg = this.message
+        this.message = msg.slice(0, index) + emoji + msg.slice(index)
+      }
+      // 表情占2个长度
+      this.messageBlurIndex = this.messageBlurIndex + 2
+
+      // 光标自动移到指定位置
+      this.$nextTick(() => {
+        this.$refs.messageInput.focus()
+        if(this.message.length !== this.messageBlurIndex) {
+          // 根据id查找
+          const area = document.getElementById('message-input')
+          // 如果俩参数一样，则光标指定到下标的位置，否则光标选中指定下标的文字
+          area.setSelectionRange(this.messageBlurIndex, this.messageBlurIndex);
+        }
+      })
+    },
     // 清空输入框
     clear() {
       this.message = ''
+      this.$nextTick(() => {
+        // 输入框获取焦点
+        this.$refs.messageInput.focus()
+      })
     },
     // 快捷键发送
     listenSendMessage (e) {
@@ -100,10 +149,6 @@ export default {
       immediate: true,
       handler(value) {
         this.clear()
-        this.$nextTick(() => {
-          // 输入框获取焦点
-          this.$refs.messageInput.focus()
-        })
       }
     }
   }
@@ -112,7 +157,7 @@ export default {
 
 <style lang="less" scoped>
   //组件高度
-  @input-height: 150px;
+  @input-height: 155px;
 
   #input-main {
     height: @input-height;
@@ -137,9 +182,9 @@ export default {
     }
     .left-icons li {
       .icon-xiaolian {
-        transform: scale(1.2);
+        font-size: 18px;
         position: relative;
-        top: -2px;
+        top:  -1px;
       }
       margin-right: 15px;
     }
@@ -162,10 +207,11 @@ export default {
       text-align: center;
       background: #E9E9E9;
       border-radius: 4px;
+      font-size: 14px;
       cursor: pointer;
       position: absolute;
       right: 20px;
-      bottom: 10px;
+      bottom: 6px;
       a {
         text-decoration: none;
         color: #07C160;
