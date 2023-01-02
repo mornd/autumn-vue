@@ -1,8 +1,31 @@
 <template>
-  <div class="main">
+  <div id="aside-bar-main">
     <!-- 我的头像 -->
     <div class="avatar-container">
-      <img class="avatar" :src="user.avatar | avatar">
+      <el-popover
+          placement="right-start"
+          width="200"
+          v-model="tipVisible"
+          trigger="click">
+        <div>
+          <div class="tip-wrap">
+            <img @click="changeAvatar" :src="user.avatar | avatar" width="60" height="60">
+            <div>
+              <!-- 昵称 -->
+              <span style="font-weight: bolder; color: #000"> {{ user.realName }} </span>
+              <!-- 性别图标 -->
+              <i
+                  v-if="user.gender == gender.male || user.gender == gender.female"
+                  :class="user.gender == gender.male ? 'fa fa-male' : 'fa fa-female'"
+                  :style="{color: user.gender == gender.male ? '#409EFF' : 'red', marginLeft: '5px'}" />
+              <br>
+              <span>账号：</span><span>{{ user.loginName }}</span>
+            </div>
+          </div>
+          <div class="tip-send" @click="sendSelf">发消息</div>
+        </div>
+        <img class="avatar" slot="reference" :src="user.avatar | avatar">
+      </el-popover>
     </div>
 
     <!-- 工具栏 -->
@@ -29,28 +52,80 @@
         <i class="el-icon-more-outline" />
       </li>
     </ul>
+
+    <!--头像选择-->
+    <el-dialog
+        title="更换头像"
+        :visible.sync="avatarVisible">
+      <avatar-picker
+          :avatarUrl="user.avatar"
+          @uploadSuccess="closePicker" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import {mapState} from "vuex";
 import {getBadge} from "@/utils/chatUtil";
+import { gender } from '@/constants/systemConsts'
+import avatarPicker from '@/components/frame/info/avatarPicker'
 
 export default {
   name: "asideBar",
+  components: {
+    avatarPicker
+  },
   data() {
     return {
-      getBadge
+      getBadge,
+      gender,
+      tipVisible: false,
+      avatarVisible: false,
     }
   },
   methods: {
     // 点击跳转右侧页面
     to(name) {
       this.chat.asideBarActive = name
+    },
+    // 更换头像
+    changeAvatar() {
+      this.avatarVisible = true
+    },
+    closePicker() {
+      this.avatarVisible = false
+    },
+    // 给自己发消息
+    sendSelf() {
+      this.tipVisible = false
+      const chat = this.chat
+      if(chat.selectedUser !== null && chat.selectedUser.id === this.user.id) {
+        return
+      }
+      let chatExist = false
+      for (let i = 0; i< chat.recentUsers.length; i++) {
+        if(this.user.id === chat.recentUsers[i].id) {
+          if(!chat.recentUsers[i].lastDate) chat.recentUsers[i].lastDate = new Date()
+          this.$store.commit('CHAT_TO_FIRST_CHOOSE', chat.recentUsers[i])
+          chatExist = true
+          break
+        }
+      }
+      if(!chatExist) {
+        // 不存在则去所有用户中查找
+        for(let i = 0; i < chat.allFriends.length; i++) {
+          if(this.user.id === chat.allFriends[i].id) {
+            if(!chat.allFriends[i].lastDate) chat.allFriends[i].lastDate = new Date()
+            this.$store.commit('CHAT_TO_FIRST_CHOOSE', chat.allFriends[i])
+            break
+          }
+        }
+      }
     }
   },
   computed: {
     ...mapState(['user', 'chat']),
+    //  获取未读消息的总数
     getUnread() {
       let count = 0
       let arr = this.chat.recentUsers
@@ -71,7 +146,7 @@ export default {
   // 头像尺寸
   @avatar-size: 35px;
 
-  .main {
+  #aside-bar-main {
     overflow: hidden;
     height: 100%;
     width: 54px;
@@ -90,6 +165,7 @@ export default {
         cursor: pointer;
       }
     }
+
     ul {
       margin-top: 12px;
     }
@@ -112,10 +188,45 @@ export default {
     // 底部工具栏
     .bottom-tool {
       position: absolute;
-      left: 19px;
+      left: 17px;
       bottom: 5px;
     }
   }
+
+  // 个人信息 tips
+  .tip-wrap {
+    display: flex;
+    justify-content: left;
+    > img {
+      border-radius: 5px;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+    > div {
+      margin-left: 12px;
+      line-height: 30px;
+      color: grey;
+    }
+  }
+
+  // 发信息按钮
+  .tip-send {
+    background: #07C160;
+    text-align: center;
+    color: #FFF;
+    width: 110px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 5px;
+    margin: 10px auto;
+    cursor: pointer;
+    position: relative;
+    top: 5px;
+    &:hover {
+      background-color: #38CD7F;
+    }
+  }
+
   // 当前激活选项
   .active {
     color: #07C160;

@@ -57,11 +57,11 @@ export default {
   },
   // 设置用户到第一行
   CHAT_TO_FIRST(state, user) {
-    toFirst(state.chat.recentUsers, user)
+    toFirst(user)
   },
   //  设置聊天用户到第一行并选中
   CHAT_TO_FIRST_CHOOSE(state, user) {
-    toFirst(state.chat.recentUsers, user)
+    toFirst(user)
     state.chat.selectedUser = user
     state.chat.asideBarActive = 'chat'
   },

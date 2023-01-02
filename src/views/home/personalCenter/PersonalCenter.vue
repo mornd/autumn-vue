@@ -105,13 +105,10 @@
     <el-dialog
       title="更换头像"
       :visible.sync="avatarVisible"
-      :width="dialogWidth"
-    >
-      <avatar-pincker
+      :width="dialogWidth">
+      <avatar-picker
         :avatarUrl="user.avatar"
-        @uploadSuccess="closePincker"
-      >
-      </avatar-pincker>
+        @uploadSuccess="closePicker" />
     </el-dialog>
   </div>
 </template>
@@ -120,14 +117,14 @@
   import ChangePassword from './ChangePassword'
   import myLoginRecords from './myLoginRecords'
   //头像选择
-  import avatarPincker from './avatarPicker'
+  import avatarPicker from '@/components/frame/info/avatarPicker'
   import { mapGetters, mapState } from 'vuex'
   import { birthdayToAge } from '@/utils/objUtil'
   import { gender } from '@/constants/systemConsts'
 
   export default {
     name: "PersonalCenter",
-    components: {ChangePassword, ChangeInfo, avatarPincker, myLoginRecords},
+    components: {ChangePassword, ChangeInfo, avatarPicker, myLoginRecords},
     data() {
       return {
         rightInfo: 'info',
@@ -151,7 +148,7 @@
         this.avatarVisible = true
       },
       //关闭窗口
-      closePincker() {
+      closePicker() {
         this.avatarVisible = false
       },
       //修改dialog宽度

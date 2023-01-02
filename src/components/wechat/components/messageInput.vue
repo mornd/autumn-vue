@@ -212,13 +212,13 @@ export default {
       position: absolute;
       right: 20px;
       bottom: 6px;
+      &:hover {
+        background: #D2D2D2;
+      }
       a {
         text-decoration: none;
         color: #07C160;
       }
-    }
-    .send:hover {
-      background: #D2D2D2;
     }
   }
 

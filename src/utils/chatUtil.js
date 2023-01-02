@@ -1,3 +1,4 @@
+import store from '@/store'
 
 /**
  * 格式化未读消息红点显示的内容
@@ -13,7 +14,9 @@ export const getBadge = (value) => {
  * @param list 列表
  * @param user 用户
  */
-export const toFirst = (list, user) => {
+export const toFirst = (user) => {
+  let list = store.state.chat.recentUsers
+  console.log(list)
   let exists = undefined
   for (let i = 0; i < list.length; i++) {
     if(user.id === list[i].id) {

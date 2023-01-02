@@ -85,6 +85,7 @@
           label="性别">
           <template #default="scope">
             <i
+              v-if="scope.row.gender == gender.male || scope.row.gender == gender.female"
               :class="scope.row.gender == gender.male ? 'el-icon-male' : 'el-icon-female'"
               :title="scope.row.gender == gender.male ? '男' : '女'"
               :style="{color: scope.row.gender == gender.male ? '#409EFF' : 'red'}"
