@@ -4,7 +4,7 @@
          :class="selectStyle"
          @click="selectUser(chatUser)">
       <div class="avatar-container">
-        <el-badge :value="chatUser.unread | getBadge" :hidden="!chatUser.unread">
+        <el-badge :value="getBadge(chatUser.unread)" :hidden="!chatUser.unread">
           <img class="avatar" :src="chatUser.avatar | avatar" />
         </el-badge>
       </div>
@@ -22,13 +22,15 @@
 <script>
 import {mapState} from "vuex";
 import { chatDateFormatter } from "@/utils/dateUtil";
+import {getBadge} from "@/utils/chatUtil";
 
 
 export default {
   name: "userListBlock",
   data() {
     return {
-      chatDateFormatter
+      chatDateFormatter,
+      getBadge
     }
   },
   methods: {
@@ -60,12 +62,6 @@ export default {
       type: Object,
       default: () => {},
       require: true,
-    }
-  },
-  filters: {
-    // 格式化红点
-    getBadge(value) {
-      return value ? (value < 100) ? value : '99+' : value
     }
   }
 }

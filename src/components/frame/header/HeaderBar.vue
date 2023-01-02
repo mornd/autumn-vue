@@ -16,7 +16,7 @@
         <i :class="fullscreen ? 'el-icon-close' : 'el-icon-full-screen'"></i>
       </li>
       <li title="在线聊天" @click="toChat" @mouseover="addActive($event)" @mouseout="removeActive($event)">
-        <el-badge :value="getUnread | chatBadge" :hidden="$route.path === '/wechat' || getUnread <= 0">
+        <el-badge :value="getBadge(getUnread)" :hidden="$route.path === '/wechat' || getUnread <= 0">
           <i class="el-icon-chat-dot-round" />
         </el-badge>
       </li>
@@ -93,6 +93,7 @@
   import NowDate from '@/components/gadgets/NowDate'
   import weather_plugin from './WeatherPlugin'
   import { defaultAvatar, errorAvatar } from "@/constants/systemConsts";
+  import {getBadge} from "@/utils/chatUtil";
 
   export default {
     name: "HeaderBar",
@@ -106,6 +107,7 @@
         defaultAvatar,
         //图片路径错误显示的图片
         errorAvatar,
+        getBadge
       }
     },
     mounted() {
@@ -120,6 +122,7 @@
       //获取当前登录用户信息
       ...mapState(['user', 'isCollapse', 'theme', 'chat']),
       ...mapGetters(['loginName']),
+      // 获取chat未读消息总数
       getUnread() {
         let count = 0
         let arr = this.chat.recentUsers
@@ -218,12 +221,6 @@
       },
       removeActive($event) {
         $event.currentTarget.style.borderBottom = '';
-      }
-    },
-    filters: {
-      // 格式化红点
-      chatBadge(value) {
-        return value ? (value < 100) ? value : '99+' : value
       }
     }
   }

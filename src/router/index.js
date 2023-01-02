@@ -31,8 +31,8 @@ const routes = [
   },
   {
     path: '/fullwechat',
-    name: '在线聊天',
-    meta: {title: '在线聊天'},
+    name: '全屏在线聊天',
+    meta: {title: '全屏在线聊天'},
     component: () => import('@/components/wechat/index'),
   },
   {

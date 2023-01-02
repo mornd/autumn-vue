@@ -16,6 +16,8 @@
       </div>
     </div>
 
+    <p v-if="filterResult" id="empty-txt">暂无结果</p>
+
     <div class="user-list" v-show="chat.asideBarActive === 'chat'" ref="scrollElement">
         <ul>
           <li v-for="item in chat.recentUsers" :key="item.id">
@@ -69,7 +71,25 @@ export default {
     },
   },
   computed: {
-    ...mapState(['user', 'chat'])
+    ...mapState(['user', 'chat']),
+    // 用户列表搜索为空展示提示
+    filterResult() {
+      let result = undefined
+      if(this.chat.userSearch.trim() === '') {
+        result = false
+      } else {
+        if(this.chat.asideBarActive === 'chat') {
+          result = this.chat.recentUsers.every(item => {
+            return !this.filterUser(item)
+          })
+        } else if(this.chat.asideBarActive === 'users') {
+          result = this.chat.allFriends.every(item => {
+            return !this.filterUser(item)
+          })
+        }
+      }
+      return result
+    },
   },
   watch: {
     // 滚动条需要移至最顶部
@@ -128,6 +148,14 @@ export default {
           background: #DCDADA;
         }
       }
+    }
+
+    // 搜索为空展示的提示
+    #empty-txt {
+      text-align: center;
+      font-size: 12px;
+      color: grey;
+      margin-top: 10px;
     }
 
     // 好友列表

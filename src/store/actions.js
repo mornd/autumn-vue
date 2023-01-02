@@ -3,8 +3,8 @@ import api from "@/utils/api"
 import {getFormatMenus} from "@/utils/menuUtil"
 import { removeToken } from '@/utils/tokenUtil'
 import { Notification } from 'element-ui';
+import { Message } from 'element-ui';
 import { getToken } from '@/utils/tokenUtil'
-import Vue from 'vue'
 
 import SockJS from 'sockjs-client'
 import Stomp from 'stompjs'
@@ -143,54 +143,58 @@ export default {
       //  订阅消息频道，这里的 /user 前缀是固定的
       state.stomp.subscribe('/user/queue/chat', message => {
         let receiveMessage = JSON.parse(message.body)
-        const chat = state.chat
+        if(receiveMessage.success) {
+          const chat = state.chat
 
-        // 聊天列表是否已经聊过天
-        if(chat.selectedUser && chat.selectedUser.loginName === receiveMessage.from) {
-          chat.selectedUser.lastDate = receiveMessage.date
-          chat.selectedUser.lastMessage = receiveMessage.content
-          api.putRequest(`/chat/read/${receiveMessage.from}`).then(res => {})
-        } else {
-          Notification.info({
-            title: `${receiveMessage.fromName}:`,
-            dangerouslyUseHTMLString: true,
-            message: receiveMessage.content.length > 30 ? `${receiveMessage.content.substr(0, 30)}...` : receiveMessage.content,
-          })
-          let chatExist = false
-          for (let i = 0; i< chat.recentUsers.length; i++) {
-            if(receiveMessage.from === chat.recentUsers[i].loginName) {
-              if(chat.recentUsers[i].unread > 0) {
-                // 设置未读消息个数
-                chat.recentUsers[i].unread++
-              } else {
-                chat.recentUsers[i].unread = 1
-              }
-              chat.recentUsers[i].lastDate = receiveMessage.date
-              chat.recentUsers[i].lastMessage = receiveMessage.content
-              commit('CHAT_TO_FIRST', chat.recentUsers[i])
-              chatExist = true
-              break
-            }
-          }
-          if(!chatExist) {
-            // 不存在则去所有用户中查找
-            for(let i = 0; i < chat.allFriends.length; i++) {
-              if(receiveMessage.from === chat.allFriends[i].loginName) {
-                chat.allFriends[i].unread = 1
-                chat.allFriends[i].lastDate = receiveMessage.date
-                chat.allFriends[i].lastMessage = receiveMessage.content
-                commit('CHAT_TO_FIRST', chat.allFriends[i])
+          // 聊天列表是否已经聊过天
+          if(chat.selectedUser && chat.selectedUser.loginName === receiveMessage.from) {
+            chat.selectedUser.lastDate = receiveMessage.date
+            chat.selectedUser.lastMessage = receiveMessage.content
+            api.putRequest(`/chat/read/${receiveMessage.from}`).then(res => {})
+          } else {
+            Notification.info({
+              title: `${receiveMessage.fromName}:`,
+              dangerouslyUseHTMLString: true,
+              message: receiveMessage.content.length > 30 ? `${receiveMessage.content.substr(0, 30)}...` : receiveMessage.content,
+            })
+            let chatExist = false
+            for (let i = 0; i< chat.recentUsers.length; i++) {
+              if(receiveMessage.from === chat.recentUsers[i].loginName) {
+                if(chat.recentUsers[i].unread > 0) {
+                  // 设置未读消息个数
+                  chat.recentUsers[i].unread++
+                } else {
+                  chat.recentUsers[i].unread = 1
+                }
+                chat.recentUsers[i].lastDate = receiveMessage.date
+                chat.recentUsers[i].lastMessage = receiveMessage.content
+                commit('CHAT_TO_FIRST', chat.recentUsers[i])
+                chatExist = true
                 break
               }
             }
+            if(!chatExist) {
+              // 不存在则去所有用户中查找
+              for(let i = 0; i < chat.allFriends.length; i++) {
+                if(receiveMessage.from === chat.allFriends[i].loginName) {
+                  chat.allFriends[i].unread = 1
+                  chat.allFriends[i].lastDate = receiveMessage.date
+                  chat.allFriends[i].lastMessage = receiveMessage.content
+                  commit('CHAT_TO_FIRST', chat.allFriends[i])
+                  break
+                }
+              }
+            }
           }
+          receiveMessage.self = false
+          const sessionKey = `${state.user.loginName}#${receiveMessage.from}`
+          if(!chat.session[sessionKey]) {
+            chat.session[sessionKey] = []
+          }
+          chat.session[sessionKey].push(receiveMessage)
+        } else {
+          Message.error('消息发送失败，' + receiveMessage.content)
         }
-        receiveMessage.self = false
-        const sessionKey = `${state.user.loginName}#${receiveMessage.from}`
-        if(!chat.session[sessionKey]) {
-          chat.session[sessionKey] = []
-        }
-        chat.session[sessionKey].push(receiveMessage)
       })
     }, error => {
       console.log(error);

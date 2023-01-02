@@ -1,32 +1,32 @@
 <template>
   <div class="main">
     <!-- 我的头像 -->
-    <div class="avatar-container" :title="user.loginName">
+    <div class="avatar-container">
       <img class="avatar" :src="user.avatar | avatar">
     </div>
 
     <!-- 工具栏 -->
     <ul>
       <li title="聊天" @click="to('chat')">
-        <el-badge :value="getUnread | getBadge" :hidden="getUnread <= 0">
-          <i :class="chat.asideBarActive === 'chat' ? 'fa fa-comment active' : 'fa fa-comment-o'"></i>
+        <el-badge :value="getBadge(getUnread)" :hidden="getUnread <= 0">
+          <i :class="chat.asideBarActive === 'chat' ? 'fa fa-comment active' : 'fa fa-comment-o'" />
         </el-badge>
       </li>
       <li title="通讯录" @click="to('users')">
-        <i :class="chat.asideBarActive === 'users' ? 'fa fa-user active' : 'fa fa-user-o'"></i>
+        <i :class="chat.asideBarActive === 'users' ? 'fa fa-user active' : 'fa fa-user-o'" />
       </li>
       <li>
-        <i title="文件" class="el-icon-folder-opened"></i>
+        <i title="文件" class="el-icon-folder-opened" />
       </li>
     </ul>
 
     <!-- 底部 -->
     <ul class="bottom-tool">
-      <li title="设置">
-        <i class="fa fa-cog"></i>
+      <li title="手机">
+        <i class="el-icon-mobile" />
       </li>
       <li title="更多">
-        <i class="fa fa-reorder"></i>
+        <i class="el-icon-more-outline" />
       </li>
     </ul>
   </div>
@@ -34,9 +34,15 @@
 
 <script>
 import {mapState} from "vuex";
+import {getBadge} from "@/utils/chatUtil";
 
 export default {
   name: "asideBar",
+  data() {
+    return {
+      getBadge
+    }
+  },
   methods: {
     // 点击跳转右侧页面
     to(name) {
@@ -54,12 +60,6 @@ export default {
         })
       }
       return count === 0 ? undefined : count
-    }
-  },
-  filters: {
-    // 格式化红点
-    getBadge(value) {
-      return value ? (value < 100) ? value : '99+' : value
     }
   }
 }

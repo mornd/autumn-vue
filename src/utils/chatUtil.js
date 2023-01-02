@@ -1,3 +1,13 @@
+
+/**
+ * 格式化未读消息红点显示的内容
+ * @param value
+ * @returns {*|string}
+ */
+export const getBadge = (value) => {
+  return value ? (value < 100) ? value : '99+' : value
+}
+
 /**
  * 设置用户到聊天列表第一行
  * @param list 列表
