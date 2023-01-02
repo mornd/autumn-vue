@@ -99,25 +99,24 @@ export default {
     sendSelf() {
       this.tipVisible = false
       const chat = this.chat
-      if(chat.selectedUser !== null && chat.selectedUser.id === this.user.id) {
-        return
-      }
-      let chatExist = false
-      for (let i = 0; i< chat.recentUsers.length; i++) {
-        if(this.user.id === chat.recentUsers[i].id) {
-          if(!chat.recentUsers[i].lastDate) chat.recentUsers[i].lastDate = new Date()
-          this.$store.commit('CHAT_TO_FIRST_CHOOSE', chat.recentUsers[i])
-          chatExist = true
-          break
-        }
-      }
-      if(!chatExist) {
-        // 不存在则去所有用户中查找
-        for(let i = 0; i < chat.allFriends.length; i++) {
-          if(this.user.id === chat.allFriends[i].id) {
-            if(!chat.allFriends[i].lastDate) chat.allFriends[i].lastDate = new Date()
-            this.$store.commit('CHAT_TO_FIRST_CHOOSE', chat.allFriends[i])
+      if(chat.selectedUser === null || chat.selectedUser.id !== this.user.id) {
+        let chatExist = false
+        for (let i = 0; i< chat.recentUsers.length; i++) {
+          if(this.user.id === chat.recentUsers[i].id) {
+            if(!chat.recentUsers[i].lastDate) chat.recentUsers[i].lastDate = new Date()
+            this.$store.commit('CHAT_TO_FIRST_CHOOSE', chat.recentUsers[i])
+            chatExist = true
             break
+          }
+        }
+        if(!chatExist) {
+          // 不存在则去所有用户中查找
+          for(let i = 0; i < chat.allFriends.length; i++) {
+            if(this.user.id === chat.allFriends[i].id) {
+              if(!chat.allFriends[i].lastDate) chat.allFriends[i].lastDate = new Date()
+              this.$store.commit('CHAT_TO_FIRST_CHOOSE', chat.allFriends[i])
+              break
+            }
           }
         }
       }
