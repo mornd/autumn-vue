@@ -155,11 +155,30 @@
                 @click="handleEdit(scope.row)" v-has-role="['super_admin']">编辑
               </el-button>
               <el-divider direction="vertical"></el-divider>
-              <el-button
-                size="mini"
-                type="text"
-                @click="handleDelete(scope.row)" v-has-permi="['system:user:delete']">删除
-              </el-button>
+              <el-dropdown size="small">
+                <el-button
+                    size="mini"
+                    type="text">更多
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item>
+                    <el-button
+                      size="mini"
+                      type="text"
+                      @click="sendMessage(scope.row)">发消息
+                    </el-button>
+                  </el-dropdown-item>
+                  <el-dropdown-item>
+                    <el-button
+                        size="mini"
+                        type="text"
+                        style="text-align: center"
+                        @click="handleDelete(scope.row)" v-has-permi="['system:user:delete']">删除
+                    </el-button>
+                  </el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+
             </div>
           </template>
         </el-table-column>
@@ -326,7 +345,7 @@
       //删除
       handleDelete(row) {
         if(row.id) {
-          this.$confirm(`是否永久删除ID为[${row.id}],登录名为[${row.loginName}]的用户信息(包括解绑其与角色之间的关系)?`, '提示', {
+          this.$confirm(`是否永久删除登录名为[${row.loginName}]，姓名为[${row.realName}]的用户信息(包括删除其与角色之间的关系)?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -346,6 +365,38 @@
       formatAge(row, column, cellValue, index) {
         return row.birthday ? birthdayToAge(row.birthday) : '未知'
       },
+      // 发消息
+      sendMessage(row) {
+        this.$router.push('/wechat')
+        const chat = this.chat
+        if(chat.selectedUser !== null && chat.selectedUser.id === row.id) {
+          return
+        }
+        let chatExist = false
+        for (let i = 0; i< chat.recentUsers.length; i++) {
+          if(row.id === chat.recentUsers[i].id) {
+            console.log(chat.recentUsers[i]);
+            if(!chat.recentUsers[i].lastDate) chat.recentUsers[i].lastDate = new Date()
+            if(chat.recentUsers[i].unread > 0) {
+              chat.recentUsers[i].unread = undefined
+              this.$api.putRequest(`/chat/read/${chat.recentUsers[i].loginName}`).then(res => {})
+            }
+            this.$store.commit('CHAT_TO_FIRST_CHOOSE', chat.recentUsers[i])
+            chatExist = true
+            break
+          }
+        }
+        if(!chatExist) {
+          // 不存在则去所有用户中查找
+          for(let i = 0; i < chat.allFriends.length; i++) {
+            if(row.id === chat.allFriends[i].id) {
+              if(!chat.allFriends[i].lastDate) chat.allFriends[i].lastDate = new Date()
+              this.$store.commit('CHAT_TO_FIRST_CHOOSE', chat.allFriends[i])
+              break
+            }
+          }
+        }
+      },
       //分页操作
       handleSizeChange(size) {
         this.crudObj.pageSize = size
@@ -357,7 +408,7 @@
       }
     },
     computed: {
-      ...mapState(['operation', 'enabledState']),
+      ...mapState(['operation', 'enabledState', 'chat']),
     },
   }
 </script>

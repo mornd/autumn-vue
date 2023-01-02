@@ -138,7 +138,7 @@ export default {
           this.chat.session[sessionKey] = []
         }
         this.chat.session[sessionKey].push(messageObj)
-        this.$store.state.stomp.send('/ws/chat', {}, JSON.stringify(messageObj))
+        this.$store.state.chat.stomp.send('/ws/chat', {}, JSON.stringify(messageObj))
       }
     }
   },

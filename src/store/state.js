@@ -47,8 +47,8 @@ export default {
   badgeFlag: true, //新增或编辑窗口小徽章显示flag
 
   // chat 聊天
-  stomp: undefined,
   chat: {
+    stomp: undefined,
     // 侧边栏按钮选中
     asideBarActive: 'chat',
     // 我的通讯录好友

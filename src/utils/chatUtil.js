@@ -16,7 +16,6 @@ export const getBadge = (value) => {
  */
 export const toFirst = (user) => {
   let list = store.state.chat.recentUsers
-  console.log(list)
   let exists = undefined
   for (let i = 0; i < list.length; i++) {
     if(user.id === list[i].id) {

@@ -137,11 +137,11 @@ export default {
 
   // 建立 webSocket 连接
   chatConnect({ state, commit }) {
-    state.stomp = Stomp.over(new SockJS('/ws/endPoint'))
+    state.chat.stomp = Stomp.over(new SockJS('/ws/endPoint'))
     const token = getToken()
-    state.stomp.connect({'Authorization': token}, success => {
+    state.chat.stomp.connect({'Authorization': token}, success => {
       //  订阅消息频道，这里的 /user 前缀是固定的
-      state.stomp.subscribe('/user/queue/chat', message => {
+      state.chat.stomp.subscribe('/user/queue/chat', message => {
         let receiveMessage = JSON.parse(message.body)
         if(receiveMessage.success) {
           const chat = state.chat
