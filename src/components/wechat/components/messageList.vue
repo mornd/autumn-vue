@@ -23,6 +23,7 @@
 <script>
 import {mapState} from 'vuex'
 import {chatDateFormatter} from "@/utils/dateUtil";
+import {getSessionCache} from "@/utils/chatUtil";
 
 export default {
   name: 'messageList',
@@ -50,6 +51,11 @@ export default {
       handler(newVal, oldVal) {
         this.session = []
         const sessionKey = `${this.user.loginName}#${newVal.loginName}`
+        // 缓存聊天消息
+        const sessionCache = getSessionCache()
+        if(sessionCache) {
+          this.chat.session = JSON.parse(sessionCache)
+        }
         if(this.chat.session[sessionKey] === undefined) {
           this.$api.getRequest(`/chat/getSession/${newVal.loginName}`).then(res => {
             if(res.success) {

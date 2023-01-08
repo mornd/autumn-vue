@@ -5,6 +5,7 @@ import { removeToken } from '@/utils/tokenUtil'
 import { Notification } from 'element-ui';
 import { Message } from 'element-ui';
 import { getToken } from '@/utils/tokenUtil'
+import { getRecentUsersCache,getAllFriendsCache } from "@/utils/chatUtil";
 
 import SockJS from 'sockjs-client'
 import Stomp from 'stompjs'
@@ -21,17 +22,23 @@ export default {
             commit('SET_USER', userInfo)
             // 处理头像
             commit('SET_USER_AVATAR', userInfo.avatar)
+
             //  建立在线聊天连接
             dispatch('chatConnect')
 
-            // 加载聊天用户
-            if(state.chat.recentUsers === null) {
+            // 加载最近聊天用户和所有用户  String 类型
+            const recentUsersCache = getRecentUsersCache()
+            if(recentUsersCache && recentUsersCache != 'null' && recentUsersCache != '[]') {
+              state.chat.recentUsers = JSON.parse(recentUsersCache)
+            } else {
               dispatch('getRecentChatUsers')
             }
-            if(state.chat.allFriends === null) {
+            const allFriendsCache = getAllFriendsCache()
+            if(allFriendsCache && allFriendsCache != 'null' && allFriendsCache != '[]') {
+              state.chat.allFriends = JSON.parse(allFriendsCache)
+            } else {
               dispatch('getAllChatFriends')
             }
-
             resolve(userInfo)
           } else {
             reject('获取用户信息失败，请重试！')
@@ -83,8 +90,6 @@ export default {
   },
   //快速退出，不请求后台，用于前端与后台会话过期处理
   tokenExpirationExit({ commit, getters }) {
-    //清空sessionStorage中的数据
-    window.sessionStorage.clear();
     //删除cookie数据
     removeToken()
     //清空vuex中的菜单信息
@@ -137,66 +142,64 @@ export default {
 
   // 建立 webSocket 连接
   chatConnect({ state, commit }) {
-    state.chat.stomp = Stomp.over(new SockJS('/ws/endPoint'))
+    const sock = new SockJS('/ws/endPoint')
+    state.chat.stomp = Stomp.over(sock)
     const token = getToken()
     state.chat.stomp.connect({'Authorization': token}, success => {
       //  订阅消息频道，这里的 /user 前缀是固定的
       state.chat.stomp.subscribe('/user/queue/chat', message => {
         let receiveMessage = JSON.parse(message.body)
-        if(receiveMessage.success) {
-          const chat = state.chat
+        if(state.user.loginName === receiveMessage.to) {
+          if(receiveMessage.success) {
+            const chat = state.chat
 
-          // 聊天列表是否已经聊过天
-          if(chat.selectedUser && chat.selectedUser.loginName === receiveMessage.from) {
-            chat.selectedUser.lastDate = receiveMessage.date
-            chat.selectedUser.lastMessage = receiveMessage.content
-            api.putRequest(`/chat/read/${receiveMessage.from}`).then(res => {})
-          } else {
-            Notification.info({
-              title: `${receiveMessage.fromName}:`,
-              dangerouslyUseHTMLString: true,
-              message: receiveMessage.content.length > 30 ? `${receiveMessage.content.substr(0, 30)}...` : receiveMessage.content,
-            })
-            let chatExist = false
-            for (let i = 0; i< chat.recentUsers.length; i++) {
-              if(receiveMessage.from === chat.recentUsers[i].loginName) {
-                if(chat.recentUsers[i].unread > 0) {
-                  // 设置未读消息个数
-                  chat.recentUsers[i].unread++
-                } else {
-                  chat.recentUsers[i].unread = 1
-                }
-                chat.recentUsers[i].lastDate = receiveMessage.date
-                chat.recentUsers[i].lastMessage = receiveMessage.content
-                commit('CHAT_TO_FIRST', chat.recentUsers[i])
-                chatExist = true
-                break
-              }
-            }
-            if(!chatExist) {
-              // 不存在则去所有用户中查找
-              for(let i = 0; i < chat.allFriends.length; i++) {
-                if(receiveMessage.from === chat.allFriends[i].loginName) {
-                  chat.allFriends[i].unread = 1
-                  chat.allFriends[i].lastDate = receiveMessage.date
-                  chat.allFriends[i].lastMessage = receiveMessage.content
-                  commit('CHAT_TO_FIRST', chat.allFriends[i])
+            // 聊天列表是否已经聊过天
+            if(chat.selectedUser && chat.selectedUser.loginName === receiveMessage.from) {
+              chat.selectedUser.lastDate = receiveMessage.date
+              chat.selectedUser.lastMessage = receiveMessage.content
+              api.putRequest(`/chat/read/${receiveMessage.from}`).then(res => {})
+            } else {
+              Notification.info({
+                title: `${receiveMessage.fromName}:`,
+                dangerouslyUseHTMLString: true,
+                message: receiveMessage.content.length > 30 ? `${receiveMessage.content.substr(0, 30)}...` : receiveMessage.content,
+              })
+              let chatExist = false
+              for (let i = 0; i< chat.recentUsers.length; i++) {
+                if(receiveMessage.from === chat.recentUsers[i].loginName) {
+                  if(chat.recentUsers[i].unread > 0) {
+                    // 设置未读消息个数
+                    chat.recentUsers[i].unread++
+                  } else {
+                    chat.recentUsers[i].unread = 1
+                  }
+                  chat.recentUsers[i].lastDate = receiveMessage.date
+                  chat.recentUsers[i].lastMessage = receiveMessage.content
+                  commit('CHAT_TO_FIRST', chat.recentUsers[i])
+                  chatExist = true
                   break
                 }
               }
+              if(!chatExist) {
+                // 不存在则去所有用户中查找
+                for(let i = 0; i < chat.allFriends.length; i++) {
+                  if(receiveMessage.from === chat.allFriends[i].loginName) {
+                    chat.allFriends[i].unread = 1
+                    chat.allFriends[i].lastDate = receiveMessage.date
+                    chat.allFriends[i].lastMessage = receiveMessage.content
+                    commit('CHAT_TO_FIRST', chat.allFriends[i])
+                    break
+                  }
+                }
+              }
             }
+          } else {
+            Message.error('消息发送失败，' + receiveMessage.content)
           }
-          receiveMessage.self = false
-          const sessionKey = `${state.user.loginName}#${receiveMessage.from}`
-          if(!chat.session[sessionKey]) {
-            chat.session[sessionKey] = []
-          }
-          chat.session[sessionKey].push(receiveMessage)
-        } else {
-          Message.error('消息发送失败，' + receiveMessage.content)
         }
       })
     }, error => {
+      //state.chat.stomp.initWebSocket()
       console.log(error);
       Notification.error('无法构建在线聊天，连接失败')
     })

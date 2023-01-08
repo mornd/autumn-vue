@@ -39,3 +39,38 @@ export const toFirst = (user) => {
   }
   list.unshift(user)
 }
+
+
+/**
+ * 浏览器缓存相关
+ */
+
+const sessionCacheKey = 'chat-session'
+const recentCacheKey = 'chat-recentUsers'
+const allFriendsCacheKey = 'chat-allFriends'
+
+export const setSessionCache = (value) => {
+  sessionStorage.setItem(sessionCacheKey, JSON.stringify(value))
+}
+
+export const getSessionCache = () => {
+  return sessionStorage.getItem(sessionCacheKey)
+}
+
+export const setRecentUsersCache = (value) => {
+  sessionStorage.setItem(recentCacheKey, JSON.stringify(value))
+}
+
+export const getRecentUsersCache = () => {
+  return sessionStorage.getItem(recentCacheKey)
+}
+
+export const setAllFriendsCache = (value) => {
+  sessionStorage.setItem(allFriendsCacheKey, JSON.stringify(value))
+}
+
+export const getAllFriendsCache = () => {
+  return sessionStorage.getItem(allFriendsCacheKey)
+}
+
+

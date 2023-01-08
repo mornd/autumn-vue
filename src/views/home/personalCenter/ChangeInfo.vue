@@ -93,7 +93,7 @@
         gender,
         rules: {
           loginName: [{required: true, validator: validateLoginName, trigger: 'blur'}],
-          realName: [{ required: true, message: '请输入姓名', trigger: 'blur' },
+          realName: [{ required: true, message: '姓名不能为空', trigger: 'blur' },
             { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }],
           gender: [{required: true, message: '请选择性别', trigger: 'blur'}],
           phone: [{required: false, validator: validatePhone, trigger: 'blur'}],

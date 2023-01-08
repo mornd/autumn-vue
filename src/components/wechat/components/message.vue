@@ -61,7 +61,8 @@ export default {
       this.$nextTick(() => {
         let scrollElem = this.$refs.scrollElement;
         if(scrollElem) {
-          scrollElem.scrollTo({ top: scrollElem .scrollHeight, behavior: 'smooth' });
+          //scrollElem.scrollTo({ top: 0, behavior: 'smooth' });
+          scrollElem.scrollTo({ top: scrollElem .scrollHeight });
         }
       });
     },

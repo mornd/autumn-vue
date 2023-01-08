@@ -350,6 +350,8 @@
       },
       // 登录成功处理
       loginSuccessHandle(res) {
+        // 先清空用户数据
+        this.$store.commit('LOGOUT')
         //存储用户token
         const tokenStr = res.data.tokenHead + res.data.token;
         this.$store.commit('SET_TOKEN', tokenStr);

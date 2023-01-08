@@ -27,13 +27,36 @@ export default {
     state.isCollapse = !state.isCollapse
     setMenuCollapse(state.isCollapse)
   },
-  //登出操作
+  //清除用户所有本地的数据
   LOGOUT: (state) => {
+    //清空浏览器 storage 中的数据
+    window.localStorage.clear()
+    window.sessionStorage.clear()
     state.menuRoutes = []
     state.user = null
     state.roles = []
     state.permissions = []
-    state.chat = {}
+    // 这里chat需要给每个属性复制默认值，否则会有问题
+    if(state.chat.stomp) {
+      // 需要先关闭之前的连接
+      state.chat.stomp.disconnect()
+    }
+    state.chat = {
+      stomp: undefined,
+      // 侧边栏按钮选中
+      asideBarActive: 'chat',
+      // 我的通讯录好友
+      allFriends: [],
+      // 最近聊天好友
+      recentUsers: [],
+      // 当前选中的聊天好友
+      selectedUser: null,
+      // 会话信息
+      session: {},
+      // 用户列表搜索关键字
+      userSearch: '',
+      userListScrollTop: true
+    }
   },
   //更换头像
   SET_USER_AVATAR(state, url) {

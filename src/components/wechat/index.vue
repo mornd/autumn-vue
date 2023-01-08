@@ -94,7 +94,7 @@ export default {
     margin: 0 auto;
     border: 2px solid #E7E7E7;
     border-radius: 2px;
-    //box-shadow: 0 2px 2px rgba(0,0,0,0.1);
+    //box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.1);
 
     .message {
       width: 100%;

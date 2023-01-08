@@ -101,7 +101,7 @@
         <el-table-column
           prop="phone"
           align="center"
-          label="电话">
+          label="手机号码">
           <template #default="scope">
             <span>{{scope.row.phone ? scope.row.phone : '空'}}</span>
           </template>
@@ -155,25 +155,23 @@
                 @click="handleEdit(scope.row)" v-has-role="['super_admin']">编辑
               </el-button>
               <el-divider direction="vertical"></el-divider>
-              <el-dropdown size="small">
-                <el-button
-                    size="mini"
-                    type="text">更多
-                </el-button>
+              <el-dropdown :hide-on-click="false" size="small">
+                <el-button size="mini" type="text">更多</el-button>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item>
                     <el-button
                       size="mini"
                       type="text"
+                      style="width: 100%"
                       @click="sendMessage(scope.row)">发消息
                     </el-button>
                   </el-dropdown-item>
-                  <el-dropdown-item>
+                  <el-dropdown-item v-has-permi="['system:user:delete']">
                     <el-button
                         size="mini"
                         type="text"
-                        style="text-align: center"
-                        @click="handleDelete(scope.row)" v-has-permi="['system:user:delete']">删除
+                        style="width: 100%"
+                        @click="handleDelete(scope.row)">删除
                     </el-button>
                   </el-dropdown-item>
                 </el-dropdown-menu>
@@ -369,7 +367,7 @@
       sendMessage(row) {
         this.$router.push('/wechat')
         const chat = this.chat
-        if(chat.selectedUser === null || chat.selectedUser.id !== row.id) {
+        if(chat.selectedUser == null || chat.selectedUser.id !== row.id) {
           let chatExist = false
           for (let i = 0; i< chat.recentUsers.length; i++) {
             if(row.id === chat.recentUsers[i].id) {

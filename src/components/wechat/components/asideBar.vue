@@ -49,7 +49,13 @@
         <i class="el-icon-mobile" />
       </li>
       <li title="更多">
-        <i class="el-icon-more-outline" />
+        <el-dropdown trigger="click" @command="handleMoreCommand" placement="bottom-start">
+          <i class="el-icon-more-outline" />
+          <el-dropdown-menu  slot="dropdown">
+            <el-dropdown-item command="0">刷新本地缓存</el-dropdown-item>
+            <el-dropdown-item command="1" v-has-role="['super_admin']"><span style="color: red">管理员清空所有人聊天记录</span></el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </li>
     </ul>
 
@@ -99,7 +105,7 @@ export default {
     sendSelf() {
       this.tipVisible = false
       const chat = this.chat
-      if(chat.selectedUser === null || chat.selectedUser.id !== this.user.id) {
+      if(chat.selectedUser == null || chat.selectedUser.id !== this.user.id) {
         let chatExist = false
         for (let i = 0; i< chat.recentUsers.length; i++) {
           if(this.user.id === chat.recentUsers[i].id) {
@@ -119,6 +125,31 @@ export default {
             }
           }
         }
+      }
+    },
+    handleMoreCommand(command) {
+      switch (command) {
+        case '0':
+          this.chat.recentUsers = []
+          this.chat.allFriends = []
+          this.chat.session = {}
+          this.$store.dispatch('getAllChatFriends')
+          this.$store.dispatch('getRecentChatUsers')
+          break;
+        case '1':
+          this.$confirm('确定要清空所有用户的聊天记录吗？', '系统提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.$api.deleteRequest('/chat/clear').then(res => {
+              if(res.success) {
+                this.chat.recentUsers = []
+                this.chat.session = {}
+              }
+            })
+          }).catch(() => {});
+          break
       }
     }
   },

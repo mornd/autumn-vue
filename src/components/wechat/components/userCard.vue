@@ -3,7 +3,7 @@
     <div class="main"
          :class="selectStyle"
          @click="selectUser(chatUser)">
-      <div class="avatar-container">
+      <div class="avatar-container" :title="chatUser.loginName">
         <el-badge :value="getBadge(chatUser.unread)" :hidden="!chatUser.unread">
           <img class="avatar" :src="chatUser.avatar | avatar" />
         </el-badge>
