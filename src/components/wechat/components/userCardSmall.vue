@@ -12,6 +12,7 @@
 
 <script>
 import {mapState} from "vuex";
+import {toFirstChooseById} from "@/utils/chatUtil";
 
 export default {
   name: "userCardSmall",
@@ -19,10 +20,9 @@ export default {
     // 单击事件
     selectUser(user) {
       if(this.chat.userSearch.trim() !== '') this.chat.userSearch = ''
-      user.lastDate = new Date()
       this.chat.userListScrollTop = !this.chat.userListScrollTop
       //  将点击的用户放到聊天列表的第一行
-      this.$store.commit('CHAT_TO_FIRST_CHOOSE', user)
+      toFirstChooseById(user.id)
     },
   },
   computed: {

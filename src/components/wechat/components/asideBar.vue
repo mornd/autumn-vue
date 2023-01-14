@@ -50,9 +50,9 @@
       </li>
       <li title="更多">
         <el-dropdown trigger="click" @command="handleMoreCommand" placement="bottom-start">
-          <i class="el-icon-more-outline" />
+          <i class="fa fa-reorder" />
           <el-dropdown-menu  slot="dropdown">
-            <el-dropdown-item command="0">刷新本地缓存</el-dropdown-item>
+            <el-dropdown-item command="0">清空并刷新本地会话</el-dropdown-item>
             <el-dropdown-item command="1" v-has-role="['super_admin']"><span style="color: red">管理员清空所有人聊天记录</span></el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -75,6 +75,7 @@ import {mapState} from "vuex";
 import {getBadge} from "@/utils/chatUtil";
 import { gender } from '@/constants/systemConsts'
 import avatarPicker from '@/components/frame/info/avatarPicker'
+import { toFirstChooseById, clearChatInfo } from "@/utils/chatUtil";
 
 export default {
   name: "asideBar",
@@ -101,40 +102,16 @@ export default {
     closePicker() {
       this.avatarVisible = false
     },
-    // 给自己发消息
+    // 点击头像的发消息按钮给自己发消息
     sendSelf() {
       this.tipVisible = false
-      const chat = this.chat
-      if(chat.selectedUser == null || chat.selectedUser.id !== this.user.id) {
-        let chatExist = false
-        for (let i = 0; i< chat.recentUsers.length; i++) {
-          if(this.user.id === chat.recentUsers[i].id) {
-            if(!chat.recentUsers[i].lastDate) chat.recentUsers[i].lastDate = new Date()
-            this.$store.commit('CHAT_TO_FIRST_CHOOSE', chat.recentUsers[i])
-            chatExist = true
-            break
-          }
-        }
-        if(!chatExist) {
-          // 不存在则去所有用户中查找
-          for(let i = 0; i < chat.allFriends.length; i++) {
-            if(this.user.id === chat.allFriends[i].id) {
-              if(!chat.allFriends[i].lastDate) chat.allFriends[i].lastDate = new Date()
-              this.$store.commit('CHAT_TO_FIRST_CHOOSE', chat.allFriends[i])
-              break
-            }
-          }
-        }
-      }
+      toFirstChooseById(this.user.id)
     },
     handleMoreCommand(command) {
       switch (command) {
         case '0':
-          this.chat.recentUsers = []
-          this.chat.allFriends = []
-          this.chat.session = {}
-          this.$store.dispatch('getAllChatFriends')
-          this.$store.dispatch('getRecentChatUsers')
+          clearChatInfo()
+          location.reload()
           break;
         case '1':
           this.$confirm('确定要清空所有用户的聊天记录吗？', '系统提示', {
@@ -144,8 +121,8 @@ export default {
           }).then(() => {
             this.$api.deleteRequest('/chat/clear').then(res => {
               if(res.success) {
-                this.chat.recentUsers = []
-                this.chat.session = {}
+                //clearChatInfo()
+                location.reload()
               }
             })
           }).catch(() => {});
@@ -164,6 +141,7 @@ export default {
           if(i.unread > 0) count += i.unread
         })
       }
+      // 改 undefined 为了解决显示慢的bug
       return count === 0 ? undefined : count
     }
   }

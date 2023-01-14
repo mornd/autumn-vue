@@ -5,7 +5,6 @@ import { removeToken } from '@/utils/tokenUtil'
 import { Notification } from 'element-ui';
 import { Message } from 'element-ui';
 import { getToken } from '@/utils/tokenUtil'
-import { getRecentUsersCache,getAllFriendsCache } from "@/utils/chatUtil";
 
 import SockJS from 'sockjs-client'
 import Stomp from 'stompjs'
@@ -26,17 +25,11 @@ export default {
             //  建立在线聊天连接
             dispatch('chatConnect')
 
-            // 加载最近聊天用户和所有用户  String 类型
-            const recentUsersCache = getRecentUsersCache()
-            if(recentUsersCache && recentUsersCache != 'null' && recentUsersCache != '[]') {
-              state.chat.recentUsers = JSON.parse(recentUsersCache)
-            } else {
+            // 加载最近聊天用户和所有用户
+            if(this.state.chat.recentUsers == null) {
               dispatch('getRecentChatUsers')
             }
-            const allFriendsCache = getAllFriendsCache()
-            if(allFriendsCache && allFriendsCache != 'null' && allFriendsCache != '[]') {
-              state.chat.allFriends = JSON.parse(allFriendsCache)
-            } else {
+            if(this.state.chat.allFriends == null) {
               dispatch('getAllChatFriends')
             }
             resolve(userInfo)
@@ -123,7 +116,9 @@ export default {
     })
   },
 
-  // chat
+  /**
+   * chat
+   */
   // 初始化所有聊天好友
   getAllChatFriends (context) {
     api.getRequest('/chat/allFriends').then(res => {
@@ -165,6 +160,9 @@ export default {
                 message: receiveMessage.content.length > 30 ? `${receiveMessage.content.substr(0, 30)}...` : receiveMessage.content,
               })
               let chatExist = false
+              if(!chat.recentUsers) {
+                chat.recentUsers = []
+              }
               for (let i = 0; i< chat.recentUsers.length; i++) {
                 if(receiveMessage.from === chat.recentUsers[i].loginName) {
                   if(chat.recentUsers[i].unread > 0) {
@@ -193,6 +191,13 @@ export default {
                 }
               }
             }
+            // 会话中新增一条消息
+            receiveMessage.self = false
+            const sessionKey = `${state.user.loginName}#${receiveMessage.from}`
+            if(!chat.session[sessionKey]) {
+              chat.session[sessionKey] = []
+            }
+            chat.session[sessionKey].push(receiveMessage)
           } else {
             Message.error('消息发送失败，' + receiveMessage.content)
           }

@@ -2,7 +2,9 @@ import { setToken } from '@/utils/tokenUtil'
 import { setTheme, setMenuCollapse } from '@/constants/preferenceSetting'
 import { generateAvatar } from "@/utils/userUtil";
 import { toFirst } from "@/utils/chatUtil";
+import api from "@/utils/api"
 import Vue from 'vue'
+import {toFirstChooseById} from "../utils/chatUtil";
 
 export default {
   //设置主题
@@ -46,9 +48,9 @@ export default {
       // 侧边栏按钮选中
       asideBarActive: 'chat',
       // 我的通讯录好友
-      allFriends: [],
+      allFriends: null,
       // 最近聊天好友
-      recentUsers: [],
+      recentUsers: null,
       // 当前选中的聊天好友
       selectedUser: null,
       // 会话信息
@@ -84,6 +86,13 @@ export default {
   },
   //  设置聊天用户到第一行并选中
   CHAT_TO_FIRST_CHOOSE(state, user) {
+    // 已读消息
+    if(user.unread > 0) {
+      // 这里的 user 对象需保证是 recentUsers 数组里面的
+      user.unread = undefined
+      api.putRequest(`/chat/read/${user.loginName}`).then(res => {})
+    }
+
     toFirst(user)
     state.chat.selectedUser = user
     state.chat.asideBarActive = 'chat'

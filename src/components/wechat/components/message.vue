@@ -14,7 +14,7 @@
         </ul>
 
         <!--  更多按钮 -->
-        <i class="el-icon-more more" v-if="chat.selectedUser ? user.id !== chat.selectedUser.id : false"/>
+        <i class="el-icon-more more" @click="handleMore" v-if="chat.selectedUser ? user.id !== chat.selectedUser.id : false"/>
       </div>
 
       <div class="message-list" v-if="chat.selectedUser" ref="scrollElement">
@@ -47,6 +47,13 @@ export default {
     ...mapState(['user', 'chat']),
   },
   methods: {
+    handleMore() {
+      this.$api.deleteRequest(`/chat/delete/${this.chat.selectedUser.loginName}`).then(res => {
+        if(res.success) {
+          this.$message.success('删除成功')
+        }
+      })
+    },
     // 滚动条移至最顶部
     handleScrollTop() {
       this.$nextTick(() => {
@@ -62,7 +69,7 @@ export default {
         let scrollElem = this.$refs.scrollElement;
         if(scrollElem) {
           //scrollElem.scrollTo({ top: 0, behavior: 'smooth' });
-          scrollElem.scrollTo({ top: scrollElem .scrollHeight });
+          scrollElem.scrollTo({ top: scrollElem .scrollHeight }); // 快速滑动到最底测
         }
       });
     },
@@ -74,13 +81,18 @@ export default {
       this.close()
       let routeData = this.$router.resolve({
         path: "/fullwechat",
-        query: {model: 'full'}
+        query: {model: 'full',
+          selectId: this.chat.selectedUser ? this.chat.selectedUser.id : undefined}
       })
       window.open(routeData.href, '_blank')
     },
     // 关闭窗口
     close() {
-      this.$router.go(-1)
+      if(this.model == 'full') {
+        window.close()
+      } else {
+        this.$router.go(-1)
+      }
     }
   },
   props: ['model'],

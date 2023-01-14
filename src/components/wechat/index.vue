@@ -19,6 +19,7 @@ import asideBar from "./components/asideBar";
 import userList from "./components/userList";
 import message from "./components/message";
 import {mapState} from "vuex";
+import { toFirstChooseById } from "@/utils/chatUtil"
 
 export default {
   name: "index",
@@ -32,6 +33,8 @@ export default {
       widthMax: false,
       // 全屏 === full
       model: this.$route.query.model,
+      // 选中指定id的用户
+      selectId: this.$route.query.selectId,
       modelStyle: {
         width: undefined,
         height: undefined,
@@ -44,6 +47,16 @@ export default {
     this.modelStyle = {
       width: this.widthMax ? '100%' : this.shrinkWidth,
       height: this.model === 'full' ? this.fullHeight : '100%'
+    }
+    if(this.selectId) {
+      // 将参数selectId对应的用户选中
+      toFirstChooseById(this.selectId)
+      // 清空 query 参数，否则再次刷新 wechat 页面还是会带上id
+      // 先拷贝一个一模一样的对象
+      let newQuery = JSON.parse(JSON.stringify(this.$route.query))
+      //再删除参数
+      delete newQuery.selectId
+      this.$router.replace({ query: newQuery })
     }
   },
   components: {

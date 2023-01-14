@@ -24,7 +24,6 @@ import {mapState} from "vuex";
 import { chatDateFormatter } from "@/utils/dateUtil";
 import {getBadge} from "@/utils/chatUtil";
 
-
 export default {
   name: "userListBlock",
   data() {
