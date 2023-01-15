@@ -38,3 +38,5 @@ const vue = new Vue({
 //安装less：npm install less
 //安装less-loader： npm install less-loader@7
 //导入进度条：npm install --save nprogress
+
+//右键菜单 npm install vue-contextmenujs

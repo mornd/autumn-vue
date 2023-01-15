@@ -48,11 +48,7 @@ export default {
   },
   methods: {
     handleMore() {
-      this.$api.deleteRequest(`/chat/delete/${this.chat.selectedUser.loginName}`).then(res => {
-        if(res.success) {
-          this.$message.success('删除成功')
-        }
-      })
+
     },
     // 滚动条移至最顶部
     handleScrollTop() {

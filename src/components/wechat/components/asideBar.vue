@@ -121,7 +121,7 @@ export default {
           }).then(() => {
             this.$api.deleteRequest('/chat/clear').then(res => {
               if(res.success) {
-                //clearChatInfo()
+                clearChatInfo()
                 location.reload()
               }
             })

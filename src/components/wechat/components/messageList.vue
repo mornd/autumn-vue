@@ -52,11 +52,10 @@ export default {
         this.session = []
         const sessionKey = `${this.user.loginName}#${newVal.loginName}`
         // 缓存聊天消息
-        // 暂时不缓存
-        //const sessionCache = getSessionCache()
-        // if(sessionCache) {
-        //   this.chat.session = JSON.parse(sessionCache)
-        // }
+        const sessionCache = getSessionCache()
+        if(sessionCache) {
+          this.chat.session = JSON.parse(sessionCache)
+        }
         if(this.chat.session[sessionKey] === undefined) {
           this.$api.getRequest(`/chat/getSession/${newVal.loginName}`).then(res => {
             if(res.success) {

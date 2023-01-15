@@ -2,6 +2,7 @@
   <div>
     <div class="main"
          :class="selectStyle"
+         @contextmenu.prevent="onContextmenu"
          @click="selectUser(chatUser)">
       <div class="avatar-container" :title="chatUser.loginName">
         <el-badge :value="getBadge(chatUser.unread)" :hidden="!chatUser.unread">
@@ -47,6 +48,48 @@ export default {
         this.$api.putRequest(`/chat/read/${this.chat.selectedUser.loginName}`).then(res => {})
       }
     },
+    // 右键菜单
+    onContextmenu(event) {
+      this.$contextmenu({
+        items: [
+          {
+            label: "消息免打扰",
+            onClick: () => {
+            }
+          },
+          {
+            label: "删除聊天",
+            onClick: () => {
+              this.$confirm(`确定要删除与${this.chatUser.name}的聊天吗?`, '系统提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                this.$api.deleteRequest(`/chat/delete/${this.chatUser.loginName}`).then(res => {
+                  if(res.success) {
+                    for (let i = 0; i < this.chat.recentUsers.length; i++) {
+                      if(this.chatUser.id === this.chat.recentUsers[i].id) {
+                        // 删除
+                        this.chat.recentUsers.splice(i, 1)
+                        this.chat.selectedUser = null
+                        break
+                      }
+                    }
+                    // 清空本地缓存
+                    this.$set(this.chat.session, `${this.user.loginName}#${this.chatUser.loginName}`, undefined)
+                  }
+                })
+              });
+            }
+          }
+        ],
+        event, // 鼠标事件信息
+        customClass: "contextmenu_class", // 自定义菜单 class
+        zIndex: 3, // 菜单样式 z-index
+        minWidth: 100 // 主菜单最小宽度
+      });
+      return false;
+    }
   },
   computed: {
     ...mapState(['user', 'chat']),
@@ -154,5 +197,18 @@ export default {
     white-space: nowrap;
     transform: translateY(-50%) translateX(95%);
     border: none;
+  }
+</style>
+
+<!--  右键菜单 -->
+<style>
+  /*   每一项 item */
+  .contextmenu_class .menu_item{
+
+  }
+  .contextmenu_class .menu_item__available:hover,
+  .contextmenu_class .menu_item_expand {
+    background: #E2E2E2;
+    color: #000;
   }
 </style>
