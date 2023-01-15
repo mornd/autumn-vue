@@ -5,6 +5,7 @@ import { removeToken } from '@/utils/tokenUtil'
 import { Notification } from 'element-ui';
 import { Message } from 'element-ui';
 import { getToken } from '@/utils/tokenUtil'
+import {toFirst} from "@/utils/chatUtil";
 
 import SockJS from 'sockjs-client'
 import Stomp from 'stompjs'
@@ -149,15 +150,18 @@ export default {
             const chat = state.chat
 
             // 聊天列表是否已经聊过天
-            if(chat.selectedUser && chat.selectedUser.loginName === receiveMessage.from) {
+            if(chat.selectedUser && chat.selectedUser.loginName === receiveMessage.from
+                && (window.location.pathname === '/wechat' || window.location.pathname === '/fullwechat')) {
               chat.selectedUser.lastDate = receiveMessage.date
               chat.selectedUser.lastMessage = receiveMessage.content
               api.putRequest(`/chat/read/${receiveMessage.from}`).then(res => {})
             } else {
+              const subLength = 60
               Notification.info({
                 title: `${receiveMessage.fromName}:`,
                 dangerouslyUseHTMLString: true,
-                message: receiveMessage.content.length > 30 ? `${receiveMessage.content.substr(0, 30)}...` : receiveMessage.content,
+                message: receiveMessage.content.length > subLength ? `${receiveMessage.content.substr(0, subLength)}...` : receiveMessage.content,
+                offset: 90
               })
               let chatExist = false
               if(!chat.recentUsers) {
@@ -173,7 +177,7 @@ export default {
                   }
                   chat.recentUsers[i].lastDate = receiveMessage.date
                   chat.recentUsers[i].lastMessage = receiveMessage.content
-                  commit('CHAT_TO_FIRST', chat.recentUsers[i])
+                  toFirst(chat.recentUsers[i])
                   chatExist = true
                   break
                 }
@@ -185,7 +189,7 @@ export default {
                     chat.allFriends[i].unread = 1
                     chat.allFriends[i].lastDate = receiveMessage.date
                     chat.allFriends[i].lastMessage = receiveMessage.content
-                    commit('CHAT_TO_FIRST', chat.allFriends[i])
+                    toFirst(chat.allFriends[i])
                     break
                   }
                 }
@@ -195,9 +199,15 @@ export default {
             receiveMessage.self = false
             const sessionKey = `${state.user.loginName}#${receiveMessage.from}`
             if(!chat.session[sessionKey]) {
-              chat.session[sessionKey] = []
+              // 当前不存在聊天记录，但还需要查询之前的聊天
+              api.getRequest(`/chat/getSession/${receiveMessage.from}`).then(res => {
+                if(res.success) {
+                  chat.session[sessionKey] = res.data
+                }
+              })
+            } else {
+              chat.session[sessionKey].push(receiveMessage)
             }
-            chat.session[sessionKey].push(receiveMessage)
           } else {
             Message.error('消息发送失败，' + receiveMessage.content)
           }

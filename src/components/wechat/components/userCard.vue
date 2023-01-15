@@ -23,6 +23,7 @@
 import {mapState} from "vuex";
 import { chatDateFormatter } from "@/utils/dateUtil";
 import {getBadge} from "@/utils/chatUtil";
+import {toFirstChoose} from "@/utils/chatUtil";
 
 export default {
   name: "userListBlock",
@@ -36,7 +37,7 @@ export default {
     selectUser(user) {
       if(this.chat.userSearch.trim() !== '') {
         this.chat.userSearch = ''
-        this.$store.commit('CHAT_TO_FIRST_CHOOSE', user)
+        toFirstChoose(user)
       } else {
         this.chat.selectedUser = user
       }

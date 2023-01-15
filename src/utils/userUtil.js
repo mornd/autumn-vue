@@ -5,7 +5,7 @@ import { defaultAvatar, errorAvatar } from "@/constants/systemConsts";
  */
 export const generateAvatar = (avatar) => {
   if(avatar) {
-    if(avatar.startsWith('http')) {
+    if(avatar.startsWith('http') || avatar.startsWith('/assets/')) {
       return avatar
     } else {
       // /api

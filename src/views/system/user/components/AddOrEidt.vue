@@ -243,7 +243,6 @@
         this.submitLoading = true;
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            console.log(this.form);
             if (this.currOper == this.operation.add) {
               this.$api.postRequest('/sysUser', this.form).then(res => {
                 if (res.success) {

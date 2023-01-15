@@ -73,28 +73,10 @@ export default {
   },
 
   // chat
-
   SET_ALL_CHAT_FRIENDS (state, data) {
     state.chat.allFriends = data
   },
   SET_RECENT_CHAT_USERS(state, data) {
     state.chat.recentUsers = data
-  },
-  // 设置用户到第一行
-  CHAT_TO_FIRST(state, user) {
-    toFirst(user)
-  },
-  //  设置聊天用户到第一行并选中
-  CHAT_TO_FIRST_CHOOSE(state, user) {
-    // 已读消息
-    if(user.unread > 0) {
-      // 这里的 user 对象需保证是 recentUsers 数组里面的
-      user.unread = undefined
-      api.putRequest(`/chat/read/${user.loginName}`).then(res => {})
-    }
-
-    toFirst(user)
-    state.chat.selectedUser = user
-    state.chat.asideBarActive = 'chat'
   },
 }

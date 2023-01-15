@@ -1,4 +1,5 @@
 import store from '@/store'
+import api from "@/utils/api"
 
 /**
  * 格式化未读消息红点显示的内容
@@ -16,30 +17,11 @@ export const getBadge = (value) => {
  */
 export const toFirst = (user) => {
   let list = store.state.chat.recentUsers
-  let exists = undefined
   for (let i = 0; i < list.length; i++) {
     if(user.id === list[i].id) {
-      exists = list[i]
       // 删除
       list.splice(i, 1)
       break
-    }
-  }
-  if(exists) {
-    if(user.lastMessage) {
-      exists.lastMessage = user.lastMessage
-    }
-    if(user.lastDate) {
-      exists.lastDate = user.lastDate
-    }
-    // exists.unread = 0 时，badge 隐藏会很慢，改为 undefined 会快些
-    if(user.unread <= 0) {
-      exists.unread = undefined
-    }
-    user = exists
-  } else {
-    if(!user.lastDate) {
-      user.lastDate = new Date()
     }
   }
   list.unshift(user)
@@ -54,30 +36,52 @@ export const toFirstChooseById = (id) => {
   store.state.chat.asideBarActive = 'chat'
   // 当前选择的聊天不是自己
   if(chat.selectedUser == null || chat.selectedUser.id !== id) {
-    let chatExist = false
     if(!chat.recentUsers) {
       chat.recentUsers = []
     }
+    let exists = false
     // 找最近聊天用户列表
     for (let i = 0; i< chat.recentUsers.length; i++) {
       if(id === chat.recentUsers[i].id) {
         // 将自己放置第一行并选中
-        store.commit('CHAT_TO_FIRST_CHOOSE', chat.recentUsers[i])
-        chatExist = true
+        toFirstChoose(chat.recentUsers[i])
+        exists = true
         break
       }
     }
-    if(!chatExist) {
+    if(!exists) {
       // 不存在则去所有用户中查找
       for(let i = 0; i < chat.allFriends.length; i++) {
         if(id === chat.allFriends[i].id) {
           if(!chat.allFriends[i].lastDate) chat.allFriends[i].lastDate = new Date()
-          store.commit('CHAT_TO_FIRST_CHOOSE', chat.allFriends[i])
+          toFirstChoose(chat.allFriends[i])
           break
         }
       }
     }
+  } else {
+    if(chat.selectedUser.unread > 0) {
+      chat.selectedUser.unread = undefined
+      api.putRequest(`/chat/read/${chat.selectedUser.loginName}`).then(res => {})
+    }
   }
+}
+
+/**
+ * 根据聊天的对象将该用户聊天放置第一行，并选择
+ * @param user
+ */
+export const toFirstChoose = (user) => {
+  // 已读消息
+  if(user.unread > 0) {
+    // 这里的 user 对象需保证是 recentUsers 数组里面的
+    user.unread = undefined
+    api.putRequest(`/chat/read/${user.loginName}`).then(res => {})
+  }
+
+  toFirst(user)
+  store.state.chat.selectedUser = user
+  store.state.chat.asideBarActive = 'chat'
 }
 
 /**
