@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="crud-search">
+    <div class="crud-search c-center-between">
       <el-form ref="form" inline :model="crudObj" label-width="70px" label-position="left" size="mini">
         <el-form-item label="登录名">
           <el-input
@@ -9,6 +9,7 @@
             prefix-icon="el-icon-search"
             maxlength="10"
             type="text"
+            placeholder="点击输入登录名"
           />
         </el-form-item>
         <el-form-item label="姓名">
@@ -18,6 +19,7 @@
             prefix-icon="el-icon-search"
             maxlength="10"
             type="text"
+            placeholder="点击输入姓名"
           />
         </el-form-item>
         <el-form-item label="状态">
@@ -29,6 +31,9 @@
           <el-button @click="reset" icon="el-icon-refresh-right" type="primary">重置</el-button>
         </el-form-item>
       </el-form>
+      <div>
+        <el-button @click="exportExcel" icon="el-icon-download" type="success" size="mini">导出</el-button>
+      </div>
     </div>
 
     <div class="crud-content">
@@ -209,6 +214,7 @@
   import { birthdayToAge } from '@/utils/objUtil'
   import { defaultAvatar } from "@/constants/systemConsts";
   import { generateAvatar } from "@/utils/userUtil";
+  import { exportExcel } from "@/utils/excelUtil";
 
   export default {
     name: "UserList",
@@ -270,6 +276,10 @@
         this.crudObj.currentPage = 1
         this.crudObj.pageSize = 10
         this.getTable()
+      },
+      // 导出 excel
+      exportExcel() {
+        exportExcel('/sysUser/export', {...this.crudObj}, '系统用户')
       },
       //用户列表头像大图预览
       avatarList(src) {

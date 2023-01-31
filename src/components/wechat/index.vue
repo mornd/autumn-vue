@@ -58,6 +58,11 @@ export default {
       delete newQuery.selectId
       this.$router.replace({ query: newQuery })
     }
+
+    if(this.chat.selectedUser && this.chat.selectedUser.unread > 0) {
+      this.chat.selectedUser.unread = undefined
+      this.$api.putRequest(`/chat/read/${this.chat.selectedUser.loginName}`).then(res => {})
+    }
   },
   components: {
     asideBar,
@@ -83,7 +88,7 @@ export default {
   },
   computed: {
     ...mapState(['chat'])
-  },
+  }
 }
 
 /*

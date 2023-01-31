@@ -9,6 +9,7 @@
             prefix-icon="el-icon-search"
             maxlength="10"
             type="text"
+            placeholder="点击输入名称"
           />
         </el-form-item>
         <el-form-item>

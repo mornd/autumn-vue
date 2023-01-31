@@ -9,6 +9,7 @@
             prefix-icon="el-icon-search"
             maxlength="10"
             type="text"
+            placeholder="点击输入名称"
           />
         </el-form-item>
         <el-form-item label="编码">
@@ -18,6 +19,7 @@
             prefix-icon="el-icon-search"
             maxlength="10"
             type="text"
+            placeholder="点击输入编码"
           />
         </el-form-item>
         <el-form-item label="状态">
@@ -33,7 +35,6 @@
 
     <div class="crud-content">
       <el-button @click="handleAdd" v-has-permi="['system:role:add']" type="primary" size="mini" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
-
       <el-table
         size="small"
         :data="tableData"

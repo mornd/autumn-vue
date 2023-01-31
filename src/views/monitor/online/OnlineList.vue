@@ -9,6 +9,7 @@
               prefix-icon="el-icon-search"
               maxlength="100"
               type="text"
+              placeholder="点击输入登录名"
           />
         </el-form-item>
         <el-form-item label="姓名">
@@ -18,6 +19,7 @@
               prefix-icon="el-icon-search"
               maxlength="100"
               type="text"
+              placeholder="点击输入姓名"
           />
         </el-form-item>
         <el-form-item>

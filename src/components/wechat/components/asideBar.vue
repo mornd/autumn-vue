@@ -50,7 +50,9 @@
       </li>
       <li title="更多">
         <el-dropdown trigger="click" @command="handleMoreCommand" placement="bottom-start">
-          <i class="fa fa-reorder" />
+          <div>
+            <i class="fa fa-reorder" />
+          </div>
           <el-dropdown-menu  slot="dropdown">
             <el-dropdown-item command="0">清空并刷新本地会话</el-dropdown-item>
             <el-dropdown-item command="1" v-has-role="['super_admin']"><span style="color: red">管理员清空所有人聊天记录</span></el-dropdown-item>

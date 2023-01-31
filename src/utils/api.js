@@ -151,6 +151,15 @@ export default {
       url,
       params
     })
+  },
+
+  download: (url, params) => {
+    return service({
+      method: 'post',
+      url,
+      params,
+      responseType: 'blob'
+    })
   }
 };
 
