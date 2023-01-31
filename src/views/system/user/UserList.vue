@@ -32,7 +32,7 @@
         </el-form-item>
       </el-form>
       <div>
-        <el-button @click="exportExcel" icon="el-icon-download" type="success" size="mini">导出</el-button>
+        <el-button @click="exportExcel" :loading="exportLoading" icon="el-icon-download" type="success" size="mini">{{ exportLoadingTxt }}</el-button>
       </div>
     </div>
 
@@ -214,7 +214,7 @@
   import { birthdayToAge } from '@/utils/objUtil'
   import { defaultAvatar } from "@/constants/systemConsts";
   import { generateAvatar } from "@/utils/userUtil";
-  import { exportExcel } from "@/utils/excelUtil";
+  import { handleExcel } from "@/utils/excelUtil";
 
   export default {
     name: "UserList",
@@ -231,6 +231,8 @@
         loading: false,
         enabledColor: '#13ce66',
         disabledColor: '#ff4949',
+        exportLoading: false,
+        exportLoadingTxt: '导出',
         transData: {
           dialogVisible: false,
         },
@@ -279,7 +281,13 @@
       },
       // 导出 excel
       exportExcel() {
-        exportExcel('/sysUser/export', {...this.crudObj}, '系统用户')
+        this.exportLoading = true
+        this.exportLoadingTxt = '导出中'
+        this.$api.download('/sysUser/export', {...this.crudObj}).then(res => {
+          handleExcel(res, "系统用户")
+          this.exportLoading = false
+          this.exportLoadingTxt = '导出'
+        })
       },
       //用户列表头像大图预览
       avatarList(src) {
