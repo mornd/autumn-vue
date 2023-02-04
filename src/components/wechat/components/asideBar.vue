@@ -56,6 +56,7 @@
           <el-dropdown-menu  slot="dropdown">
             <el-dropdown-item command="0">清空并刷新本地会话</el-dropdown-item>
             <el-dropdown-item command="1" v-has-role="['super_admin']"><span style="color: red">管理员清空所有人聊天记录</span></el-dropdown-item>
+            <el-dropdown-item command="2">关于微信</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </li>
@@ -128,7 +129,13 @@ export default {
               }
             })
           }).catch(() => {});
-          break
+          break;
+        case '2':
+          this.$alert('微信版本：3.8.1.26 (2022-12-21)', '系统提示', {
+            confirmButtonText: '确定',
+            callback: action => {}
+          });
+          break;
       }
     }
   },

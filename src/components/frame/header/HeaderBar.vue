@@ -15,7 +15,7 @@
       <li @click="handleFullScreen" :title="fullscreen ? '退出全屏' : '全屏'" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <i :class="fullscreen ? 'el-icon-close' : 'el-icon-full-screen'"></i>
       </li>
-      <li title="在线聊天" @click="toChat" @mouseover="addActive($event)" @mouseout="removeActive($event)">
+      <li :title="getUnread > 0 ? '在线聊天(' + getUnread + '条未读消息)' : '在线聊天'" @click="toChat" @mouseover="addActive($event)" @mouseout="removeActive($event)">
         <el-badge :value="getBadge(getUnread)" :hidden="$route.path === '/wechat' || getUnread <= 0">
           <i class="el-icon-chat-dot-round" />
         </el-badge>
