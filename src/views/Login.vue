@@ -160,8 +160,8 @@
           <span>Copyright © 2021</span>
         </li>
         <li>
-          <i class="fa fa-git-square"></i>
-          <a href="https://gitee.com/mornd/autumn-vue" target="_blank" :style="cTheme">gitee</a>
+          <i class="fa fa-github-alt"></i>
+          <a href="https://github.com/mornd/autumn-vue" target="_blank" :style="cTheme">github</a>
         </li>
         <li>
           <i class="fa fa-qq"></i>
