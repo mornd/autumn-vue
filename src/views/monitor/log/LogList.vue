@@ -2,7 +2,7 @@
   <div>
     <div class="crud-search">
       <el-form ref="form" inline :model="crudObj" label-width="50px" label-position="left" size="mini">
-        <el-form-item label="用户">
+        <el-form-item label="登录名">
           <el-input
             v-model="crudObj.username"
             clearable
@@ -79,7 +79,13 @@
           prop="username"
           align="center"
           show-overflow-tooltip
-          label="用户">
+          label="登录名">
+        </el-table-column>
+        <el-table-column
+          prop="realName"
+          align="center"
+          show-overflow-tooltip
+          label="姓名">
         </el-table-column>
         <el-table-column
           prop="visitDate"
@@ -101,8 +107,6 @@
             >
               <template v-for="item in logType">
                 <span v-if="scope.row.type == item.key">{{ item.label }}</span>
-                <span v-else-if="scope.row.type == item.key">{{ item.label }}</span>
-                <span v-else-if="scope.row.type == item.key">{{ item.label }}</span>
               </template>
             </el-tag>
           </template>
@@ -133,7 +137,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column
+<!--        <el-table-column
           prop="os"
           align="center"
           show-overflow-tooltip
@@ -144,7 +148,7 @@
             align="center"
             show-overflow-tooltip
             label="浏览器">
-        </el-table-column>
+        </el-table-column>-->
       </el-table>
       <el-pagination
         @size-change="handleSizeChange"
@@ -165,6 +169,22 @@
     data() {
       //登录类型
       const logType = {
+        select: {
+          key: 3,
+          label: '查询'
+        },
+        insert: {
+          key: 4,
+          label: '新增'
+        },
+        update: {
+          key: 5,
+          label: '修改'
+        },
+        delete: {
+          key: 6,
+          label: '删除'
+        },
         login: {
           key: 1,
           label: '登录'
@@ -174,9 +194,21 @@
           label: '退出'
         },
         other: {
-          key: 3,
+          key: 7,
           label: '其他'
-        }
+        },
+        download: {
+          key: 8,
+          label: '下载'
+        },
+        upload: {
+          key: 9,
+          label: '上传'
+        },
+        clear: {
+          key: 10,
+          label: '清空'
+        },
       }
       return {
         logType,

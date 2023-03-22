@@ -1,28 +1,48 @@
 <template>
   <div class="home">
-    <el-carousel :interval="4000" type="card" height="200px">
-      <el-carousel-item v-for="item in 6" :key="item" style="border-radius: 10px">
-      </el-carousel-item>
-    </el-carousel>
+      <!-- 走马灯 -->
+      <el-carousel :interval="4000" type="card" height="200px">
+        <el-carousel-item
+            v-for="(item,index) in caroArr"
+            :key="index"
+            style="border-radius: 10px">
+          <el-image style="width: 100%; height: 100%"
+                    fit="cover"
+                    :src="item">
+          </el-image>
+        </el-carousel-item>
+      </el-carousel>
+
+      <div>
+        <!-- 图表统计 -->
+        <home-chart></home-chart>
+      </div>
   </div>
 </template>
 
 <script>
-  import { weather_key } from '@/constants/systemConsts'
+  import HomeChart from "@/components/frame/home/HomeChart"
+
+  import caro1 from '@/assets/images/home/carousel/caro1.jpg'
+  import caro2 from '@/assets/images/home/carousel/caro2.jpg'
+  import caro3 from '@/assets/images/home/carousel/caro3.jpg'
+  import caro4 from '@/assets/images/home/carousel/caro4.jpg'
 
   // @ is an alias to /src
 
   export default {
     name: 'Home',
+    components: {
+      HomeChart
+    },
     data() {
       return {
+        // 图片数组
+        caroArr: [caro1, caro2, caro3, caro4],
+        chart: {}
       }
     },
-    mounted() {
 
-    },
-    methods: {
-    }
   }
 </script>
 

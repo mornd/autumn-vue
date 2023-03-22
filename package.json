@@ -12,6 +12,7 @@
     "core-js": "^3.6.5",
     "crypto-js": "^4.1.1",
     "e-icon-picker": "^1.1.6",
+    "echarts": "^5.4.1",
     "element-ui": "^2.15.6",
     "font-awesome": "^4.7.0",
     "js-cookie": "^3.0.1",
