@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="crud-search">
-      <el-form ref="form" inline :model="crudObj" label-width="50px" label-position="left" size="mini">
+      <el-form ref="form" inline :model="crudObj" label-width="70px" label-position="left" size="mini">
         <el-form-item label="登录名">
           <el-input
             v-model="crudObj.username"
@@ -12,7 +12,7 @@
             type="text"
           />
         </el-form-item>
-        <el-form-item label="时间">
+        <el-form-item label="访问时间">
           <el-date-picker
             v-model="visitDateScope"
             type="datetimerange"
@@ -25,7 +25,7 @@
             :picker-options="pickerOptions">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="类型">
+        <el-form-item label="操作类型">
           <el-select
             v-model="crudObj.type"
             filterable
@@ -36,6 +36,15 @@
               :value="item.key"
               :label="item.label">
             </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-select
+              v-model="crudObj.status"
+              filterable
+              clearable>
+            <el-option :key="0" value="0" label="成功"></el-option>
+            <el-option :key="1" value="1" label="失败"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -59,6 +68,7 @@
                 <li><span>URL</span>{{ props.row.url }}</li>
                 <li><span>方法名</span>{{ props.row.methodName }}</li>
                 <li><span>调用参数</span>{{ props.row.params }}</li>
+                <li><span>异常信息</span>{{ props.row.exceptionMsg }}</li>
                 <li><span>返回结果</span>{{ props.row.result }}</li>
               </ul>
             </div>
@@ -95,20 +105,28 @@
           label="访问时间">
         </el-table-column>
         <el-table-column
+            prop="status"
+            align="center"
+            show-overflow-tooltip
+            label="状态">
+          <template #default="scope">
+            <el-tag
+                :type="scope.row.status === 0 ? 'success' : 'danger'"
+                effect="dark"
+                size="small">
+              {{ scope.row.status === 0 ? '成功' : '失败' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="type"
           align="center"
           show-overflow-tooltip
           label="类型">
           <template #default="scope">
-            <el-tag
-              type="success"
-              effect="plain"
-              size="small"
-            >
               <template v-for="item in logType">
                 <span v-if="scope.row.type == item.key">{{ item.label }}</span>
               </template>
-            </el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -170,45 +188,41 @@
       //登录类型
       const logType = {
         select: {
-          key: 3,
+          key: 1,
           label: '查询'
         },
         insert: {
-          key: 4,
+          key: 2,
           label: '新增'
         },
         update: {
-          key: 5,
+          key: 3,
           label: '修改'
         },
         delete: {
-          key: 6,
+          key: 4,
           label: '删除'
         },
-        login: {
-          key: 1,
-          label: '登录'
-        },
-        logout: {
-          key: 2,
-          label: '退出'
-        },
         other: {
-          key: 7,
+          key: 5,
           label: '其他'
         },
         download: {
-          key: 8,
+          key: 6,
           label: '下载'
         },
         upload: {
-          key: 9,
+          key: 7,
           label: '上传'
         },
         clear: {
-          key: 10,
+          key: 8,
           label: '清空'
         },
+        publish: {
+          key: 9,
+          label: '发布'
+        }
       }
       return {
         logType,
@@ -297,9 +311,7 @@
       },
       //搜索表单重置
       reset() {
-        this.crudObj.username = ''
-        this.visitDateScope = ''
-        this.crudObj.type = ''
+        this.crudObj = {}
         this.crudObj.currentPage = 1
         this.crudObj.pageNo = 1
         this.crudObj.pageSize = 10
@@ -322,6 +334,7 @@
   .crud-content {
     //扩展列内容
     .log-extend-col {
+      overflow: scroll;
       padding: 5px 18px;
       ul li {
         margin: 3px 0;

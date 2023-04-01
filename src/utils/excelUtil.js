@@ -3,11 +3,11 @@ import api from "@/utils/api"
 /**
  * 导出excel
  * @param url 路径
- * @param params 参数
+ * @param data 参数
  * @param fileName 文件名
  */
-export const exportExcel = (url, params, fileName) => {
-  api.download(url, params).then(response => {
+export const exportExcel = (url, data, fileName) => {
+  api.download(url, data).then(response => {
     handleExcel(response, fileName)
   })
 }

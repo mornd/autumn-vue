@@ -257,7 +257,7 @@ export default {
     //搜索表单重置
     reset() {
       this.crudObj.loginName = ''
-      this.visitDateScope = ''
+      this.visitDateScope = []
       this.crudObj.status = ''
       this.crudObj.currentPage = 1
       this.crudObj.pageNo = 1

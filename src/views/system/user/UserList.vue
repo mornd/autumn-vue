@@ -210,7 +210,7 @@
 <script>
   import { mapState } from 'vuex'
   import { gender } from '@/constants/systemConsts'
-  import AddOrEdit from './components/AddOrEidt'
+  import AddOrEdit from './components/AddOrEdit'
   import { birthdayToAge } from '@/utils/objUtil'
   import { defaultAvatar } from "@/constants/systemConsts";
   import { generateAvatar } from "@/utils/userUtil";
@@ -222,6 +222,9 @@
     data() {
       return {
         crudObj: {
+          loginName: '',
+          realName: '',
+          status: '',
           pageNo: 1,
           currentPage: 1,
           pageSize: 10,
@@ -283,7 +286,7 @@
       exportExcel() {
         this.exportLoading = true
         this.exportLoadingTxt = '导出中'
-        this.$api.download('/sysUser/export', {...this.crudObj}).then(res => {
+        this.$api.download('/sysUser/export', this.crudObj).then(res => {
           handleExcel(res, "系统用户")
           this.exportLoading = false
           this.exportLoadingTxt = '导出'

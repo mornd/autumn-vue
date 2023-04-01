@@ -83,6 +83,7 @@
           <el-select
             v-else
             v-model="form.roles"
+            @change="$forceUpdate()"
             filterable
             multiple
             clearable
@@ -122,7 +123,7 @@
   import { arrNotEmpty } from '@/utils/objUtil'
 
   export default {
-    name: "AddOrEidt",
+    name: "AddOrEdit",
     data() {
       const validateLoginName = (rule, value, callback) => {
         if (isNotBlank(value)) {

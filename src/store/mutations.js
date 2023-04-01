@@ -41,7 +41,9 @@ export default {
     // 这里chat需要给每个属性复制默认值，否则会有问题
     if(state.chat.stomp) {
       // 需要先关闭之前的连接
-      state.chat.stomp.disconnect()
+      state.chat.stomp.disconnect(() => {
+        console.log('关闭连接websocket');
+      })
     }
     state.chat = {
       stomp: undefined,

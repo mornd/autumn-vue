@@ -119,10 +119,15 @@ export default {
       }
     },
     sendMessage() {
+      //todo 如果后端socket不能正常连接则本地消息加上感叹号
       if(this.message.length && '' !== this.message.trim()) {
         const selectedUser = this.chat.selectedUser
         // 构建消息对象
         const messageObj = {
+          // 发送人
+          from: this.user.loginName,
+          fromName: this.user.realName,
+          // 接收人
           to: selectedUser.loginName,
           toName: selectedUser.name,
           content: this.message,

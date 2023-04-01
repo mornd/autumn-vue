@@ -80,7 +80,7 @@
             :rows="2"
             :autosize="{ minRows: 4, maxRows: 4}"
             resize="none"
-            maxlength="50"
+            maxlength="500"
             show-word-limit
           >
           </el-input>
