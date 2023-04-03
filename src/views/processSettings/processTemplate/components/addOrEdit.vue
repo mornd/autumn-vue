@@ -99,6 +99,11 @@
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将流程文件拖到此处，或<em>点击上传</em></div>
           <div class="el-upload__tip" slot="tip">只能上传一份zip文件，并且你的文件名就是流程定义的key，大小不超过5mb</div>
+          <!--  上传zip文件要求：
+              testbpmn20.zip
+                文件必须以bpmn20.zip结尾
+                test就是你的流程定义key，且必须与文件里面.xml文件的 <process id="test"> 保持一致
+           -->
         </el-upload>
       </div>
       <template slot="footer">

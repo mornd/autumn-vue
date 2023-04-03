@@ -1,5 +1,6 @@
 <template>
   <!-- 菜单主体 -->
+  <!-- #FFFFFFB3 -->
   <div>
     <!--获取菜单请求之前的加载动画-->
     <div v-if="!menu.loadingComplete"
@@ -21,7 +22,7 @@
           router
           unique-opened
           v-if="menuRoutes.length"
-          text-color="#FFFFFFB3"
+          text-color="#f4f4f5"
           background-color="#28333E"
           :default-active="$route.path"
           :active-text-color="theme"

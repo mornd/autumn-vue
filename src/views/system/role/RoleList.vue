@@ -195,8 +195,9 @@
         this.loading = true
         this.$api.getRequest('/role', {...this.crudObj}).then(res => {
           if(res.success) {
-            this.tableData = res.data.records
-            this.crudObj.total = res.data.total
+            const data = res.data
+            this.tableData = data.records
+            this.crudObj.total = data.total
             this.loading = false
           }
         })
