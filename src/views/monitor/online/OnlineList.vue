@@ -172,15 +172,9 @@ export default {
       const url = '/onlineUser'
       this.$api.getRequest(url, {...this.crudObj}).then(res => {
         if(res.success) {
-          const data = res.data
-          if(!data.data.length && data.total !== 0) {
-            this.crudObj.pageNo--
-            this.getTable()
-          } else {
-            this.tableData = data.data
-            this.crudObj.total = data.total
-            this.loading = false
-          }
+          this.tableData = res.data.data
+          this.crudObj.total = res.data.total
+          this.loading = false
         }
       })
     },

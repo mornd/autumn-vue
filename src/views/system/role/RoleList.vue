@@ -195,18 +195,9 @@
         this.loading = true
         this.$api.getRequest('/role', {...this.crudObj}).then(res => {
           if(res.success) {
-            const data = res.data
-
-            //如果一开始显示有两页，但是第二页的数据被删掉了，若此时点击第二页，那么第二页会显示空白，并且当前页也固定显示在了第一页
-            if(!data.records.length && data.total !== 0) {
-              //当前页数自减一页，再查一次
-              this.crudObj.pageNo--
-              this.getTable()
-            } else {
-              this.tableData = data.records
-              this.crudObj.total = data.total
-              this.loading = false
-            }
+            this.tableData = res.data.records
+            this.crudObj.total = res.data.total
+            this.loading = false
           }
         })
       },

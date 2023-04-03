@@ -122,15 +122,9 @@ export default {
       this.loading = true
       this.$api.getRequest(this.baseUrl, {...this.crudObj}).then(res => {
         if(res.success) {
-          const data = res.data
-          if(!data.records.length && data.total !== 0) {
-            this.crudObj.pageNo--
-            this.getTable()
-          } else {
-            this.tableData = data.records
-            this.crudObj.total = data.total
-            this.loading = false
-          }
+          this.tableData = res.data.records
+          this.crudObj.total = res.data.total
+          this.loading = false
         }
       })
     },
