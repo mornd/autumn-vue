@@ -52,6 +52,7 @@
         <el-table-column
             prop="iconUrl"
             align="center"
+            width="50px"
             show-overflow-tooltip
             label="图标">
           <template slot-scope="scope">

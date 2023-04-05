@@ -97,11 +97,15 @@
             >
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将流程文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">只能上传一份zip文件，并且你的文件名就是流程定义的key，大小不超过5mb</div>
+          <div class="el-upload__tip" slot="tip">
+            只能上传一份zip文件，且大小不超过5mb，
+            zip文件内的xml文件名必须以 <font color="red">.bpmn20.xml</font> 结尾，
+            xml文件中process节点的id属性值就是你流程定义key，且与xml，zip文件的名称一致 <br>
+          </div>
           <!--  上传zip文件要求：
-              testbpmn20.zip
-                文件必须以bpmn20.zip结尾
-                test就是你的流程定义key，且必须与文件里面.xml文件的 <process id="test"> 保持一致
+                xml文件名必须以.bpmn20.xml结尾
+                流程定义key就是.xml文件的 <process id="test"> id值，且必须和xml文件名称保持一致
+                压缩文件名也可以是key.zip，不做要求
            -->
         </el-upload>
       </div>
@@ -164,7 +168,6 @@ export default {
         { iconUrl: 'https://gw.alicdn.com/tfs/TB1t695CFYqK1RjSZLeXXbXppXa-102-102.png', tag: '请假' },
         { iconUrl: 'https://gw.alicdn.com/tfs/TB1bHOWCSzqK1RjSZFjXXblCFXa-112-112.png', tag: '出差' },
         { iconUrl: 'https://gw.alicdn.com/tfs/TB1cbCYCPTpK1RjSZKPXXa3UpXa-112-112.png', tag: '机票出差' },
-        //{ iconUrl: 'https://gw.alicdn.com/tfs/TB1cbCYCPTpK1RjSZKPXXa3UpXa-112-112.png', tag: '机票改签' },
         { iconUrl: 'https://gw.alicdn.com/tfs/TB1e76lCOLaK1RjSZFxXXamPFXa-112-112.png', tag: '外出' },
         { iconUrl: 'https://gw.alicdn.com/tfs/TB1Yfa0CG6qK1RjSZFmXXX0PFXa-112-112.png', tag: '补卡申请' },
         { iconUrl: 'https://gw.alicdn.com/tfs/TB1Y8PlCNjaK1RjSZKzXXXVwXXa-112-112.png', tag: '加班' },
@@ -175,16 +178,9 @@ export default {
         { iconUrl: 'https://gw.alicdn.com/tfs/TB11pS_CFzqK1RjSZSgXXcpAVXa-102-102.png', tag: '费用申请' },
         { iconUrl: 'https://gw.alicdn.com/tfs/TB1t695CFYqK1RjSZLeXXbXppXa-102-102.png', tag: '用章申请' },
         { iconUrl: 'https://gw.alicdn.com/tfs/TB13f_aCQzoK1RjSZFlXXai4VXa-102-102.png', tag: '携章外出' },
-        // { iconUrl: 'https://gw.alicdn.com/tfs/TB1_YG.COrpK1RjSZFhXXXSdXXa-102-102.png', tag: '学期内分期' },
-        // { iconUrl: 'https://gw.alicdn.com/tfs/TB1_YG.COrpK1RjSZFhXXXSdXXa-102-102.png', tag: '特殊学费' },
         { iconUrl: 'https://gw.alicdn.com/tfs/TB1Yfa0CG6qK1RjSZFmXXX0PFXa-112-112.png', tag: '充值卡申领' },
-        // { iconUrl: 'https://gw.alicdn.com/tfs/TB1e76lCOLaK1RjSZFxXXamPFXa-112-112.png', tag: '礼品申领' },
         { iconUrl: 'https://gw.alicdn.com/tfs/TB1FNG.CMHqK1RjSZFgXXa7JXXa-102-102.png', tag: '邮寄快递申请' },
         { iconUrl: 'https://gw.alicdn.com/imgextra/i3/O1CN01LLn0YV1LhBXs7T2iO_!!6000000001330-2-tps-120-120.png', tag: '合同审批' },
-        // { iconUrl: 'https://gw.alicdn.com/tfs/TB1e76lCOLaK1RjSZFxXXamPFXa-112-112.png', tag: '合同借阅' },
-        // { iconUrl: 'https://gw.alicdn.com/tfs/TB1e76lCOLaK1RjSZFxXXamPFXa-112-112.png', tag: '魔点临时开门权限' },
-        //{ iconUrl: 'https://gw.alicdn.com/tfs/TB1bHOWCSzqK1RjSZFjXXblCFXa-112-112.png', tag: '北京科技园车证审批' },
-        //{ iconUrl: 'https://gw.alicdn.com/tfs/TB1e76lCOLaK1RjSZFxXXamPFXa-112-112.png', tag: '魔点访客提前预约审批' }
       ],
       baseUrl: '/processTemplate',
       step: 0,
@@ -224,6 +220,15 @@ export default {
             this.step++
           }
         })
+      } else if(this.step === 1) {
+        // 获取动态表单数据
+        this.form.formProps = JSON.stringify(this.$refs.designer.getRule())
+        this.form.formOptions = JSON.stringify(this.$refs.designer.getOption())
+        if(this.form.formProps && this.form.formProps !== '[]') {
+          this.step++
+        } else {
+          this.$message.error("表单不能为空")
+        }
       } else {
         this.step++
       }

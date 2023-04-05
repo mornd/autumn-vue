@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-        top="5vh"
+        top="8vh"
         :visible.sync="transData.show"
         title="查看"
         width="80%"

@@ -9,7 +9,7 @@
               prefix-icon="el-icon-search"
               maxlength="100"
               type="text"
-              placeholder="编号/标题/用户/当前审批人"
+              placeholder="编号/标题/用户"
           />
         </el-form-item>
         <el-form-item label="状态">
@@ -67,10 +67,10 @@
             label="标题">
         </el-table-column>
         <el-table-column
-            prop="userName"
+            prop="userRealName"
             align="center"
             show-overflow-tooltip
-            label="用户">
+            label="申请人">
         </el-table-column>
         <el-table-column
             prop="status"
@@ -102,17 +102,10 @@
             label="审批模板">
         </el-table-column>
         <el-table-column
-            prop="currentAuditorName"
+            prop="currentAuditorRealName"
             align="center"
             show-overflow-tooltip
             label="当前审批人">
-        </el-table-column>
-        <el-table-column
-            prop="currentAuditorPhone"
-            align="center"
-            width="120px"
-            show-overflow-tooltip
-            label="当前审批人手机号">
         </el-table-column>
         <el-table-column
             prop="description"
@@ -177,11 +170,11 @@ export default {
       },
       // 流程状态取值
       processState: {
-        default: {
-          key: 0,
-          value: '待审批',
-          tag: 'info'
-        },
+        // default: {
+        //   key: 0,
+        //   value: '默认',
+        //   tag: 'info'
+        // },
         progressing: {
           key: 1,
           value: '审批中',
