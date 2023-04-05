@@ -13,7 +13,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="getTable()" icon="el-icon-search" type="primary">查询</el-button>
+        <el-button @click="search()" icon="el-icon-search" type="primary">查询</el-button>
         <el-button @click="reset()" icon="el-icon-refresh-right" type="primary">重置</el-button>
       </el-form-item>
     </el-form>
@@ -127,6 +127,10 @@ export default {
           this.loading = false
         }
       })
+    },
+    search() {
+      this.crudObj.pageNo = 1
+      this.getTable()
     },
     //搜索表单重置
     reset() {

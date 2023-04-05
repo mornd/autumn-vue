@@ -301,6 +301,7 @@
         }).catch(() => {});
       },
       search() {
+        this.crudObj.pageNo = 1
         this.getTable()
       },
       //搜索表单重置

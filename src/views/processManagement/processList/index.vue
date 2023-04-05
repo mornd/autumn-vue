@@ -36,7 +36,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button @click="getTable()" icon="el-icon-search" type="primary">查询</el-button>
+          <el-button @click="search()" icon="el-icon-search" type="primary">查询</el-button>
           <el-button @click="reset()" icon="el-icon-refresh-right" type="primary">重置</el-button>
         </el-form-item>
       </el-form>
@@ -113,6 +113,12 @@
             width="120px"
             show-overflow-tooltip
             label="当前审批人手机号">
+        </el-table-column>
+        <el-table-column
+            prop="description"
+            align="center"
+            show-overflow-tooltip
+            label="描述">
         </el-table-column>
         <el-table-column
             prop="createTime"
@@ -214,6 +220,10 @@ export default {
         }
       })
     },
+    search() {
+      this.crudObj.pageNo = 1
+      this.getTable()
+    },
     //搜索表单重置
     reset() {
       this.crudObj = {}
@@ -224,8 +234,9 @@ export default {
       this.getTable()
     },
     show(row) {
-      this.transData.dialogVisible = true
       Object.assign(this.transData.data = {}, row)
+      this.transData.processState = this.processState
+      this.transData.dialogVisible = true
     },
     //分页操作
     handleSizeChange(size) {

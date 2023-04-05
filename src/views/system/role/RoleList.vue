@@ -204,6 +204,7 @@
       },
       //表头搜索
       search() {
+        this.crudObj.pageNo = 1
         this.getTable()
       },
       //搜索表单重置

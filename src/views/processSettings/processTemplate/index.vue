@@ -26,7 +26,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button @click="getTable()" icon="el-icon-search" type="primary">查询</el-button>
+          <el-button @click="search()" icon="el-icon-search" type="primary">查询</el-button>
           <el-button @click="reset()" icon="el-icon-refresh-right" type="primary">重置</el-button>
         </el-form-item>
       </el-form>
@@ -54,6 +54,9 @@
             align="center"
             show-overflow-tooltip
             label="图标">
+          <template slot-scope="scope">
+            <img :src="scope.row.iconUrl" style="width: 30px;height: 30px;vertical-align: text-bottom;">
+          </template>
         </el-table-column>
         <el-table-column
             prop="processTypeName"
@@ -171,6 +174,10 @@ export default {
           this.loading = false
         }
       })
+    },
+    search() {
+      this.crudObj.pageNo = 1
+      this.getTable()
     },
     getProcessTypeList() {
       this.$api.getRequest('/processType/getAllTypeNames').then(res => {
