@@ -27,7 +27,6 @@
         row-key="id"
         fit
         :indent="15"
-        :default-expand-all="defaultExpandFlag"
         v-loading="loading">
         <el-table-column
           prop="id"
@@ -115,7 +114,15 @@
             </el-switch>
           </template>
         </el-table-column>
-
+        <el-table-column
+            prop="hidden"
+            label="可见"
+            width="60"
+            align="center">
+          <template #default="scope">
+            <font :color="scope.row.hidden === display ? enabledColor : disabledColor">{{scope.row.hidden === display ? '显示' : '隐藏'}}</font>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="gmtCreate"
           label="创建时间"
@@ -126,7 +133,7 @@
           prop="sort"
           label="排序"
           show-overflow-tooltip
-          width="80"
+          width="60"
           align="center">
         </el-table-column>
 
@@ -184,8 +191,6 @@
       return {
         //表格加载flag
         loading: false,
-        //是否全部展开树形表格
-        defaultExpandFlag: true,
         //表格数据
         tableData: [],
         //表头搜索对象
@@ -195,6 +200,7 @@
         failureColor: failure,
         enabledColor: '#13ce66',
         disabledColor: '#ff4949',
+        display: 1, // 菜单显示
         //传递给子组件的数据
         transData: {
           dialogVisible: false,
