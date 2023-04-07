@@ -1,25 +1,7 @@
 <template>
   <div>
-    <div class="crud-search">
-      <el-form ref="form" inline :model="searchParams" label-width="70px" label-position="left" size="mini">
-        <el-form-item label="名称">
-          <el-input
-              v-model="searchParams.name"
-              clearable
-              prefix-icon="el-icon-search"
-              maxlength="100"
-              type="text"
-              placeholder="点击输入名称"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="search()" icon="el-icon-search" type="primary">查询</el-button>
-          <el-button @click="reset()" icon="el-icon-refresh-right" type="primary">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-
     <div class="crud-content">
+      <el-button @click="handleAdd()" type="primary" size="mini" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
       <el-button type="primary" size="mini" icon="el-icon-refresh" style="margin-left: 5px">同步公众号菜单</el-button>
       <el-button type="danger" size="mini" icon="el-icon-delete" style="margin-left: 5px">删除公众号所有菜单</el-button>
       <el-table
@@ -75,8 +57,8 @@
             width="150"
             align="center">
           <template #default="scope">
-            <el-button @click="handleAdd(scope.row)" type="text" size="mini">添加</el-button>
-            <el-divider direction="vertical"></el-divider>
+            <el-button v-if="scope.row.parentId === parentId" @click="handleAdd(scope.row)" type="text" size="mini">添加</el-button>
+            <el-divider v-if="scope.row.parentId === parentId" direction="vertical"></el-divider>
             <el-button @click="handleUpdate(scope.row)" type="text" size="mini">修改</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button @click="handleDelete(scope.row)" type="text" size="mini">删除</el-button>
@@ -104,8 +86,8 @@ export default {
   data() {
     return {
       searchParams: {
-        name: ''
       },
+      parentId: 0,
       apiUrl: '/process/wechat/menu',
       tableData: [],
       loading: false,
@@ -121,41 +103,33 @@ export default {
   methods: {
     getTable() {
       this.loading = true
-      this.$api.getRequest(this.apiUrl, {...this.searchParams}).then(res => {
+      this.$api.getRequest(this.apiUrl).then(res => {
         if(res.success) {
           this.tableData = res.data
           this.loading = false
         }
       })
     },
-    search() {
-      this.getTable()
-    },
-    //搜索表单重置
-    reset() {
-      this.searchParams = {}
-      this.getTable()
-    },
-    handleAdd() {
+    handleAdd(row) {
       this.transData.operation = 'add';
       this.transData.title = '添加';
+      this.transData.data = {parentName: row.name};
       this.transData.dialogVisible = true
     },
     handleUpdate(row) {
       this.transData.operation = 'edit';
       this.transData.title = '编辑';
       Object.assign(this.transData.data = {}, row);
+      this.transData.data.parentName = row.name
       this.transData.dialogVisible = true
-      this.transData.rule = JSON.parse(row.formProps)
-      this.transData.option = JSON.parse(row.formOptions)
     },
     handleDelete(row) {
-      this.$confirm(`是否永久删除该条数据及其对应的流程定义文件?`, '提示', {
+      this.$confirm(`是否永久删除该菜单及其所有子集菜单吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$api.deleteRequest(`${this.baseUrl}/${row.id}`).then(res => {
+        this.$api.deleteRequest(`${this.apiUrl}/${row.id}`).then(res => {
           if(res.success) {
             this.getTable()
           }

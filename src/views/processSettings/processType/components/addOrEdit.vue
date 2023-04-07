@@ -6,7 +6,7 @@
         :visible.sync="transData.dialogVisible"
         :title="transData.title"
         :close-on-click-modal="false"
-        width="35%"
+        width="40%"
     >
       <el-form
           ref="form"
