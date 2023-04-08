@@ -2,6 +2,16 @@
   <div>
     <div class="crud-search">
       <el-form ref="form" inline :model="crudObj" label-width="70px" label-position="left" size="mini">
+        <el-form-item label="操作">
+          <el-input
+              v-model="crudObj.title"
+              clearable
+              placeholder="点击输入操作"
+              prefix-icon="el-icon-search"
+              maxlength="100"
+              type="text"
+          />
+        </el-form-item>
         <el-form-item label="登录名">
           <el-input
             v-model="crudObj.username"
@@ -187,48 +197,25 @@
     data() {
       //登录类型
       const logType = {
-        select: {
-          key: 1,
-          label: '查询'
-        },
-        insert: {
-          key: 2,
-          label: '新增'
-        },
-        update: {
-          key: 3,
-          label: '修改'
-        },
-        delete: {
-          key: 4,
-          label: '删除'
-        },
-        other: {
-          key: 5,
-          label: '其他'
-        },
-        download: {
-          key: 6,
-          label: '下载'
-        },
-        upload: {
-          key: 7,
-          label: '上传'
-        },
-        clear: {
-          key: 8,
-          label: '清空'
-        },
-        publish: {
-          key: 9,
-          label: '发布'
-        }
+        select: {key: 1, label: '查询'},
+        insert: {key: 2, label: '新增'},
+        update: {key: 3, label: '修改'},
+        delete: {key: 4, label: '删除'},
+        other: {key: 5, label: '其他'},
+        download: {key: 6, label: '下载'},
+        upload: {key: 7, label: '上传'},
+        clear: {key: 8, label: '清空'},
+        publish: {key: 9, label: '发布'},
+        approve: {key: 10, label: '审批'},
+        sync: {key: 11, label: '同步'},
+        authorization: {key: 12, label: '授权'},
       }
       return {
         logType,
         //日期范围
         visitDateScope: [],
         crudObj: {
+          title: '',
           username: '',
           type: undefined,
           currentPage: 1,

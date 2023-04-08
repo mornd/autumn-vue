@@ -2,8 +2,8 @@
   <div>
     <div class="crud-content">
       <el-button @click="handleAdd()" type="primary" size="mini" icon="el-icon-plus" style="margin-left: 5px">添加</el-button>
-      <el-button type="primary" size="mini" icon="el-icon-refresh" style="margin-left: 5px">同步公众号菜单</el-button>
-      <el-button type="danger" size="mini" icon="el-icon-delete" style="margin-left: 5px">删除公众号所有菜单</el-button>
+      <el-button @click="syncMenu()" :loading="syncSubmit" type="primary" size="mini" icon="el-icon-refresh" style="margin-left: 5px">同步公众号菜单</el-button>
+      <el-button @click="deleteAllMenu()" :loading="deleteSubmit" type="danger" size="mini" icon="el-icon-delete" style="margin-left: 5px">删除公众号所有菜单</el-button>
       <el-table
           size="small"
           :data="tableData"
@@ -94,7 +94,9 @@ export default {
       transData: {
         dialogVisible: false,
         show: false
-      }
+      },
+      syncSubmit: false,
+      deleteSubmit: false,
     }
   },
   mounted() {
@@ -111,20 +113,23 @@ export default {
       })
     },
     handleAdd(row) {
+      if(row) {
+        this.transData.data = {parentName: row.name, parentId: row.id};
+      } else {
+        this.transData.data = {}
+      }
       this.transData.operation = 'add';
       this.transData.title = '添加';
-      this.transData.data = {parentName: row.name};
       this.transData.dialogVisible = true
     },
     handleUpdate(row) {
       this.transData.operation = 'edit';
       this.transData.title = '编辑';
       Object.assign(this.transData.data = {}, row);
-      this.transData.data.parentName = row.name
       this.transData.dialogVisible = true
     },
     handleDelete(row) {
-      this.$confirm(`是否永久删除该菜单及其所有子集菜单吗?`, '提示', {
+      this.$confirm(`是否永久删除该菜单及其所有的子集菜单吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -136,6 +141,30 @@ export default {
         })
       }).catch(() => {})
     },
+    syncMenu() {
+      this.$confirm(`确定要同步公众号菜单吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.syncSubmit = true
+        this.$api.postRequest('/process/wechat/syncMenu').then(res => {
+          this.syncSubmit = false
+        })
+      }).catch(() => {})
+    },
+    deleteAllMenu() {
+      this.$confirm(`确定要删除公众号所有的菜单（该页面的菜单不会被删除）吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteSubmit = true
+        this.$api.deleteRequest('/process/wechat/deleteAllMenu').then(res => {
+          this.deleteSubmit = false
+        })
+      }).catch(() => {})
+    }
   }
 }
 </script>
