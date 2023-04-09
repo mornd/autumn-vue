@@ -75,7 +75,7 @@ export default {
         // menuKey: [{required: true, message: '菜单key不能为空', trigger: ['change', 'blur']}],
       },
       submitLoading: false,
-      apiUrl: '/process/wechat/menu',
+      apiUrl: '/process/wechatMenu',
       parentId: 0,
       parentShow: false,
     }

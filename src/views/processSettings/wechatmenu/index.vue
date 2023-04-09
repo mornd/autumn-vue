@@ -88,7 +88,7 @@ export default {
       searchParams: {
       },
       parentId: 0,
-      apiUrl: '/process/wechat/menu',
+      apiUrl: '/process/wechatMenu',
       tableData: [],
       loading: false,
       transData: {
@@ -148,7 +148,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.syncSubmit = true
-        this.$api.postRequest('/process/wechat/syncMenu').then(res => {
+        this.$api.postRequest(`${this.apiUrl}/sync`).then(res => {
           this.syncSubmit = false
         })
       }).catch(() => {})
@@ -160,7 +160,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.deleteSubmit = true
-        this.$api.deleteRequest('/process/wechat/deleteAllMenu').then(res => {
+        this.$api.deleteRequest(`${this.apiUrl}/deleteAll`).then(res => {
           this.deleteSubmit = false
         })
       }).catch(() => {})
