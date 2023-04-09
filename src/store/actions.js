@@ -138,7 +138,8 @@ export default {
 
   // 建立 webSocket 连接
   chatConnect({ state, commit }) {
-    const sock = new SockJS('/ws/endPoint')
+    const url = process.env.VUE_APP_SERVER_URL + '/ws/endPoint'
+    const sock = new SockJS(url)
     state.chat.stomp = Stomp.over(sock)
     const token = getToken()
     state.chat.stomp.connect({'Authorization': token}, success => {
