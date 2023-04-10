@@ -9,10 +9,10 @@ const proxyObj = {}
  * @type {{changeOrigin: boolean, ws: boolean, pathRewrite: {[p: string]: string}, target: string}}
  */
 proxyObj[process.env.VUE_APP_BASE_API] = {
-  // webSocket
+  // webSocket  
   ws: false,
   //代理的后台路径
-  target: 'http://localhost:9001',
+  target: process.env.VUE_APP_SERVER_URL, //'http://localhost:9001',
   // 路径重写
   pathRewrite: {
     ['^' + process.env.VUE_APP_BASE_API]: '/' //读取的是 .env.development 文件的 VUE_APP_BASE_API 值
@@ -28,12 +28,12 @@ proxyObj[process.env.VUE_APP_BASE_API] = {
  */
 proxyObj['/ws'] = {
   ws: true,
-  target: 'ws://localhost:9001',
+  target: process.env.VUE_APP_WS_SERVER_URL, //'ws://localhost:9001',
   changeOrigin: true,
 }
 
 module.exports = {
-  outputDir: "dist", // 运行时生成的生产环境构建文件的目录(默认''dist''，构建之前会被清除)
+  outputDir: "autumn-ui", // 运行时生成的生产环境构建文件的目录(默认'dist'，构建之前会被清除)
   lintOnSave: false,//是否开启eslint语法检查
   /* 放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录 */
   assetsDir: "assets",

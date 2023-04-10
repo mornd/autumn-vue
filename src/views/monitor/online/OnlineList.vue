@@ -56,7 +56,7 @@
             align="center"
             width="140px"
             show-overflow-tooltip
-            label="访问时间">
+            label="登录时间">
         </el-table-column>
         <el-table-column
             prop="duration"
