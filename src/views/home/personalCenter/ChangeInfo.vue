@@ -122,7 +122,7 @@
       submitForm() {
         this.$refs['form'].validate((valid) => {
           if (valid) {
-            this.$confirm('是否确定修改当前个人信息？修改完成后需重新登录。', '系统提示', {
+            this.$confirm('是否确定修改当前个人信息？', '系统提示', {
               confirmButtonText: '确定',
               cancelButtonText: '取消',
               type: 'warning'
@@ -130,9 +130,6 @@
               this.submitLoading = true;
               this.$api.putRequest('/sysUser/userUpdate', this.form).then(res => {
                 if (res.success) {
-                  //  退出
-                  this.$store.dispatch('tokenExpirationExit')
-                  // this.$store.commit('SET_USER_BASE_INFO', this.form)
                 }
                 this.submitLoading = false;
               })

@@ -71,7 +71,7 @@
         defaultProps: {
           children: 'children',
           label: 'title'
-        }
+        },
       }
     },
     mounted() {
@@ -211,6 +211,7 @@
             })*/
             this.$router.go()
           }
+          this.submitLoading = false
         })
       },
 

@@ -118,6 +118,7 @@
           <template #default="scope">
             <el-switch
               v-model="scope.row.status"
+              :disabled="rootUserId === scope.row.id"
               @change="enabledChange(scope.row)"
               :active-color="enabledColor"
               :inactive-color="disabledColor"
@@ -176,6 +177,7 @@
                         size="mini"
                         type="text"
                         style="width: 100%"
+                        :disabled="rootUserId === scope.row.id"
                         @click="handleDelete(scope.row)">删除
                     </el-button>
                   </el-dropdown-item>
@@ -212,7 +214,7 @@
   import { gender } from '@/constants/systemConsts'
   import AddOrEdit from './components/AddOrEdit'
   import { birthdayToAge } from '@/utils/objUtil'
-  import { defaultAvatar } from "@/constants/systemConsts";
+  import { defaultAvatar, rootUserId } from "@/constants/systemConsts";
   import { generateAvatar } from "@/utils/userUtil";
   import { handleExcel } from "@/utils/excelUtil";
 
@@ -239,6 +241,7 @@
         transData: {
           dialogVisible: false,
         },
+        rootUserId: rootUserId,
         gender,
         defaultAvatar,
         generateAvatar

@@ -5,15 +5,15 @@ export default {
   themeStyle: state => {
     return {'backgroundColor': state.theme}
   },
-  //角色列表
+  //角色 code 列表
   roles: (state) => {
     let roles = state.user.roles
-    return roles ? roles : []
+    return roles ? roles.map(i => i.code) : []
   },
-  //权限菜单列表
+  //权限菜单 code 列表
   permissions: (state) => {
     let permissions = state.user.permissions
-    return permissions ? permissions : []
+    return permissions ? permissions.map(i => i.code) : []
   },
   //登录名
   loginName: (state) => state.user ? state.user.loginName : '',

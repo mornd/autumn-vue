@@ -74,7 +74,6 @@
                 v-for="i in (Array.isArray(user.roles) && user.roles.length ? user.roles : [])"
                 effect="plain"
                 size="small"
-                :type="(i.enabled == enabledState.enabled) ? '' : 'danger'"
               >
                 {{i.name}}
               </el-tag>

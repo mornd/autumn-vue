@@ -102,6 +102,14 @@ export default {
       phone_msg: {
         key: 1,
         label: '短信'
+      },
+      gitee: {
+        key: 2,
+        label: 'gitee'
+      },
+      wechat: {
+        key: 3,
+        label: '微信'
       }
     }
     return {

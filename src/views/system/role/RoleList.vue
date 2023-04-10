@@ -156,7 +156,7 @@
   import { mapState } from 'vuex'
   import AddOrEdit from './components/AddOrEdit'
   import grant from './components/Grant'
-  import { super_admin_id } from '@/constants/systemConsts'
+  import { superAdminId } from '@/constants/systemConsts'
 
   export default {
     name: "RoleList",
@@ -174,7 +174,7 @@
           pageSize: 10,
           total: 0
         },
-        superAdminId: super_admin_id,
+        superAdminId: superAdminId,
         enabledColor: '#13ce66',
         disabledColor: '#ff4949',
         transData: {
