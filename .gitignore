@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 /dist
+/autumn-ui-dist
+/autumn-mt-ui-dist
 
 # local env files
 .env.local
@@ -22,4 +24,5 @@ pnpm-debug.log*
 *.sw?
 *.iml
 
+.env.production
 package-lock.json

@@ -26,7 +26,14 @@
           <el-input v-model="form.name" maxlength="200" clearable placeholder="请输入名称"></el-input>
         </el-form-item>
         <el-form-item label="类型">
-          <el-input v-model="form.type" maxlength="200" clearable placeholder="请输入类型"></el-input>
+          <el-select style="width: 100%" v-model="form.type" placeholder="请选择" clearable>
+            <el-option
+                :key="index"
+                v-for="(item,index) in menuType"
+                :label="item"
+                :value="item">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="url">
           <el-input v-model="form.url" maxlength="200" clearable placeholder="请输入url"></el-input>
@@ -43,6 +50,8 @@
       <span>2.目录不用填写url和菜单key。</span><br>
       <span>3.自定义菜单最多包括3个一级菜单，每个一级菜单最多包含5个二级菜单。</span><br>
       <span>4.一级菜单最多4个汉字，二级菜单最多8个汉字，多出来的部分将会以“...”代替。</span><br>
+      <span>5.类型：view表示网页类型，click表示点击类型，miniprogram表示小程序类型。</span><br>
+      <span>6.子菜单必须要选择类型。</span><br>
       <span></span>
       <template slot="footer">
         <span class="dialog-footer">
@@ -74,6 +83,7 @@ export default {
         // url: [{required: true, message: 'url不能为空', trigger: ['change', 'blur']}],
         // menuKey: [{required: true, message: '菜单key不能为空', trigger: ['change', 'blur']}],
       },
+      menuType: ['view'],
       submitLoading: false,
       apiUrl: '/process/wechatMenu',
       parentId: 0,
@@ -98,6 +108,10 @@ export default {
       this.submitLoading = true
       this.$refs['form'].validate((valid) => {
         if (valid) {
+          if(this.form.url && this.form.url.charAt(0) !== '/') {
+            // 补上/前缀
+            this.form.url = '/' + this.form.url
+          }
           let request = undefined
           if (this.transData.operation === 'add') {
             request = this.$api.postRequest(this.apiUrl, this.form)
