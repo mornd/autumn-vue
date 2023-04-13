@@ -100,7 +100,7 @@
             <el-button @click="show(scope.row)" type="text" size="mini" icon="el-icon-view">查看</el-button>
             <el-button :disabled="scope.row.status === status.published" @click="handleUpdate(scope.row)" type="text" size="mini" icon="el-icon-edit">修改</el-button>
             <el-button :disabled="scope.row.status === status.published" @click="publish(scope.row)" type="text" size="mini" icon="el-icon-edit">发布</el-button>
-            <el-button :disabled="scope.row.status === status.published" @click="handleDelete(scope.row)" type="text" size="mini" icon="el-icon-delete">删除</el-button>
+            <el-button @click="handleDelete(scope.row)" type="text" size="mini" icon="el-icon-delete">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

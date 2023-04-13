@@ -30,6 +30,7 @@
     </div>
 
     <div class="crud-content">
+      <el-button @click="clear" v-has-role="['super_admin']" type="danger" size="mini" icon="el-icon-delete" style="margin-left: 5px">清空所有数据</el-button>
       <el-table
           size="small"
           :data="tableData"
@@ -203,6 +204,19 @@ export default {
           this.getTable()
         })
       })
+    },
+    clear() {
+      this.$confirm('是否清空所有的在线用户?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$api.deleteRequest('/onlineUser/clear').then(res => {
+          if(res.success) {
+            this.getTable()
+          }
+        })
+      }).catch(() => {});
     },
 
     //分页操作

@@ -26,7 +26,7 @@ export default {
     },
     desc: {
       type: String,
-      default: 'autumn认证'
+      default: ''
     }
   }
 }

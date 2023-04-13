@@ -158,7 +158,7 @@
               <el-button
                 size="mini"
                 type="text"
-                @click="handleEdit(scope.row)" v-has-role="['super_admin']">编辑
+                @click="handleEdit(scope.row)" v-has-permi="['system:user:update']">编辑
               </el-button>
               <el-divider direction="vertical"></el-divider>
               <el-dropdown :hide-on-click="false" size="small">
