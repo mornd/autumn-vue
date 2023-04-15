@@ -1,9 +1,12 @@
 <template>
   <div>
     <div>账号切换</div>
-    <button @click="testf()" type="default" size="mini">test</button>
-    <button @click="bobf()" type="default" size="mini">bob</button>
-    <button @click="f3()" type="default" size="mini">admin</button>
+    <el-button type="danger" @click="clear()">清空本地token</el-button>
+    <br>
+    <br>
+    <el-button type="primary" @click="func1()">tom</el-button>
+    <el-button type="primary" @click="func2()">alice</el-button>
+    <el-button type="primary" @click="func3()">bob</el-button>
     <div>当前token：{{ token }}</div>
   </div>
 </template>
@@ -23,20 +26,25 @@ export default {
   },
 
   methods: {
-    testf() {
-      this.token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiIxNTgwMzBiYzE0ODU0YjlmOTdjMWUwNmRmZTY3Y2M1NSIsInN1YiI6InRlc3QiLCJpc3MiOiJtb3JuZCIsImlhdCI6MTY4MDY4OTA5OH0.eOWj-bwK-E_pXUZaAE9HBPNzYdez3HIBbXjns-0do-o6bQrFl5Rra1Cm5GjLEJ0_F_09_L631rp2EV7zb5wTrg'
+    clear() {
+      window.localStorage.clear()
+      this.token = ''
+      alert('清除成功')
+    },
+    func1() {
+      this.token = 'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJlMzE3OTg0MDA4NjU0M2ViOWI1MmM0MmJkOTFmODk0YiIsInN1YiI6InRvbSIsImlzcyI6Im1vcm5kIiwiaWF0IjoxNjgxNTY1OTA3fQ.tdgnMBmMrup2muDyIKKyVT3IfONLbCKawvadRikY8VkbxrOGwr6PigWxDEswwXIe_n-OQJIoLAypGxqN05a6OA'
       window.localStorage.setItem('token', this.token);
       alert('切换成功')
     },
 
-    bobf() {
-      this.token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJjZDkzNTJmZGQ0ZGM0MTg2YWY1NGIwYWNjNDRlOWQ4YyIsInN1YiI6ImJvYiIsImlzcyI6Im1vcm5kIiwiaWF0IjoxNjgwNjg5MTk0fQ.uPbgluKGt_w19Ft779lwNJCkHBQn3rlBOO14Tomww8EeEEEnzb775SwJ-GyVqZLv0Gau_LyO2UYC2mb1lg_dYQ'
+    func2() {
+      this.token = 'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhOTdiODE0N2ExMTU0YTIzYjVlNWQ2YmEzYzkyYzNlMSIsInN1YiI6ImFsaWNlIiwiaXNzIjoibW9ybmQiLCJpYXQiOjE2ODE1NTk4MTV9.dtCz670opkHPfQhX-HH1jQ1iD35nqz7Zu7WLa61MGv_OHr7JMRKLb9Mmz2yNNKLAzCDmu4ZgH_if-Hla7Djx7w'
       window.localStorage.setItem('token', this.token);
       alert('切换成功')
     },
 
-    f3() {
-      this.token = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI3NDAyZTMyZjA4NzU0M2JmYmE3MTc4OWQzMTliM2MwNCIsInN1YiI6InRvbSIsImlzcyI6Im1vcm5kIiwiaWF0IjoxNjgwNjEyMzc5fQ.q57-sL9g22jkqBpbq_ez5KZFmnLx9bUgWmUNOwcTtSAqfRj7PX3i-QH8paE_SjcvXInouRWj8D3fFZCalKjrQQ'
+    func3() {
+      this.token = 'eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJjYzFkMjI3NjI2NTM0ZWRkOTExNGQ4ODU2MTYxY2RlMSIsInN1YiI6ImJvYiIsImlzcyI6Im1vcm5kIiwiaWF0IjoxNjgxNTU5OTI0fQ.-xpu-Dqp4Z6TFWpjjSfpccrEz6e6qi5nFU7xaUh1Mey6F4JkRGaCzsvTOg7xifBkRuMbqLH1dT1lcoSkUErsyA'
       window.localStorage.setItem('token', this.token);
       alert('切换成功')
     }

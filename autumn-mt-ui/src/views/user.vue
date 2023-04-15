@@ -19,6 +19,8 @@
       <div class="item">
         <h5>岗位：{{ user.postName }}</h5>
       </div>
+      <br>
+<!--      <el-button type="danger" @click="clear()" style="width: 100%" size="small">退出登录</el-button>-->
     </div>
 
   </div>
