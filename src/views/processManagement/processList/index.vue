@@ -9,7 +9,7 @@
               prefix-icon="el-icon-search"
               maxlength="100"
               type="text"
-              placeholder="编号/标题/用户"
+              placeholder="编号/标题/申请人"
           />
         </el-form-item>
         <el-form-item label="状态">
@@ -58,7 +58,7 @@
             fixed
             align="center"
             show-overflow-tooltip
-            label="编号">
+            label="审批编号">
         </el-table-column>
         <el-table-column
             prop="title"

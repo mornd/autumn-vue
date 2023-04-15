@@ -39,8 +39,10 @@
             <h3>流程</h3>
             <van-steps direction="vertical" :active="processRecordList.length - 1">
               <van-step :key="item.id" v-for="item in processRecordList">
-                <h4>{{ item.operateUser }} {{ item.description }}</h4>
-                <p>{{ item.createTime }}</p>
+                <div :style="{color: item.status === 1 ? '' : '#EB8473'}">
+                  <h4>{{ item.operateUser }} {{ item.description }}</h4>
+                  <p>{{ item.createTime }}</p>
+                </div>
               </van-step>
             </van-steps>
 

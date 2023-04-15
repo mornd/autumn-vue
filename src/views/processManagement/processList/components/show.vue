@@ -5,7 +5,7 @@
       top="5vh">
     <div>
       <el-descriptions border :column="1">
-        <el-descriptions-item label="编号">{{transData.data.processCode}}</el-descriptions-item>
+        <el-descriptions-item label="审批编号">{{transData.data.processCode}}</el-descriptions-item>
         <el-descriptions-item label="标题">{{transData.data.title}}</el-descriptions-item>
         <el-descriptions-item label="申请人账号">{{transData.data.userName}}</el-descriptions-item>
         <el-descriptions-item label="申请人姓名">{{transData.data.userRealName}}</el-descriptions-item>

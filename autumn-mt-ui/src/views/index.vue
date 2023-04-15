@@ -36,10 +36,6 @@ export default {
     };
   },
   created(){
-    // let token = window.localStorage.getItem('token')
-    // if(!token) {
-    //   window.localStorage.setItem('token', 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhOTM2ZjYyZWVjOWE0MGI5OWE5NGVlNGQ3ODcxNjFmMCIsInN1YiI6InRvbSIsImlzcyI6Im1vcm5kIiwiaWF0IjoxNjgxMzA4OTk0fQ.Sx93R22vz6ccfn34rstLdLeGlz84E1C0tomric6yfbMcCdwi6ZB8Oa-pYbmISqvTc3bU7WyxYgmQ8qPkWzzV5g')
-    // }
     this.fetchData();
   },
 

@@ -76,7 +76,6 @@ export default {
 
   methods: {
     tabSwitch() {
-      console.log( this.list);
       //tab切换，重新初始化数据
       this.list = []
       this.pageNo = 1
@@ -115,7 +114,6 @@ export default {
     },
 
     findPending() {
-      console.log(this.pageNo)
       api.findPending(this.pageNo, this.pageSize).then(response => {
         console.log(response.data);
         this.list = [];
@@ -140,7 +138,6 @@ export default {
 
     findProcessed() {
       api.findProcessed(this.pageNo, this.pageSize).then(response => {
-        console.log(response.data);
         this.list = [];
         if (this.refreshing) {
           this.refreshing = false;
@@ -162,9 +159,7 @@ export default {
     },
 
     findStarted() {
-      console.log(this.pageNo)
       api.findStarted(this.pageNo, this.pageSize).then(response => {
-        console.log(response.data);
         this.list = [];
         if (this.refreshing) {
           this.refreshing = false;
