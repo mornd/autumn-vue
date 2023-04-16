@@ -114,17 +114,19 @@ export default {
     },
 
     findPending() {
+      this.list = [];
       api.findPending(this.pageNo, this.pageSize).then(response => {
         console.log(response.data);
-        this.list = [];
         if (this.refreshing) {
           this.refreshing = false;
         }
+        let temp = [];
         for (let i=0;i<response.data.records.length;i++) {
           let item = response.data.records[i]
           item.formValues = JSON.parse(item.formValues)
-          this.list.push(item);
+          temp.push(item);
         }
+        this.list = temp
         this.pages = response.data.pages;
 
         this.loading = false;
@@ -137,16 +139,18 @@ export default {
     },
 
     findProcessed() {
+      this.list = [];
       api.findProcessed(this.pageNo, this.pageSize).then(response => {
-        this.list = [];
         if (this.refreshing) {
           this.refreshing = false;
         }
+        let temp = [];
         for (let i=0;i<response.data.records.length;i++) {
           let item = response.data.records[i]
           item.formValues = JSON.parse(item.formValues)
-          this.list.push(item);
+          temp.push(item);
         }
+        this.list = temp;
         this.pages = response.data.pages;
 
         this.loading = false;
@@ -159,16 +163,18 @@ export default {
     },
 
     findStarted() {
+      this.list = [];
       api.findStarted(this.pageNo, this.pageSize).then(response => {
-        this.list = [];
         if (this.refreshing) {
           this.refreshing = false;
         }
+        let temp = [];
         for (let i=0;i<response.data.records.length;i++) {
           let item = response.data.records[i]
           item.formValues = JSON.parse(item.formValues)
-          this.list.push(item);
+          temp.push(item);
         }
+        this.list = temp
         this.pages = response.data.pages;
 
         this.loading = false;

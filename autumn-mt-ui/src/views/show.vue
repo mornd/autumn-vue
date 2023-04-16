@@ -39,7 +39,7 @@
             <h3>流程</h3>
             <van-steps direction="vertical" :active="processRecordList.length - 1">
               <van-step :key="item.id" v-for="item in processRecordList">
-                <div :style="{color: item.status === 1 ? '' : '#EB8473'}">
+                <div>
                   <h4>{{ item.operateUser }} {{ item.description }}</h4>
                   <p>{{ item.createTime }}</p>
                 </div>
@@ -54,7 +54,9 @@
     <div class="notice" v-if="taskId != 0">
       <van-icon name="bullhorn-o" />
       <p>{{ process.title }}</p>
-      <span class="pass">{{ process.status === 1 ? '审批中' : process.status === 2 ? '审批通过' : '审批拒绝' }}</span>
+      <span v-if="process.status === 2" class="pass">审批通过</span>
+      <span v-if="process.status === 1" class="pass" style="color:#838485;">审批中</span>
+      <span v-if="process.status === -1" class="pass" style="color:#EB8473;">审批拒绝</span>
     </div>
 
     <div class="footer" v-if="isApprove">
@@ -122,7 +124,7 @@ export default {
         this.$router.push({ path: '/list/1' })
       })
     }
-  }
+  },
 }
 </script>
 
