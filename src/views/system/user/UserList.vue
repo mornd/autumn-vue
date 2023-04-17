@@ -67,6 +67,7 @@
         <el-table-column
           prop="avatar"
           label="头像"
+          width="100"
           align="center">
           <template #default="scope">
             <div style="height: 38px">
@@ -87,6 +88,7 @@
         <el-table-column
           prop="gender"
           align="center"
+          width="100"
           label="性别">
           <template #default="scope">
             <i
@@ -100,6 +102,7 @@
         <el-table-column
           prop="age"
           align="center"
+          width="100"
           :formatter="formatAge"
           label="年龄">
         </el-table-column>
@@ -129,18 +132,18 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="gmtCreate"
-          label="创建时间"
-          width="100"
-          align="center">
-        </el-table-column>
-        <el-table-column
           prop="email"
           label="邮箱"
           align="center">
           <template #default="scope">
             <span>{{scope.row.email ? scope.row.email : '空'}}</span>
           </template>
+        </el-table-column>
+        <el-table-column
+            prop="gmtCreate"
+            label="创建时间"
+            width="100"
+            align="center">
         </el-table-column>
         <el-table-column
           prop="name"

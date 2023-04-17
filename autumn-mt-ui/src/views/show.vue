@@ -67,11 +67,40 @@
         </div>
       </div>
       <div class="right-button">
-        <van-button @click="approve(-1)" type="default" size="small">审批拒绝</van-button>
+        <van-button @click="rejectVisible = true" type="default" size="small">审批拒绝</van-button>
         <span style="margin: 0 4px"></span>
         <van-button @click="approve(1)" type="info" size="small">审批通过</van-button>
       </div>
     </div>
+
+    <el-dialog
+        title="输入拒绝原因"
+        :visible.sync="rejectVisible"
+        width="40%">
+      <el-input
+          type="textarea"
+          maxlength="255"
+          show-word-limit
+          :rows="2"
+          clearable
+          v-model="reason">
+      </el-input>
+      <!-- 模板 -->
+      <div style="margin-top: 10px">
+        <span>快捷输入：</span>
+        <ul>
+          <li :key="index" style="margin-top: 5px" v-for="(item,index) in reasonTemplate">
+            <el-link type="info" @click="inputTemplateMessage(item)">{{item}}</el-link>
+            <br>
+          </li>
+        </ul>
+      </div>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="rejectVisible = false" size="small">取 消</el-button>
+        <el-button @click="reason = ''" size="small">清 除</el-button>
+    <el-button type="primary" @click="approve(-1)" size="small">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -94,7 +123,10 @@ export default {
       process: { },
       formValues: {},
       processRecordList: [],
-      isApprove: false
+      isApprove: false,
+      rejectVisible: false,
+      reason: '',
+      reasonTemplate: ['你好，不同意','电话联系我', '明天开完会再说']
     };
   },
 
@@ -115,14 +147,21 @@ export default {
     },
 
     approve(status) {
+      if(status === 1) {
+        this.reason = ''
+      }
       let approvalVo = {
         processId: this.process.id,
         taskId: this.taskId,
-        status: status
+        status: status,
+        reason: this.reason
       }
       api.approve(approvalVo).then(response => {
         this.$router.push({ path: '/list/1' })
       })
+    },
+    inputTemplateMessage(message) {
+      this.reason = message
     }
   },
 }
