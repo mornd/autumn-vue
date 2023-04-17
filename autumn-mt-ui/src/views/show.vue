@@ -39,17 +39,21 @@
             <h3>流程</h3>
             <van-steps direction="vertical" :active="processRecordList.length - 1">
               <van-step :key="item.id" v-for="item in processRecordList">
-                <div>
+                <div :style="{color: item.status === -1 ? '#EB8473' : ''}">
                   <h4>{{ item.operateUser }} {{ item.description }}</h4>
                   <p>{{ item.createTime }}</p>
                 </div>
               </van-step>
             </van-steps>
+          </div>
+        </template>
+      </van-cell>
 
-            <div v-if="process.status === -1">
-              <h3>拒绝原因：</h3>
-              <p>{{process.reason}}</p>
-            </div>
+      <van-cell>
+        <template slot="default">
+          <div class="result" v-if="process.status === -1">
+            <h3>拒绝原因：</h3>
+            <p>{{process.reason}}</p>
           </div>
         </template>
       </van-cell>
@@ -80,12 +84,12 @@
     <el-dialog
         title="输入拒绝原因"
         :visible.sync="rejectVisible"
-        width="80%">
+        width="90%">
       <el-input
           type="textarea"
           maxlength="255"
           show-word-limit
-          :rows="2"
+          :rows="4"
           clearable
           v-model="reason">
       </el-input>
@@ -168,11 +172,7 @@ export default {
       this.reason = message
     },
     backPage() {
-      let active = window.localStorage.getItem('tabActive')
-      if(active == null) {
-        active = 0
-      }
-      this.$router.push({ path: '/list/' + active })
+      this.$router.go(-1)
     }
   },
 }

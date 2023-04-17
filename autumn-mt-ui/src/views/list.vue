@@ -71,13 +71,11 @@ export default {
 
   created(){
     this.activeIndex = parseInt(this.$route.params.activeIndex);
-    window.localStorage.setItem('tabActive', this.activeIndex)
     this.onLoad()
   },
 
   methods: {
     tabSwitch() {
-      window.localStorage.setItem('tabActive', this.activeIndex)
       //tab切换，重新初始化数据
       this.list = []
       this.pageNo = 1
