@@ -4,7 +4,7 @@
       title="审批详情"
       left-text="返回"
       left-arrow
-      @click-left="() => $router.back()"
+      @click-left="backPage"
     />
     <van-list>
       <van-cell>
@@ -46,6 +46,10 @@
               </van-step>
             </van-steps>
 
+            <div v-if="process.status === -1">
+              <h3>拒绝原因：</h3>
+              <p>{{process.reason}}</p>
+            </div>
           </div>
         </template>
       </van-cell>
@@ -61,7 +65,7 @@
 
     <div class="footer" v-if="isApprove">
       <div class="left-action">
-        <div class="action back" @click="() => $router.back()">
+        <div class="action back" @click="backPage">
           <van-icon name="revoke" />
           <span>返回</span>
         </div>
@@ -76,7 +80,7 @@
     <el-dialog
         title="输入拒绝原因"
         :visible.sync="rejectVisible"
-        width="40%">
+        width="80%">
       <el-input
           type="textarea"
           maxlength="255"
@@ -162,6 +166,13 @@ export default {
     },
     inputTemplateMessage(message) {
       this.reason = message
+    },
+    backPage() {
+      let active = window.localStorage.getItem('tabActive')
+      if(active == null) {
+        active = 0
+      }
+      this.$router.push({ path: '/list/' + active })
     }
   },
 }

@@ -116,9 +116,10 @@
             <el-button v-if="step === 2" @click="showFileList" type="primary" size="small">查看文件数据</el-button>
             <el-button v-if="step !== 0" type="primary" @click="prev()" size="small">上一步</el-button>
             <el-button v-if="step !== 2" type="primary" @click="next()" size="small">下一步</el-button>
-            <el-button v-if="step === 2" type="primary" @click="formSubmit()" :loading="submitLoading" size="small"
-            >{{submitLoading ? '提交中' : '提交'}}</el-button
-            >
+            <el-button-group style="margin-left: 10px">
+              <el-button v-if="step === 2" type="primary" @click="formSubmit()" :loading="submitLoading" size="small">{{submitLoading ? '提交中' : '提交'}}</el-button>
+              <el-button v-if="step === 2" type="primary" @click="formSubmitPublish()" :loading="submitLoading" size="small">{{submitLoading ? '提交中' : '提交并发布'}}</el-button>
+            </el-button-group>
           </span>
       </template>
     </el-dialog>
@@ -158,6 +159,8 @@ export default {
         formProps: '',
         formOptions: '',
         description: '',
+        // 是否提交完自动发布
+        publish: ''
       },
       rules: {
         name: [{required: true, validator: validateName, trigger: 'blur'}],
@@ -287,8 +290,16 @@ export default {
     onFileProgress(file) {
       alert('onFileProgress')
     },
-    //  提交
     formSubmit() {
+      this.form.publish = false
+      this.submit()
+    },
+    formSubmitPublish() {
+      this.form.publish = true
+      this.submit()
+    },
+    //  提交
+    submit() {
       if(this.fileList.length === 0) {
         this.$message.error('请先选择要上传的文件')
       } else {
@@ -331,7 +342,7 @@ export default {
           this.submitLoading = false
         })
       }
-    }
+    },
   },
   props: {
     transData: Object
