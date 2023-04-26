@@ -9,6 +9,7 @@
           <div class="message" :class="{self: item.self}">
             <img class="avatar" :src="(item.self ? user.avatar : chat.selectedUser.avatar) | avatar" :alt="user.name" />
             <div>
+              <i v-if="item.self && item.failure" class="el-icon-warning failure-icon" title="发送失败" />
               <i class="el-icon-caret-right self-text" v-if="item.self" />
               <i class="el-icon-caret-left other-text" v-else />
               <span class="text" v-text="item.content"></span>
@@ -126,6 +127,11 @@ export default {
       .avatar {
         float: left;
         margin: 0 10px 0 0;
+      }
+      // 发送失败的图标
+      .failure-icon {
+        color: #DB5860;
+        margin-right: 5px;
       }
       .text {
         background-color: @otherTextColor;

@@ -146,8 +146,8 @@ export default {
       //  订阅消息频道，这里的 /user 前缀是固定的
       state.chat.stomp.subscribe('/user/queue/chat', message => {
         let receiveMessage = JSON.parse(message.body)
+        const chat = state.chat
         if(receiveMessage.success && state.user.loginName === receiveMessage.to) {
-          const chat = state.chat
           // 聊天列表是否已经聊过天
           if(chat.selectedUser && chat.selectedUser.loginName === receiveMessage.from
               && (window.location.pathname === '/wechat' || window.location.pathname === '/fullwechat')) {
@@ -209,7 +209,19 @@ export default {
           }
         } else {
           // todo 消息发送失败，在本地聊天记录显示感叹号
-          Message.error('消息发送失败，' + receiveMessage.content)
+          const sessionKey = chat.session[receiveMessage.from + '#' + receiveMessage.to]
+          if(sessionKey && sessionKey.length > 0) {
+            // 最后一条消息
+            const lastMessage = sessionKey[sessionKey.length - 1]
+            if(lastMessage.self && receiveMessage.from === lastMessage.from
+                && receiveMessage.to === lastMessage.to
+                && receiveMessage.content === lastMessage.content) {
+              lastMessage.failure = true
+              // 替换操作
+              sessionKey.splice((sessionKey.length - 1), 1, lastMessage)
+            }
+          }
+          Message.error('消息发送失败，' + receiveMessage.failureMsg ? receiveMessage.failureMsg : '')
         }
       })
     }, error => {
