@@ -232,5 +232,20 @@ export default {
         // todo 10s后重新连接一次
       }, 10000)
     })
+  },
+
+  // 获取流程通知消息
+  getProcessNotify({state, commit}) {
+    const pageParams = {
+      pageNo: 1,
+      pageSize: 10
+    };
+    api.getRequest('/process/findPending', pageParams).then(res => {
+      state.processNotify.pendingList = res.data.records
+      state.processNotify.unreadNotifyCount = res.data.records.length
+    })
+    api.getRequest('/process/findProcessed', pageParams).then(res => {
+      state.processNotify.processedList = res.data.records
+    })
   }
 }

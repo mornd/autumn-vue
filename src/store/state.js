@@ -62,6 +62,12 @@ export default {
     // 用户列表搜索关键字
     userSearch: '',
     userListScrollTop: true
-  }
+  },
 
+  processNotify: {
+    //  通知个数
+    unreadNotifyCount: 0,
+    pendingList: [],
+    processedList: [],
+  }
 }

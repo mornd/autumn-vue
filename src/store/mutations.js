@@ -80,5 +80,5 @@ export default {
   },
   SET_RECENT_CHAT_USERS(state, data) {
     state.chat.recentUsers = data
-  },
+  }
 }

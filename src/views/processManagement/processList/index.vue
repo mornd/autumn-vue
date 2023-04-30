@@ -120,6 +120,12 @@
             label="创建时间">
         </el-table-column>
         <el-table-column
+            prop="handleTime"
+            align="center"
+            width="140px"
+            label="完成时间">
+        </el-table-column>
+        <el-table-column
             prop="name"
             label="操作"
             width="150"

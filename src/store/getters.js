@@ -19,4 +19,6 @@ export default {
   loginName: (state) => state.user ? state.user.loginName : '',
   //菜单路由
   menuRoutes: (state) => state.menuRoutes,
+
+  unreadNotifyCount: (state) => state.processNotify.unreadNotifyCount
 }

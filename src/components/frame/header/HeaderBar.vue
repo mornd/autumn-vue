@@ -21,7 +21,24 @@
         </el-badge>
       </li>
       <li title="通知" @mouseover="addActive($event)" @mouseout="removeActive($event)">
-        <i class="el-icon-bell"></i>
+        <el-popover
+            ref="notifyPopover"
+            placement="bottom-end"
+            title=""
+            width="370"
+            trigger="click"
+        >
+          <process-notification @close="closeNotifyPopover"></process-notification>
+          <div slot="reference">
+<!--            <el-badge :value="$store.getters.unreadNotifyCount" :hidden="$store.getters.unreadNotifyCount <= 0">-->
+<!--              <i class="el-icon-bell" />-->
+<!--            </el-badge>-->
+            <el-badge>
+              <div class="notify-badge" v-if="$store.getters.unreadNotifyCount > 0"></div>
+              <i class="el-icon-bell" />
+            </el-badge>
+          </div>
+        </el-popover>
       </li>
       <!--天气-->
       <li @mouseover="addActive($event)" @mouseout="removeActive($event)">
@@ -32,7 +49,7 @@
             popper-class="weather-popover"
             trigger="hover"
         >
-          <weather_plugin :width="450" :height="150"></weather_plugin>
+          <weather-plugin :width="450" :height="150"></weather-plugin>
           <div slot="reference">
             <i class="el-icon-heavy-rain"></i>
           </div>
@@ -91,13 +108,19 @@
   import { mapState, mapGetters } from 'vuex';
   import MoreDrawer from './moreDrawer/MoreDrawer'
   import NowDate from '@/components/gadgets/NowDate'
-  import weather_plugin from './WeatherPlugin'
+  import weatherPlugin from './WeatherPlugin'
   import { defaultAvatar, errorAvatar } from "@/constants/systemConsts";
   import {getBadge} from "@/utils/chatUtil";
+  import ProcessNotification from "./ProcessNotification";
 
   export default {
     name: "HeaderBar",
-    components: {MoreDrawer, NowDate, weather_plugin},
+    components: {
+      MoreDrawer,
+      NowDate,
+      weatherPlugin,
+      ProcessNotification,
+    },
     data() {
       return {
         //浏览器是否全屏展示
@@ -148,6 +171,9 @@
       // 在线聊天功能
       toChat() {
         this.$router.push('/wechat')
+      },
+      closeNotifyPopover() {
+        this.$refs.notifyPopover.doClose();
       },
       checkFull() {
         //判断浏览器是否处于全屏状态 （需要考虑兼容问题）
@@ -228,6 +254,10 @@
 
 <!--因为popover组件默认与App.vue组件在同一级，所以需要设置全局样式，这里的style标签去除了scoped属性-->
 <style lang="less">
+  /deep/ .el-badge__content {
+    background: green;
+  }
+
   .weather-popover {
     background: #F5F5F5;
     padding: 5px;
@@ -284,6 +314,16 @@
           background-color: #F7F7F7;
         }
       }
+    }
+
+    .notify-badge {
+      width: 10px;
+      height: 10px;
+      background: #FA5151;
+      border-radius: 50%;
+      position: absolute;
+      top: 18px;
+      left: 8px
     }
   }
 </style>
