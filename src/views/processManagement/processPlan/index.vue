@@ -326,6 +326,10 @@ export default {
   .content {
     background: #FFF;
     padding: 10px;
+
+    /* 解决 el-tab-pane 导致路由访问浏览器卡死 */
+    display: flex;
+    flex-direction: column;
   }
 
   ul li {

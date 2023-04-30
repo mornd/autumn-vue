@@ -46,7 +46,7 @@
 
 <script>
 import {chatDateFormatter} from "@/utils/dateUtil";
-import apply from "../../../views/processManagement/planList/components/apply";
+import apply from "@/views/processManagement/processPlan/components/apply";
 import { mapState } from 'vuex'
 
 export default {
@@ -80,15 +80,21 @@ export default {
     },
     more() {
       this.close()
-      // push 方式页面会卡住
-      //this.$router.push({path: '/processManagement/planList', query: {'activeName' : this.activeName}})
-      let route = this.$router.resolve({
-        path: '/processManagement/planList',
-        query:{
-          activeName: this.activeName
-        }
-      })
-      window.open(route.href, '_self')
+      this.$router.push(
+          {
+            path: '/processManagement/processPlan',
+            query: {'activeName' : this.activeName}
+          }
+      )
+
+      // 跳转方式二
+      // let route = this.$router.resolve({
+      //   path: '/processManagement/planList',
+      //   query:{
+      //     activeName: this.activeName
+      //   }
+      // })
+      // window.open(route.href, '_self')
     },
     close() {
       this.$emit('close')
